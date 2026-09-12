@@ -1,0 +1,75 @@
+/*
+  variables.css
+  Semua "angka ajaib" (warna, font, jarak) didefinisikan di sini.
+  File CSS lain tinggal memakai var(--nama-token), bukan angka langsung.
+*/
+
+:root {
+  /* ---- Warna ---- */
+  /* Palet terinspirasi warna alam & batik (indigo tarum, kunyit, sawah),
+     bukan warna khas brand aplikasi manapun. */
+  --color-bg: #F5F2E8;              /* latar utama, kertas hangat */
+  --color-surface: #FFFFFF;         /* kartu, permukaan elemen */
+  --color-surface-alt: #EFEADA;     /* permukaan sekunder / track progress */
+
+  --color-ink: #1E2A30;             /* teks utama */
+  --color-ink-soft: #5C6B70;        /* teks sekunder */
+  --color-ink-faint: #94A0A3;       /* teks tersier / placeholder */
+
+  --color-primary: #204E5C;         /* indigo-teal, warna aksi utama */
+  --color-primary-hover: #163944;
+  --color-primary-soft: #DCE7E8;    /* latar lembut dari primary */
+
+  --color-accent: #E0A72E;          /* kuning kunyit, untuk XP/badge/highlight */
+  --color-accent-soft: #FBEFD3;
+
+  --color-success: #4C8C6B;         /* hijau sawah, untuk jawaban benar */
+  --color-success-soft: #E4F1EA;
+
+  --color-gentle-wrong: #9A6B3F;    /* coklat hangat untuk "kurang tepat", bukan merah alarm */
+  --color-gentle-wrong-soft: #F5EBDF;
+
+  --color-locked: #C7C1AF;          /* elemen terkunci */
+  --color-border: #E4DFCF;
+
+  /* ---- Tipografi ---- */
+  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --fs-xs: 0.75rem;    /* 12px */
+  --fs-sm: 0.875rem;   /* 14px */
+  --fs-base: 1rem;     /* 16px */
+  --fs-md: 1.125rem;   /* 18px */
+  --fs-lg: 1.375rem;   /* 22px */
+  --fs-xl: 1.75rem;    /* 28px */
+  --fs-2xl: 2.25rem;   /* 36px */
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* ---- Spacing ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* ---- Radius ---- */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-full: 999px;
+
+  /* ---- Shadow ---- */
+  --shadow-sm: 0 1px 3px rgba(30, 42, 48, 0.08);
+  --shadow-md: 0 6px 20px rgba(30, 42, 48, 0.10);
+
+  /* ---- Layout ---- */
+  --app-max-width: 480px;
+  --nav-height: 68px;
+  --transition-fast: 150ms ease;
+  --transition-base: 220ms ease;
+}

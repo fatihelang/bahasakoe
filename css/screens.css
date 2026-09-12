@@ -1,0 +1,142 @@
+/*
+  screens.css
+  Tata letak yang spesifik untuk satu layar tertentu
+  (bukan komponen yang dipakai berulang di banyak tempat).
+*/
+
+/* ---- Home ---- */
+.home-greeting {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  margin-bottom: var(--space-5);
+}
+
+.home-continue-card {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-5);
+  box-shadow: var(--shadow-md);
+}
+
+.home-continue-card__eyebrow {
+  font-size: var(--fs-xs);
+  color: #BFD6DB;
+  margin-bottom: var(--space-1);
+}
+
+.home-continue-card__title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  margin-bottom: var(--space-4);
+}
+
+.home-continue-card .btn-primary {
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+
+.home-section-title {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--color-ink-soft);
+  margin-bottom: var(--space-3);
+}
+
+.home-progress-row {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.home-progress-stat {
+  flex: 1;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.home-progress-stat__value {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+}
+
+.home-progress-stat__label {
+  font-size: var(--fs-xs);
+  color: var(--color-ink-soft);
+  margin-top: var(--space-1);
+}
+
+.home-progress-stat .progress-track {
+  margin-top: var(--space-3);
+}
+
+.home-culture-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.home-culture-card__icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.home-culture-card__title {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+}
+
+.home-culture-card__subtitle {
+  font-size: var(--fs-xs);
+  color: var(--color-ink-soft);
+}
+
+/* ---- Learning Path ---- */
+.path-header {
+  margin-bottom: var(--space-5);
+}
+
+.path-header__title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+}
+
+.path-header__subtitle {
+  font-size: var(--fs-sm);
+  color: var(--color-ink-soft);
+  margin-top: var(--space-1);
+}
+
+.path-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Placeholder screen (Budaya & Profil sementara) ---- */
+.placeholder-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-7) var(--space-4);
+  color: var(--color-ink-soft);
+}
+
+.placeholder-screen__icon {
+  font-size: 40px;
+  margin-bottom: var(--space-4);
+}
+
+.placeholder-screen__title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--color-ink);
+  margin-bottom: var(--space-2);
+}

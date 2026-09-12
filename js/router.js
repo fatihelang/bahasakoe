@@ -33,6 +33,12 @@ export function createRouter(appEl, navEl) {
 
     renderFn(appEl, { navigateTo }, params);
 
+    // Re-trigger animasi fade tiap kali layar berganti (reflow paksa lewat
+    // offsetWidth supaya browser mau mengulang animasi walau class-nya sama).
+    appEl.classList.remove('screen-fade');
+    void appEl.offsetWidth;
+    appEl.classList.add('screen-fade');
+
     const isNavScreen = NAV_SCREENS.includes(screenName);
     navEl.classList.toggle('is-hidden', !isNavScreen);
     document.body.classList.toggle('is-focused-session', !isNavScreen);

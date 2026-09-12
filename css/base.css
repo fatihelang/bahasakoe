@@ -75,6 +75,18 @@ body.is-focused-session .app-shell {
   padding: var(--space-5) var(--space-4) var(--space-4);
 }
 
+/* Transisi halus tiap kali layar berganti (dipicu router.js). Membuat
+   navigasi terasa hidup tanpa mengubah cara kerja "router" (masih ganti
+   innerHTML #app, bukan animasi antar-elemen DOM yang rumit). */
+.screen-fade {
+  animation: screenFadeIn 260ms ease;
+}
+
+@keyframes screenFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;

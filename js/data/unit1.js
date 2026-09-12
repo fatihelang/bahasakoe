@@ -5,10 +5,25 @@
 
   Struktur:
   lesson = { id, order, title, playable, objective, learningContent[], questions[] }
-  question = { id, type, prompt, options[], correctIndex, explanation, context?, cultureInsight? }
+
+  question umum = { id, type, prompt, explanation, context?, cultureInsight?, needsValidation? }
+  type menentukan field tambahan yang dipakai:
+  - 'multiple-choice' (default kalau type tidak diisi): options[], correctIndex
+  - 'translate': correctAnswers[] (jawaban valid, dicocokkan case-insensitive), placeholder?
+  - 'arrange': words[] — urutan kata yang BENAR; UI yang mengacak tampilannya
+  - 'matching': pairs[] — array {jawa, arti}; UI mengacak & mencocokkan
+  - 'true-false': correctAnswer (boolean) — prompt berisi pernyataan yang dinilai
+
+  Setiap lesson playable ditarget minimal 10 soal, dengan tipe bervariasi
+  TAPI tidak dipaksakan rata di setiap lesson — mis. Lesson 3 (Angka) tidak
+  memakai tipe 'arrange' karena kosakatanya berupa angka tunggal, bukan
+  frasa yang wajar disusun ulang. Sama seperti context/cultureInsight,
+  variasi tipe soal mengikuti apa yang masuk akal untuk kontennya.
 
   Catatan: konten Lesson 1-3 mengikuti Phase 2 (revisi terakhir).
-  Item yang ditandai needsValidation belum dikonfirmasi native speaker/ahli.
+  needsValidation: true pada sebuah question berarti cultureInsight-nya belum
+  dikonfirmasi native speaker/ahli Bahasa Jawa — field ini hanya dipakai
+  secara internal (data/tracking), TIDAK ditampilkan ke user di UI.
 */
 
 export const UNIT1 = {
@@ -39,13 +54,14 @@ export const UNIT1 = {
           correctIndex: 0,
           explanation: '"Enjing" berarti pagi, jadi "Sugeng enjing" dipakai untuk menyapa di pagi hari.',
           context: 'Salam ini bisa dipakai untuk siapa saja dalam percakapan sehari-hari; perbedaan tingkat kesopanan akan dibahas lebih lanjut di Unit 2.',
+          cultureInsight: 'Orang Jawa terbiasa menyapa sesuai waktu hari — kebiasaan ini mencerminkan cara masyarakat Jawa memperhatikan konteks situasi dalam berkomunikasi sehari-hari.',
+          needsValidation: true,
         },
         {
           id: 'l1-q2',
-          type: 'multiple-choice',
-          prompt: "Apa arti 'Sugeng dalu'?",
-          options: ['Selamat pagi', 'Selamat siang', 'Selamat sore', 'Selamat malam'],
-          correctIndex: 3,
+          type: 'translate',
+          prompt: "Ketik arti dari 'Sugeng dalu' dalam Bahasa Indonesia.",
+          correctAnswers: ['selamat malam'],
           explanation: '"Dalu" berarti malam.',
         },
         {
@@ -56,6 +72,61 @@ export const UNIT1 = {
           correctIndex: 0,
           explanation: '"Sami-sami" adalah balasan umum untuk ucapan terima kasih dalam percakapan.',
           context: 'Dipakai sebagai respons santai dalam percakapan sehari-hari, baik dengan teman maupun orang lain.',
+        },
+        {
+          id: 'l1-q4',
+          type: 'multiple-choice',
+          prompt: 'Kamu bertemu tetangga waktu tengah hari. Ucapan yang tepat adalah?',
+          options: ['Sugeng siang', 'Sugeng enjing', 'Sugeng dalu', 'Matur nuwun'],
+          correctIndex: 0,
+          explanation: '"Siang" dalam Bahasa Jawa juga "siang", jadi "Sugeng siang" dipakai untuk menyapa di waktu itu.',
+        },
+        {
+          id: 'l1-q5',
+          type: 'translate',
+          prompt: "Ketik arti dari 'Sugeng sonten' dalam Bahasa Indonesia.",
+          correctAnswers: ['selamat sore'],
+          explanation: '"Sonten" berarti sore.',
+        },
+        {
+          id: 'l1-q6',
+          type: 'arrange',
+          prompt: 'Susun kata untuk menyapa seseorang di pagi hari.',
+          words: ['Sugeng', 'enjing'],
+          explanation: '"Sugeng" + "enjing" (pagi) = "Sugeng enjing", salam untuk pagi hari.',
+        },
+        {
+          id: 'l1-q7',
+          type: 'true-false',
+          prompt: "Pernyataan: 'Matur nuwun' berarti 'Sama-sama'.",
+          correctAnswer: false,
+          explanation: '"Matur nuwun" berarti "terima kasih". Balasannya baru "Sami-sami" (sama-sama).',
+        },
+        {
+          id: 'l1-q8',
+          type: 'true-false',
+          prompt: "Pernyataan: 'Sugeng dalu' dipakai untuk menyapa di malam hari.",
+          correctAnswer: true,
+          explanation: '"Dalu" berarti malam, jadi "Sugeng dalu" memang dipakai malam hari.',
+        },
+        {
+          id: 'l1-q9',
+          type: 'matching',
+          prompt: 'Cocokkan ucapan dengan artinya.',
+          pairs: [
+            { jawa: 'Sugeng enjing', arti: 'Selamat pagi' },
+            { jawa: 'Sugeng sonten', arti: 'Selamat sore' },
+            { jawa: 'Matur nuwun', arti: 'Terima kasih' },
+          ],
+          explanation: 'Tiap salam punya waktu pemakaiannya sendiri, dan "Matur nuwun" khusus untuk berterima kasih.',
+        },
+        {
+          id: 'l1-q10',
+          type: 'multiple-choice',
+          prompt: "Bu Guru berkata 'Matur nuwun' setelah kamu membantu beres-beres kelas. Balasan yang tepat?",
+          options: ['Sami-sami', 'Sugeng enjing', 'Sugeng sonten', 'Sugeng dalu'],
+          correctIndex: 0,
+          explanation: '"Sami-sami" tetap jadi balasan yang tepat untuk ucapan terima kasih, ke siapa pun.',
         },
       ],
     },
@@ -84,11 +155,10 @@ export const UNIT1 = {
         },
         {
           id: 'l2-q2',
-          type: 'multiple-choice',
-          prompt: "Lengkapi kalimat: '___ Dimas.' (artinya: Namaku Dimas.)",
-          options: ['Jenengku', 'Jenengmu', 'Sopo', 'Kowe'],
-          correctIndex: 0,
-          explanation: '"Jenengku" = "namaku", dipakai untuk memperkenalkan nama sendiri.',
+          type: 'arrange',
+          prompt: "Susun kata berikut menjadi kalimat yang benar (artinya: Namaku Dimas.)",
+          words: ['Jenengku', 'Dimas'],
+          explanation: '"Jenengku" = "namaku", diikuti nama diri — jadi susunannya "Jenengku Dimas."',
         },
         {
           id: 'l2-q3',
@@ -98,6 +168,62 @@ export const UNIT1 = {
           correctIndex: 1,
           explanation: 'Dalam situasi berkenalan, kalimat ini berfungsi untuk membuka perkenalan dengan menanyakan nama lawan bicara — bukan sekadar terjemahan kata per kata.',
           context: 'Dipakai ke teman sebaya atau orang yang sudah akrab; bentuk yang lebih sopan/halus akan dipelajari di Unit 2 (Unggah-Ungguh).',
+          cultureInsight: 'Bahasa ngoko terasa akrab dan santai, sehingga lebih umum dipakai ke teman sebaya — bukan ke orang yang lebih tua atau baru dikenal dalam situasi formal.',
+          needsValidation: true,
+        },
+        {
+          id: 'l2-q4',
+          type: 'translate',
+          prompt: "Ketik arti dari 'Jenengmu' dalam Bahasa Indonesia.",
+          correctAnswers: ['namamu'],
+          explanation: '"Jenengmu" = "namamu".',
+        },
+        {
+          id: 'l2-q5',
+          type: 'multiple-choice',
+          prompt: "Bagaimana bilang 'Aku' dalam Bahasa Jawa ngoko?",
+          options: ['Aku', 'Kowe', 'Sopo', 'Jenengku'],
+          correctIndex: 0,
+          explanation: '"Aku" dipakai sama seperti Bahasa Indonesia, untuk menyebut diri sendiri dalam level ngoko.',
+        },
+        {
+          id: 'l2-q6',
+          type: 'translate',
+          prompt: "Ketik arti dari 'Kowe' dalam Bahasa Indonesia (level ngoko).",
+          correctAnswers: ['kamu'],
+          explanation: '"Kowe" berarti "kamu" dalam level ngoko.',
+        },
+        {
+          id: 'l2-q7',
+          type: 'arrange',
+          prompt: "Susun kata untuk menanyakan 'Siapa namamu?' secara santai (ngoko).",
+          words: ['Sopo', 'jenengmu'],
+          explanation: '"Sopo jenengmu?" tersusun dari "Sopo" (siapa) + "jenengmu" (namamu).',
+        },
+        {
+          id: 'l2-q8',
+          type: 'true-false',
+          prompt: "Pernyataan: 'Kowe' dipakai untuk menyebut diri sendiri.",
+          correctAnswer: false,
+          explanation: '"Kowe" artinya "kamu" — untuk menyebut diri sendiri dipakai "Aku".',
+        },
+        {
+          id: 'l2-q9',
+          type: 'true-false',
+          prompt: "Pernyataan: 'Jenengku' dipakai untuk memperkenalkan nama sendiri.",
+          correctAnswer: true,
+          explanation: '"Jenengku" = "namaku", dipakai untuk memperkenalkan nama sendiri.',
+        },
+        {
+          id: 'l2-q10',
+          type: 'matching',
+          prompt: 'Cocokkan kata dengan artinya.',
+          pairs: [
+            { jawa: 'Jenengku', arti: 'Namaku' },
+            { jawa: 'Sopo', arti: 'Siapa' },
+            { jawa: 'Kowe', arti: 'Kamu (ngoko)' },
+          ],
+          explanation: 'Kata-kata dasar perkenalan ini jadi bekal utama membuka percakapan santai.',
         },
       ],
     },
@@ -130,10 +256,9 @@ export const UNIT1 = {
         },
         {
           id: 'l3-q2',
-          type: 'multiple-choice',
-          prompt: 'Bagaimana menyebutkan angka 5 dalam Bahasa Jawa?',
-          options: ['Lima', 'Papat', 'Enem', 'Pitu'],
-          correctIndex: 0,
+          type: 'translate',
+          prompt: 'Ketik angka 5 dalam Bahasa Jawa.',
+          correctAnswers: ['lima'],
           explanation: '"Lima" adalah sebutan untuk angka 5.',
         },
         {
@@ -143,6 +268,61 @@ export const UNIT1 = {
           options: ['7', '8', '9', '10'],
           correctIndex: 2,
           explanation: '"Sanga" = 9.',
+        },
+        {
+          id: 'l3-q4',
+          type: 'multiple-choice',
+          prompt: "'Wolu' adalah sebutan untuk angka berapa?",
+          options: ['6', '7', '8', '9'],
+          correctIndex: 2,
+          explanation: '"Wolu" = 8.',
+        },
+        {
+          id: 'l3-q5',
+          type: 'translate',
+          prompt: 'Ketik angka 10 dalam Bahasa Jawa.',
+          correctAnswers: ['sepuluh'],
+          explanation: '"Sepuluh" adalah sebutan untuk angka 10 (sama seperti Bahasa Indonesia).',
+        },
+        {
+          id: 'l3-q6',
+          type: 'translate',
+          prompt: 'Ketik angka 1 dalam Bahasa Jawa.',
+          correctAnswers: ['siji'],
+          explanation: '"Siji" adalah sebutan untuk angka 1.',
+        },
+        {
+          id: 'l3-q7',
+          type: 'true-false',
+          prompt: "Pernyataan: 'Enem' berarti angka 7.",
+          correctAnswer: false,
+          explanation: '"Enem" = 6. Angka 7 adalah "Pitu".',
+        },
+        {
+          id: 'l3-q8',
+          type: 'true-false',
+          prompt: "Pernyataan: 'Pitu' adalah sebutan untuk angka 7.",
+          correctAnswer: true,
+          explanation: '"Pitu" memang berarti 7.',
+        },
+        {
+          id: 'l3-q9',
+          type: 'matching',
+          prompt: 'Cocokkan angka Jawa dengan angkanya.',
+          pairs: [
+            { jawa: 'Loro', arti: '2' },
+            { jawa: 'Papat', arti: '4' },
+            { jawa: 'Enem', arti: '6' },
+          ],
+          explanation: 'Angka genap 2, 4, 6 dalam Bahasa Jawa: Loro, Papat, Enem.',
+        },
+        {
+          id: 'l3-q10',
+          type: 'multiple-choice',
+          prompt: 'Kamu mau beli 2 apel di warung. Sebutkan angka 2 dalam Bahasa Jawa.',
+          options: ['Loro', 'Telu', 'Papat', 'Lima'],
+          correctIndex: 0,
+          explanation: '"Loro" adalah sebutan untuk angka 2.',
         },
       ],
     },

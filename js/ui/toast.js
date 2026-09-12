@@ -17,7 +17,10 @@ function ensureToastElement() {
 
 export function showToast(message, duration = 2200) {
   const el = ensureToastElement();
-  el.textContent = message;
+  // innerHTML (bukan textContent) supaya pesan bisa membawa ikon SVG dari
+  // js/ui/icons.js. Semua pemanggil showToast() ada di dalam codebase kita
+  // sendiri (bukan input pengguna), jadi aman dari XSS.
+  el.innerHTML = message;
 
   // Trigger reflow supaya transisi CSS jalan meski toast dipanggil berkali-kali
   el.classList.remove('is-visible');

@@ -104,6 +104,10 @@
   color: var(--color-primary);
 }
 
+.bottom-nav.is-hidden {
+  display: none;
+}
+
 /* ---- Lesson step (Learning Path) ---- */
 .lesson-step {
   display: flex;

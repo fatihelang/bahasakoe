@@ -140,3 +140,173 @@
   color: var(--color-ink);
   margin-bottom: var(--space-2);
 }
+
+/* ---- Lesson Session (Learning Content / Question / Feedback / Complete) ---- */
+.lesson-session {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--space-5) - var(--space-4));
+}
+
+.lesson-session__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.lesson-session__exit {
+  flex-shrink: 0;
+  font-size: var(--fs-md);
+  color: var(--color-ink-faint);
+  padding: var(--space-1);
+}
+
+.lesson-session__progress {
+  flex: 1;
+}
+
+.lesson-session__title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  margin-bottom: var(--space-2);
+}
+
+.lesson-session__objective {
+  font-size: var(--fs-sm);
+  color: var(--color-ink-soft);
+  margin-bottom: var(--space-5);
+}
+
+.lesson-session__cta {
+  margin-top: auto;
+}
+
+/* Learning Content: daftar kata/frasa (Kata -> Kalimat) */
+.learning-content-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.learning-item {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.learning-item__jawa {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+}
+
+.learning-item__arti {
+  font-size: var(--fs-sm);
+  color: var(--color-ink-soft);
+  margin-top: var(--space-1);
+}
+
+/* Question */
+.question-prompt {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  margin-bottom: var(--space-5);
+}
+
+.question-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.question-option {
+  width: 100%;
+  text-align: left;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  min-height: 48px;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.question-option:hover {
+  border-color: var(--color-primary-soft);
+  background: var(--color-primary-soft);
+}
+
+/* Feedback — tidak ada hearts/lives; jawaban salah tetap ditampilkan dengan
+   warna hangat (bukan merah alarm) sesuai prinsip non-punitive BahasaKoe. */
+.feedback-panel {
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.feedback-panel.is-correct {
+  background: var(--color-success-soft);
+}
+
+.feedback-panel.is-gentle-wrong {
+  background: var(--color-gentle-wrong-soft);
+}
+
+.feedback-panel__status {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  margin-bottom: var(--space-3);
+}
+
+.feedback-panel.is-correct .feedback-panel__status {
+  color: var(--color-success);
+}
+
+.feedback-panel.is-gentle-wrong .feedback-panel__status {
+  color: var(--color-gentle-wrong);
+}
+
+.feedback-panel__explanation {
+  font-size: var(--fs-base);
+  color: var(--color-ink);
+  margin-bottom: var(--space-3);
+}
+
+.feedback-panel__context,
+.feedback-panel__culture {
+  font-size: var(--fs-sm);
+  color: var(--color-ink-soft);
+  margin-top: var(--space-2);
+}
+
+.feedback-panel__culture {
+  color: var(--color-primary);
+}
+
+/* Lesson Complete */
+.lesson-complete {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.lesson-complete__icon {
+  font-size: 56px;
+  margin-bottom: var(--space-4);
+}
+
+.lesson-complete__title {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  margin-bottom: var(--space-2);
+}
+
+.lesson-complete__stats {
+  font-size: var(--fs-base);
+  color: var(--color-ink-soft);
+  margin-bottom: var(--space-6);
+}

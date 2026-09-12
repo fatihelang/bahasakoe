@@ -53,8 +53,11 @@ export function renderHome(container, { navigateTo }) {
   `;
 
   container.querySelector('[data-action="continue-learning"]').addEventListener('click', () => {
-    // Lesson player belum dibangun di langkah ini — arahkan ke Learning Path dulu.
-    navigateTo('learn');
+    if (nextLesson.playable) {
+      navigateTo('lesson', { lessonId: nextLesson.id });
+    } else {
+      navigateTo('learn');
+    }
   });
 
   container.querySelector('[data-action="go-culture"]').addEventListener('click', () => {

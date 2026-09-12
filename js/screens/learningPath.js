@@ -70,9 +70,7 @@ export function renderLearningPath(container, { navigateTo }) {
         showToast('Lesson ini masih "Coming Soon" di prototype ini ✨');
         return;
       }
-      // Lesson player (Intro → Content → Question → Feedback → Complete)
-      // akan dibangun di langkah berikutnya.
-      showToast(`Membuka "${lesson.title}" — lesson player menyusul di langkah berikutnya 🚧`);
+      navigateTo('lesson', { lessonId: lesson.id });
     });
   });
 }

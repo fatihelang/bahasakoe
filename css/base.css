@@ -65,6 +65,12 @@ h1, h2, h3, p {
   padding-bottom: calc(var(--nav-height) + var(--space-4));
 }
 
+/* Selama focused lesson session (bottom nav disembunyikan), layar boleh
+   memakai ruang penuh tanpa menyisakan padding untuk nav. */
+body.is-focused-session .app-shell {
+  padding-bottom: var(--space-4);
+}
+
 #app {
   padding: var(--space-5) var(--space-4) var(--space-4);
 }

@@ -13,6 +13,7 @@
 
 html, body {
   height: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -84,6 +85,15 @@ body.is-focused-session .app-shell {
 
 @keyframes screenFadeIn {
   from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Entrance halus untuk item dalam daftar (opsi jawaban, badge, kartu
+   budaya, node learning path) — dipakai bareng nth-child di
+   components.css/screens.css supaya tiap item muncul gantian, bukan
+   serentak. Selalu dipasangkan dengan .stagger-in di elemen induk. */
+@keyframes staggerFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 

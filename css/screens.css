@@ -28,7 +28,7 @@
 
 .home-continue-card {
   background: var(--color-primary);
-  color: #FFFFFF;
+  color: var(--color-on-primary);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   margin-bottom: var(--space-5);
@@ -70,9 +70,18 @@
   display: flex;
   align-items: center;
   gap: var(--space-4);
-  background: var(--color-accent-soft);
+  background: var(--color-surface-alt);
   border-radius: var(--radius-md);
   padding: var(--space-4);
+  transition: transform 120ms var(--ease-pop), background var(--transition-fast);
+}
+
+.home-culture-card:hover {
+  background: var(--color-accent-soft);
+}
+
+.home-culture-card:active {
+  transform: scale(0.98);
 }
 
 .home-culture-card__icon {
@@ -87,6 +96,52 @@
 .home-culture-card__subtitle {
   font-size: var(--fs-xs);
   color: var(--color-ink-soft);
+}
+
+/* ---- Home: Progress ringkas (bukan stat-card berbayang seperti Profile) ----
+   Spec STEP 5: progress bar + "x/y lesson" saja, jangan terlalu banyak
+   statistik/card supaya tidak menyaingi Continue Learning sebagai fokus
+   utama Home. Streak tetap ada tapi sebagai baris teks kecil, bukan kartu
+   terpisah. */
+.home-progress {
+  margin-bottom: var(--space-6);
+}
+
+.home-progress__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.home-progress__label {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--color-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-progress__count {
+  flex-shrink: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-ink-soft);
+}
+
+.home-progress__streak {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--fs-xs);
+  color: var(--color-ink-soft);
+  margin-top: var(--space-2);
+}
+
+.home-progress__streak svg {
+  width: 14px;
+  height: 14px;
 }
 
 /* ---- Home: kartu bahasa aktif + tombol ganti bahasa ---- */
@@ -150,8 +205,32 @@
 }
 
 .path-header__title {
-  font-size: var(--fs-lg);
+  font-size: var(--fs-xl);
   font-weight: var(--fw-bold);
+}
+
+/* Modifier tambahan — base .path-header__title di atas TIDAK diubah,
+   ini cuma menambah kemampuan diklik untuk masuk ke Unit Detail. */
+.path-header__title--clickable {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  color: var(--color-ink);
+  text-align: left;
+}
+
+.path-header__title--clickable svg {
+  width: 20px;
+  height: 20px;
+  color: var(--color-ink-faint);
+  flex-shrink: 0;
+}
+
+.path-header__title--clickable:hover svg {
+  transform: translateX(2px);
+  transition: transform var(--transition-fast);
 }
 
 .path-header__subtitle {
@@ -163,6 +242,80 @@
 .path-list {
   display: flex;
   flex-direction: column;
+}
+
+/* ---- Unit Detail ----
+   Sengaja lebih sederhana dari Learning Path: tidak ada elemen yang
+   dibungkus jadi card, tidak ada shadow/border tambahan — cuma teks,
+   progress bar tipis, satu CTA merah, lalu daftar lesson (reuse persis
+   .lesson-step dari Learning Path, tidak dimodifikasi). */
+.unit-detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.unit-detail__back {
+  align-self: flex-start;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--color-primary);
+  margin-bottom: var(--space-5);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  transition: transform var(--transition-fast);
+}
+
+.unit-detail__back svg {
+  width: 18px;
+  height: 18px;
+}
+
+.unit-detail__back:hover {
+  transform: translateX(-3px);
+}
+
+.unit-detail__header {
+  margin-bottom: var(--space-5);
+}
+
+.unit-detail__eyebrow {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+  margin-bottom: var(--space-1);
+}
+
+.unit-detail__title {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-ink);
+  margin-bottom: var(--space-2);
+}
+
+.unit-detail__description {
+  font-size: var(--fs-sm);
+  color: var(--color-ink-soft);
+  line-height: 1.6;
+}
+
+.unit-detail__progress {
+  margin-bottom: var(--space-5);
+}
+
+.unit-detail__progress-label {
+  font-size: var(--fs-sm);
+  color: var(--color-ink-soft);
+  margin-bottom: var(--space-2);
+}
+
+.unit-detail__cta {
+  margin-bottom: var(--space-6);
+}
+
+.unit-detail__list {
+  margin-top: 0;
 }
 
 /* ---- Profil ---- */
@@ -251,6 +404,17 @@
   flex-direction: column;
   gap: var(--space-3);
 }
+
+.culture-list .culture-card {
+  animation: staggerFadeUp 320ms var(--ease-pop) backwards;
+}
+
+.culture-list .culture-card:nth-child(1) { animation-delay: 0ms; }
+.culture-list .culture-card:nth-child(2) { animation-delay: 50ms; }
+.culture-list .culture-card:nth-child(3) { animation-delay: 100ms; }
+.culture-list .culture-card:nth-child(4) { animation-delay: 150ms; }
+.culture-list .culture-card:nth-child(5) { animation-delay: 200ms; }
+.culture-list .culture-card:nth-child(n+6) { animation-delay: 250ms; }
 
 .culture-card {
   display: flex;
@@ -482,12 +646,23 @@
   font-size: var(--fs-base);
   font-weight: var(--fw-medium);
   min-height: 48px;
-  transition: border-color var(--transition-fast), background var(--transition-fast);
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform 120ms var(--ease-pop);
+  animation: staggerFadeUp 280ms var(--ease-pop) backwards;
 }
+
+.question-options .question-option:nth-child(1) { animation-delay: 0ms; }
+.question-options .question-option:nth-child(2) { animation-delay: 40ms; }
+.question-options .question-option:nth-child(3) { animation-delay: 80ms; }
+.question-options .question-option:nth-child(4) { animation-delay: 120ms; }
+.question-options .question-option:nth-child(n+5) { animation-delay: 160ms; }
 
 .question-option:hover {
   border-color: var(--color-primary-soft);
   background: var(--color-primary-soft);
+}
+
+.question-option:not(:disabled):active {
+  transform: scale(0.97);
 }
 
 /* Translate: ketik jawaban */
@@ -556,11 +731,16 @@
   font-size: var(--fs-base);
   font-weight: var(--fw-medium);
   min-height: 44px;
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform 120ms var(--ease-pop);
 }
 
 .arrange-word-bank .arrange-chip:hover {
   border-color: var(--color-primary-soft);
   background: var(--color-primary-soft);
+}
+
+.arrange-chip:not(:disabled):active {
+  transform: scale(0.94);
 }
 
 .arrange-answer-row .arrange-chip.is-selected {
@@ -591,11 +771,16 @@
   font-weight: var(--fw-medium);
   min-height: 48px;
   text-align: center;
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform 150ms var(--ease-pop);
 }
 
 .matching-chip:not(:disabled):hover {
   border-color: var(--color-primary-soft);
   background: var(--color-primary-soft);
+}
+
+.matching-chip:not(:disabled):active {
+  transform: scale(0.95);
 }
 
 .matching-chip.is-selected {
@@ -609,6 +794,15 @@
   background: var(--color-success-soft);
   color: var(--color-success);
   opacity: 0.85;
+  animation: matchPop 380ms var(--ease-bounce);
+}
+
+/* Pop kecil begitu sepasang kartu berhasil dicocokkan -- konfirmasi visual
+   instan tanpa perlu menunggu feedback panel di akhir soal. */
+@keyframes matchPop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.08); }
+  100% { transform: scale(1); }
 }
 
 /* True/False */
@@ -619,6 +813,11 @@
 
 .true-false-option {
   flex: 1;
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform 120ms var(--ease-pop);
+}
+
+.true-false-option:not(:disabled):active {
+  transform: scale(0.96);
 }
 
 /* Micro-interaction: highlight sekejap sebelum pindah ke Feedback.
@@ -724,11 +923,11 @@
 }
 
 .feedback-panel__culture {
-  background: var(--color-accent-soft);
+  background: var(--color-surface-alt);
 }
 
 .feedback-panel__culture .feedback-panel__label {
-  color: var(--color-accent-ink); /* sama dengan warna teks .badge, konsisten untuk elemen ber-aksen kuning kunyit */
+  color: var(--color-ink-soft); /* netral, konsisten dengan .badge — tidak ada lagi aksen kuning kunyit */
 }
 
 .feedback-panel__culture p {

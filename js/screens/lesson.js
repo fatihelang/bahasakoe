@@ -4,19 +4,23 @@
   Learning Content -> Question -> Feedback -> ... -> Lesson Complete.
 
   Learning Content ditampilkan satu kata per layar (bukan daftar panjang):
-  sisi Jawa muncul dulu, arti-nya baru terbuka setelah user ketuk "Lihat Arti".
-  Tujuannya supaya user aktif menebak dulu, bukan sekadar membaca daftar.
+  sisi bahasa yang dipelajari muncul dulu, arti-nya baru terbuka setelah
+  user ketuk "Lihat Arti". Tujuannya supaya user aktif menebak dulu, bukan
+  sekadar membaca daftar. Field kosakata di data bernama "native" (generik
+  untuk semua bahasa) -- lihat js/data/jawa/unit1.js atau
+  js/data/sunda/unit1.js.
 
   Prinsip: Question SELALU diikuti Feedback dengan explanation.
   Context dan Culture Insight hanya dirender kalau memang ada di data
-  lesson (lihat data/unit1.js) — tidak dipaksakan di setiap soal.
+  lesson (lihat js/data/jawa/unit1.js, diakses generik lewat
+  js/data/curriculum.js) — tidak dipaksakan di setiap soal.
 
   Variasi mekanisme soal (question.type):
   - 'multiple-choice' (default kalau type tidak diisi): pilih 1 dari beberapa opsi.
   - 'translate': ketik jawaban singkat, dicocokkan ke question.correctAnswers[].
   - 'arrange': susun question.words[] (urutan yang benar) dengan menyentuh
     kata-kata acak, mirip "build the sentence" ala Duolingo.
-  - 'matching': cocokkan question.pairs[] (jawa <-> arti) dengan tap dua sisi;
+  - 'matching': cocokkan question.pairs[] (native <-> arti) dengan tap dua sisi;
     tidak ada status "salah final" — salah pasang cuma reset pilihan & retry,
     baru dianggap selesai (dan correct) begitu semua pasangan cocok.
   - 'true-false': nilai kebenaran satu pernyataan (question.correctAnswer: boolean).
@@ -29,7 +33,7 @@
   selesai (completeLesson).
 */
 
-import { getLessonById } from '../data/unit1.js';
+import { getLesson } from '../data/curriculum.js';
 import { completeLesson, isLessonCompleted } from '../state/appState.js';
 import { showToast } from '../ui/toast.js';
 import { icons } from '../ui/icons.js';
@@ -48,10 +52,11 @@ function normalizeAnswer(text) {
 }
 
 export function renderLesson(container, { navigateTo }, params = {}) {
-  const lesson = getLessonById(params.lessonId);
+  const { languageId, unitId, lessonId } = params;
+  const lesson = languageId && unitId ? getLesson(languageId, unitId, lessonId) : null;
 
   if (!lesson || !lesson.playable) {
-    // Jaga-jaga kalau renderLesson dipanggil dengan id yang tidak valid/belum playable.
+    // Jaga-jaga kalau renderLesson dipanggil dengan context yang tidak valid/belum playable.
     navigateTo('learn');
     return;
   }
@@ -78,9 +83,20 @@ export function renderLesson(container, { navigateTo }, params = {}) {
     `;
   }
 
+  // BUG FIX (audit STEP 6): flashThenSubmit() menunda submitAnswer() 700ms
+  // (lihat ANSWER_FLASH_DELAY_MS). Kalau user tap tombol keluar (exit) di
+  // dalam jendela 700ms itu -- sepenuhnya mungkin, tombolnya masih ada &
+  // aktif -- timeout tetap jalan dan menimpa layar yang sudah dinavigasikan
+  // user dengan Feedback step yang basi begitu 700ms lewat. sessionActive
+  // dipakai untuk membatalkan efek lanjutan setelah user keluar.
+  let sessionActive = true;
+
   function bindExit() {
     const exitBtn = container.querySelector('[data-action="exit"]');
-    if (exitBtn) exitBtn.addEventListener('click', () => navigateTo('learn'));
+    if (exitBtn) exitBtn.addEventListener('click', () => {
+      sessionActive = false;
+      navigateTo('learn');
+    });
   }
 
   function renderContentStep() {
@@ -111,7 +127,7 @@ export function renderLesson(container, { navigateTo }, params = {}) {
           data-action="reveal-content"
           ${session.contentRevealed ? 'disabled' : ''}
         >
-          <div class="content-card__jawa">${item.jawa}</div>
+          <div class="content-card__jawa">${item.native}</div>
           ${
             session.contentRevealed
               ? `<div class="content-card__arti">${item.arti}</div>`
@@ -154,14 +170,18 @@ export function renderLesson(container, { navigateTo }, params = {}) {
     renderCurrentStep();
   }
 
-  // Highlight sekejap di elemen yang dijawab (hijau = benar, coklat hangat = kurang
-  // tepat — bukan merah alarm) sebelum pindah ke Feedback, supaya jawaban terasa
-  // "direspons" langsung, bukan langsung lompat layar.
+  // Highlight sekejap di elemen yang dijawab (hijau = benar, soft red = kurang
+  // tepat — bagian dari sistem warna merah-putih, bukan warna semantic
+  // ketiga) sebelum pindah ke Feedback, supaya jawaban terasa "direspons"
+  // langsung, bukan langsung lompat layar.
   const ANSWER_FLASH_DELAY_MS = 700;
 
   function flashThenSubmit(el, isCorrect) {
     el.classList.add(isCorrect ? 'is-correct-flash' : 'is-wrong-flash');
-    setTimeout(() => submitAnswer(isCorrect), ANSWER_FLASH_DELAY_MS);
+    setTimeout(() => {
+      if (!sessionActive) return; // user sudah keluar dari lesson ini sebelum timer selesai
+      submitAnswer(isCorrect);
+    }, ANSWER_FLASH_DELAY_MS);
   }
 
   function renderMultipleChoiceBody(bodyEl, question) {
@@ -279,9 +299,9 @@ export function renderLesson(container, { navigateTo }, params = {}) {
   }
 
   function renderMatchingBody(bodyEl, question) {
-    // Kolom kiri (Jawa) & kanan (arti) diacak independen; data-pair-index
-    // menyimpan index pasangan aslinya supaya bisa dicek waktu di-tap.
-    const leftItems = shuffle(question.pairs.map((pair, i) => ({ label: pair.jawa, i })));
+    // Kolom kiri (kata bahasa target) & kanan (arti) diacak independen;
+    // data-pair-index menyimpan index pasangan aslinya supaya bisa dicek waktu di-tap.
+    const leftItems = shuffle(question.pairs.map((pair, i) => ({ label: pair.native, i })));
     const rightItems = shuffle(question.pairs.map((pair, i) => ({ label: pair.arti, i })));
 
     function draw() {
@@ -439,8 +459,8 @@ export function renderLesson(container, { navigateTo }, params = {}) {
   function renderCompleteStep() {
     // Kalau lesson ini sedang di-review (sudah completed sebelumnya), progress
     // dan XP TIDAK ditulis ulang — supaya review tidak menggandakan XP.
-    const wasAlreadyCompleted = isLessonCompleted(lesson.id);
-    const earnedXP = wasAlreadyCompleted ? 0 : completeLesson(lesson.id, session.correctCount, lesson.questions.length).earnedXP;
+    const wasAlreadyCompleted = isLessonCompleted(languageId, unitId, lesson.id);
+    const earnedXP = wasAlreadyCompleted ? 0 : completeLesson(languageId, unitId, lesson.id, session.correctCount, lesson.questions.length).earnedXP;
 
     container.innerHTML = `
       <div class="lesson-session lesson-complete">

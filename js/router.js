@@ -7,6 +7,7 @@
 
 import { renderHome } from './screens/home.js';
 import { renderLearningPath } from './screens/learningPath.js';
+import { renderUnitDetail } from './screens/unitDetail.js';
 import { renderCulture } from './screens/culture.js';
 import { renderProfile } from './screens/profile.js';
 import { renderLesson } from './screens/lesson.js';
@@ -14,6 +15,7 @@ import { renderLesson } from './screens/lesson.js';
 const screens = {
   home: renderHome,
   learn: renderLearningPath,
+  unitDetail: renderUnitDetail,
   culture: renderCulture,
   profile: renderProfile,
   lesson: renderLesson,
@@ -21,7 +23,10 @@ const screens = {
 
 // Layar yang tampil di bottom nav. "lesson" adalah focused session,
 // jadi sengaja tidak masuk daftar ini — nav disembunyikan selama sesi berlangsung.
-const NAV_SCREENS = ['home', 'learn', 'culture', 'profile'];
+// "unitDetail" BUKAN focused session (masih boleh pindah tab kapan saja),
+// jadi nav tetap tampil, dan tab "Belajar" tetap ditandai aktif di sana.
+const NAV_SCREENS = ['home', 'learn', 'unitDetail', 'culture', 'profile'];
+const TAB_FOR_SCREEN = { unitDetail: 'learn' };
 
 export function createRouter(appEl, navEl) {
   function navigateTo(screenName, params) {
@@ -44,8 +49,9 @@ export function createRouter(appEl, navEl) {
     document.body.classList.toggle('is-focused-session', !isNavScreen);
 
     if (isNavScreen) {
+      const activeTab = TAB_FOR_SCREEN[screenName] || screenName;
       navEl.querySelectorAll('.nav-item').forEach((btn) => {
-        btn.classList.toggle('is-active', btn.dataset.screen === screenName);
+        btn.classList.toggle('is-active', btn.dataset.screen === activeTab);
       });
     }
 

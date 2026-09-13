@@ -9,7 +9,7 @@
   akun kompleks").
 */
 
-import { getState, getUnitProgress, getBadgesWithStatus, getSelectedLanguage } from '../state/appState.js';
+import { getState, getUnitProgress, getBadgesWithStatus, getSelectedLanguage, getCurrentUnit } from '../state/appState.js';
 import { icons } from '../ui/icons.js';
 
 // Setiap badge.icon (key dari data/badges.js) dipetakan ke warna chip yang
@@ -25,9 +25,17 @@ const BADGE_ICON_COLOR = {
 
 export function renderProfile(container) {
   const state = getState();
-  const progress = getUnitProgress();
-  const badges = getBadgesWithStatus();
   const language = getSelectedLanguage();
+  // STEP 1.5: kartu progress di sini sekarang mengikuti selectedLanguage +
+  // unit yang sedang berjalan (getCurrentUnit) -- TIDAK lagi dipin ke Jawa
+  // Unit 1. Badge grid di bawah SENGAJA TIDAK ikut berubah (lihat
+  // getBadgesWithStatus di appState.js) -- badge memang didefinisikan
+  // seputar perjalanan Jawa Unit 1 secara spesifik.
+  const activeUnit = language.available ? getCurrentUnit(language.id) : null;
+  const progress = activeUnit ? getUnitProgress(language.id, activeUnit.id) : { completed: 0, total: 0 };
+  const progressLabel = activeUnit ? `Unit ${activeUnit.order} — ${activeUnit.title}` : `${language.name} — segera hadir`;
+  const progressPercent = progress.total > 0 ? (progress.completed / progress.total) * 100 : 0;
+  const badges = getBadgesWithStatus();
   // Progress yang benar-benar ada cuma untuk Jawa, jadi kalau bahasa yang
   // dipilih belum tersedia (mis. Sunda), wording TIDAK boleh terkesan
   // seolah-olah user sudah belajar bahasa itu — fallback aman ke Jawa.
@@ -77,9 +85,9 @@ export function renderProfile(container) {
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-card__value">${progress.completed}/${progress.total}</div>
-        <div class="stat-card__label">Unit 1 — Dasar Bahasa Jawa</div>
+        <div class="stat-card__label">${progressLabel}</div>
         <div class="progress-track">
-          <div class="progress-fill" style="width:${(progress.completed / progress.total) * 100}%"></div>
+          <div class="progress-fill" style="width:${progressPercent}%"></div>
         </div>
       </div>
     </div>

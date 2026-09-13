@@ -13,26 +13,34 @@
   border-radius: var(--radius-full);
   font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
-  transition: transform var(--transition-fast), background var(--transition-fast), opacity var(--transition-fast);
+  transition: transform 180ms var(--ease-pop), background var(--transition-fast), opacity var(--transition-fast), box-shadow var(--transition-fast);
   width: 100%;
 }
 
+/* Tap terasa "ketekan" (turun dulu, lalu pantul balik) ala Duolingo,
+   bukan cuma menyusut linear — makanya pakai --ease-pop, bukan ease biasa. */
 .btn:active {
-  transform: scale(0.98);
+  transform: scale(0.96);
 }
 
 .btn-primary {
   background: var(--color-primary);
-  color: #FFFFFF;
+  color: var(--color-on-primary);
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: scale(0.96) translateY(0);
 }
 
 .btn-primary:disabled {
   background: var(--color-locked);
-  color: #FFFFFF;
+  color: var(--color-on-primary);
   opacity: 0.8;
   transform: none;
 }
@@ -48,10 +56,15 @@
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
+  border: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-/* ---- Progress bar (linear) ---- */
+/* ---- Progress bar (linear) ----
+   Curve-nya sengaja dibuat sedikit "overshoot" (--ease-pop) ketimbang
+   ease datar, supaya isian progress terasa punya tenaga tiap kali
+   nambah, bukan cuma slide statis. */
 .progress-track {
   width: 100%;
   height: 10px;
@@ -64,7 +77,7 @@
   height: 100%;
   background: var(--color-primary);
   border-radius: var(--radius-full);
-  transition: width var(--transition-base);
+  transition: width 480ms var(--ease-pop);
 }
 
 /* ---- Bottom Navigation ---- */
@@ -118,20 +131,62 @@
   display: none;
 }
 
-/* ---- Lesson step (Learning Path) ---- */
+/* ---- Lesson step (Learning Path) ----
+   Timeline (garis + marker) dan body (judul + subtitle) sengaja dipisah jadi
+   dua kolom flex yang sejajar (align-items: stretch). Marker berukuran tetap
+   44px, sedangkan dua garis di atas & bawahnya pakai flex:1 — jadi otomatis
+   mengisi sisa ruang vertikal apa pun tinggi baris itu (mengikuti tinggi body
+   di sebelahnya), dan marker selalu presisi di tengah tanpa satu pun angka
+   posisi yang di-hardcode. Ini yang bikin layout tetap rapi walau judul lesson
+   wrap jadi 2 baris, atau kalau nanti lesson-nya ditambah lagi. */
+.path-list .lesson-step-wrapper {
+  animation: staggerFadeUp 320ms var(--ease-pop) backwards;
+}
+
+.path-list .lesson-step-wrapper:nth-child(1) { animation-delay: 0ms; }
+.path-list .lesson-step-wrapper:nth-child(2) { animation-delay: 40ms; }
+.path-list .lesson-step-wrapper:nth-child(3) { animation-delay: 80ms; }
+.path-list .lesson-step-wrapper:nth-child(4) { animation-delay: 120ms; }
+.path-list .lesson-step-wrapper:nth-child(5) { animation-delay: 160ms; }
+.path-list .lesson-step-wrapper:nth-child(n+6) { animation-delay: 200ms; }
+
 .lesson-step {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: var(--space-4);
   width: 100%;
   text-align: left;
-  padding: var(--space-3) var(--space-2);
+  padding: 0 var(--space-2);
   border-radius: var(--radius-md);
-  transition: background var(--transition-fast);
+  transition: background var(--transition-fast), transform 120ms var(--ease-pop);
 }
 
 .lesson-step:hover {
   background: var(--color-surface-alt);
+}
+
+.lesson-step:active {
+  transform: scale(0.99);
+}
+
+.lesson-step__timeline {
+  flex-shrink: 0;
+  width: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* marker & garis selalu center horizontal di kolom ini */
+}
+
+.lesson-step__line {
+  width: 2px;
+  flex: 1 1 0; /* isi otomatis sisa tinggi di atas/bawah marker */
+  background: var(--color-border);
+}
+
+/* Tidak ada garis "menggantung" di ujung paling atas/bawah seluruh path */
+.lesson-step-wrapper:first-child .lesson-step__line--top,
+.lesson-step-wrapper:last-child .lesson-step__line--bottom {
+  background: transparent;
 }
 
 .lesson-step__marker {
@@ -153,13 +208,30 @@
 
 .lesson-step__marker.is-current {
   background: var(--color-primary);
-  color: #FFFFFF;
+  color: var(--color-on-primary);
   box-shadow: 0 0 0 4px var(--color-primary-soft);
+  animation: currentMarkerPulse 2.2s ease-in-out infinite;
+}
+
+/* Ring lembut yang berdenyut di sekitar lesson "sekarang" -- penanda
+   "kamu di sini" tanpa perlu teks tambahan. */
+@keyframes currentMarkerPulse {
+  0%, 100% { box-shadow: 0 0 0 4px var(--color-primary-soft); }
+  50% { box-shadow: 0 0 0 7px var(--color-primary-soft); }
 }
 
 .lesson-step__marker.is-locked {
-  background: var(--color-surface-alt);
+  background: var(--color-locked-bg);
   color: var(--color-locked);
+}
+
+.lesson-step__body {
+  flex: 1;
+  min-width: 0; /* judul panjang tidak mendorong layout melebar/overflow */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* judul+subtitle selalu center vertikal sejajar marker */
+  padding: var(--space-4) 0; /* sumber utama jarak antar-lesson di sepanjang timeline */
 }
 
 .lesson-step__title {
@@ -175,22 +247,7 @@
 .lesson-step__subtitle {
   font-size: var(--fs-xs);
   color: var(--color-ink-soft);
-}
-
-/* Garis penghubung antar step, dibuat dengan pseudo-element pada wrapper li */
-.lesson-step-wrapper {
-  position: relative;
-  padding-left: var(--space-2);
-}
-
-.lesson-step-wrapper:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  left: 30px;
-  top: 52px;
-  width: 2px;
-  height: calc(100% - 30px);
-  background: var(--color-border);
+  margin-top: 2px;
 }
 
 /* ---- Toast ---- */
@@ -200,7 +257,7 @@
   bottom: calc(var(--nav-height) + var(--space-4));
   transform: translateX(-50%) translateY(20px);
   background: var(--color-ink);
-  color: #FFFFFF;
+  color: var(--color-on-primary); /* dipakai juga untuk teks di atas --color-ink -- sama-sama background gelap */
   padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-full);
   font-size: var(--fs-sm);
@@ -238,8 +295,8 @@
   border-radius: var(--radius-full);
   font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
-  background: var(--color-accent-soft);
-  color: var(--color-accent-ink);
+  background: var(--color-surface-alt);
+  color: var(--color-ink-soft);
 }
 
 /* ---- Icon chip ----
@@ -267,8 +324,13 @@
 
 .icon-chip--red { background: var(--color-primary-soft); color: var(--color-primary); }
 .icon-chip--green { background: var(--color-success-soft); color: var(--color-success); }
-.icon-chip--gold { background: var(--color-accent-soft); color: var(--color-accent-ink); } /* khusus konten Budaya — bukan untuk badge/reward, lihat profile.js */
+/* icon-chip--gold dihapus: sudah tidak dipakai (semua ikon konten Budaya
+   memakai icon-chip--red), dan tidak ada lagi warna kuning kunyit di aplikasi.
+   Gunakan icon-chip--neutral untuk kasus serupa. */
 .icon-chip--neutral { background: var(--color-surface-alt); color: var(--color-ink-soft); }
+/* Teal -- variasi warna baru untuk elemen eksploratif (Budaya) supaya
+   tidak semua ikon berwarna merah. */
+.icon-chip--accent { background: var(--color-accent-soft); color: var(--color-accent-hover); }
 
 /* Pop kecil saat sebuah icon-chip pertama kali muncul di layar (badge earned,
    kartu budaya) — dipicu otomatis lewat animation, bukan lewat JS. */
@@ -301,7 +363,7 @@
   height: 15px;
   border-radius: 3px;
   overflow: hidden;
-  background: linear-gradient(to bottom, var(--color-primary) 50%, #FFFFFF 50%);
+  background: linear-gradient(to bottom, var(--color-primary) 50%, var(--color-on-primary) 50%);
   box-shadow: 0 0 0 1px var(--color-border);
   vertical-align: middle;
   flex-shrink: 0;
@@ -311,7 +373,7 @@
 .language-sheet-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(34, 34, 34, 0.45);
+  background: var(--color-scrim);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -376,7 +438,11 @@
   border-radius: var(--radius-md);
   border: 1.5px solid var(--color-border);
   min-height: 56px;
-  transition: border-color var(--transition-fast), background var(--transition-fast);
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform 120ms var(--ease-pop);
+}
+
+.language-sheet__row:active {
+  transform: scale(0.98);
 }
 
 .language-sheet__row:hover {
@@ -438,8 +504,14 @@
   background: var(--color-surface);
   border-radius: var(--radius-md);
   padding: var(--space-4);
+  border: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
+  animation: staggerFadeUp 320ms var(--ease-pop) backwards;
 }
+
+.stats-row .stat-card:nth-child(1) { animation-delay: 0ms; }
+.stats-row .stat-card:nth-child(2) { animation-delay: 60ms; }
+.stats-row .stat-card:nth-child(3) { animation-delay: 120ms; }
 
 .stat-card__value {
   font-size: var(--fs-lg);
@@ -477,9 +549,17 @@
   background: var(--color-surface);
   border-radius: var(--radius-md);
   padding: var(--space-4);
+  border: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
   text-align: center;
+  animation: staggerFadeUp 320ms var(--ease-pop) backwards;
 }
+
+.badge-grid .badge-card:nth-child(1) { animation-delay: 0ms; }
+.badge-grid .badge-card:nth-child(2) { animation-delay: 60ms; }
+.badge-grid .badge-card:nth-child(3) { animation-delay: 120ms; }
+.badge-grid .badge-card:nth-child(4) { animation-delay: 180ms; }
+.badge-grid .badge-card:nth-child(n+5) { animation-delay: 240ms; }
 
 .badge-card__icon {
   margin-bottom: var(--space-2);

@@ -30,9 +30,9 @@ export const LANGUAGES = [
     id: 'sunda',
     name: 'Bahasa Sunda',
     nativeName: 'Basa Sunda',
-    status: 'coming-soon',
-    available: false,
-    description: 'Segera hadir',
+    status: 'available',
+    available: true,
+    description: 'Mulai belajar Bahasa Sunda',
   },
 ];
 

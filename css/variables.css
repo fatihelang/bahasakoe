@@ -4,45 +4,98 @@
   File CSS lain tinggal memakai var(--nama-token), bukan angka langsung.
 */
 
+/*
+  REVISI (ganti palet): palet lama (skala text/background/primary/
+  secondary/accent 50-950 + auto light/dark via prefers-color-scheme)
+  diganti total dengan palet flat baru di bawah -- HANYA satu tema
+  (tidak ada varian dark mode di palet baru ini). Kalau dark mode perlu
+  dipertahankan, token-token di bawah perlu dilengkapi varian gelapnya.
+
+  Nama variabel PRIMITIF (--primary, --background, --text-primary, dst)
+  persis seperti yang diberikan. Token SEMANTIK lama (--color-primary,
+  --color-bg, --color-ink, dst) tetap dipertahankan sebagai lapisan
+  mapping di bawahnya -- supaya components.css/screens.css/base.css yang
+  sudah memakai nama --color-* tidak perlu diubah satu per satu.
+*/
+
 :root {
-  /* ---- Warna ---- */
-  /* Palet terinspirasi alam & batik (kunyit, sawah) untuk warna sekunder,
-     dengan MERAH PUTIH sebagai identitas warna utama BahasaKoe — merah
-     untuk aksi/branding, putih untuk permukaan kartu. Bukan warna khas
-     brand aplikasi manapun. */
-  --color-bg: #FAF6F0;              /* latar utama, kertas hangat mendekati putih */
-  --color-surface: #FFFFFF;         /* kartu, permukaan elemen — unsur "putih" */
-  --color-surface-alt: #F2ECE0;     /* permukaan sekunder / track progress */
+  /* ==== BRAND ==== */
+  --primary: #D93636;
+  --primary-hover: #C42B2B;
+  --primary-soft: #FFF1F1;
 
-  --color-ink: #23201E;             /* teks utama */
-  --color-ink-soft: #6B615A;        /* teks sekunder */
-  --color-ink-faint: #A39A91;       /* teks tersier / placeholder */
+  /* ==== NEUTRAL ==== */
+  --background: #FAFAF8;
+  --surface: #FFFFFF;
+  --surface-soft: #F5F5F2;
+  --border: #E8E8E4;
 
-  --color-primary: #B3272D;         /* MERAH — warna aksi utama & identitas brand */
-  --color-primary-hover: #8F1F24;
-  --color-primary-soft: #F8E4E3;    /* latar lembut dari merah, dipakai di atas --color-surface (putih) */
+  --text-primary: #242424;
+  --text-secondary: #666666;
+  --text-muted: #999999;
 
-  --color-accent: #E0A72E;          /* kuning kunyit — accent TERBATAS khusus konten Budaya,
-                                        bukan lagi dipakai untuk progress/active state/reward
-                                        (itu sekarang pakai --color-primary, lihat revisi red-white) */
-  --color-accent-soft: #FBEFD3;
-  --color-accent-ink: #8A6413;      /* teks di atas --color-accent-soft — sebelumnya hardcoded
-                                        berulang di beberapa tempat, sekarang ditokenkan */
+  /* ==== SEMANTIC ==== */
+  --success: #3E8E5B;
+  --success-soft: #EAF6EE;
 
-  --color-on-primary-soft: rgba(255, 255, 255, 0.75); /* teks sekunder di atas --color-primary
-                                        (mis. label kecil pada kartu merah) — dulu sempat
-                                        hardcoded #BFD6DB (biru, tidak match palette) */
+  --error: #D93636;
+  --error-soft: #FFF1F1;
 
-  --color-success: #4C8C6B;         /* hijau sawah, untuk jawaban benar */
-  --color-success-soft: #E4F1EA;
+  /* ==== CULTURE ==== */
+  --culture: #C87941;
+  --culture-soft: #FFF3E8;
 
-  --color-gentle-wrong: #9A6B3F;    /* coklat hangat untuk "kurang tepat", bukan merah alarm —
-                                        sengaja BUKAN --color-primary supaya merah tetap identik
-                                        dengan brand/aksi positif, bukan kesalahan */
-  --color-gentle-wrong-soft: #F5EBDF;
+  /* ==== LOCKED ==== */
+  --locked: #B5B5B0;
+  --locked-bg: #F0F0ED;
 
-  --color-locked: #C7C1AF;          /* elemen terkunci */
-  --color-border: #E8E1D2;
+  /* ---- Warna semantik lama (dipakai di seluruh app) ----
+     Lapisan mapping supaya arsitektur/kelas CSS yang sudah ada tidak
+     perlu berubah -- cuma sumber warnanya yang sekarang dari palet baru
+     di atas. */
+  --color-bg: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-soft);
+
+  --color-ink: var(--text-primary);
+  --color-ink-soft: var(--text-secondary);
+  --color-ink-faint: var(--text-muted);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+
+  --color-on-primary: #ffffff; /* teks/ikon solid di atas background --color-primary (tidak ada di palet baru, ditambahkan karena tombol/kartu merah butuh teks putih) */
+  --color-on-primary-soft: rgba(255, 255, 255, 0.75); /* teks sekunder di atas --color-primary */
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+
+  /* CATATAN: --error & --error-soft di palet baru nilainya PERSIS SAMA
+     dengan --primary & --primary-soft. Ini ditunjuk apa adanya sesuai
+     token yang diberikan -- lihat catatan di respons soal ini bisa
+     membuat state "jawaban salah" tidak terbedakan dari state
+     "dipilih"/tombol utama, sama seperti masalah yang pernah diperbaiki
+     sebelumnya di file ini. Nama variabel gentle-wrong dipertahankan
+     supaya class di screens.css/lesson.js tidak perlu berubah. */
+  --color-gentle-wrong: var(--error);
+  --color-gentle-wrong-soft: var(--error-soft);
+
+  /* Accent sekarang dipetakan ke token CULTURE (oranye/terracotta),
+     menggantikan teal lama -- dipakai untuk elemen eksploratif (Budaya). */
+  --color-accent: var(--culture);
+  /* Palet baru tidak menyediakan varian hover terpisah untuk culture,
+     jadi dipakai nilai yang sama supaya tidak mengarang warna baru. */
+  --color-accent-hover: var(--culture);
+  --color-accent-soft: var(--culture-soft);
+
+  --color-locked: var(--locked);
+  --color-locked-bg: var(--locked-bg);
+  --color-border: var(--border);
+
+  /* Scrim modal (Language Sheet backdrop) -- diikat ke --text-primary
+     (netral gelap palet baru), bukan hue merah. */
+  --color-scrim: rgba(36, 36, 36, 0.45);
 
   /* ---- Tipografi ---- */
   --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -75,9 +128,11 @@
   --radius-lg: 22px;
   --radius-full: 999px;
 
-  /* ---- Shadow ---- */
-  --shadow-sm: 0 1px 3px rgba(30, 42, 48, 0.08);
-  --shadow-md: 0 6px 20px rgba(30, 42, 48, 0.10);
+  /* ---- Shadow ---- (diikat ke --text-primary, netral gelap, bukan
+     hue merah seperti sistem lama) */
+  --shadow-rgb: 36, 36, 36;
+  --shadow-sm: 0 1px 3px rgba(var(--shadow-rgb), 0.08);
+  --shadow-md: 0 6px 20px rgba(var(--shadow-rgb), 0.12);
 
   /* ---- Layout ---- */
   --app-max-width: 480px;
@@ -85,4 +140,5 @@
   --transition-fast: 150ms ease;
   --transition-base: 220ms ease;
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1); /* easing "memantul" untuk animasi perayaan/pop */
+  --ease-pop: cubic-bezier(0.22, 1, 0.36, 1); /* easing tap/pop ala Duolingo -- cepat lalu sedikit overshoot */
 }

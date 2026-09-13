@@ -3,13 +3,42 @@
   Satu-satunya file yang boleh baca/tulis LocalStorage.
   File lain (screens, router) hanya boleh memanggil fungsi di sini,
   supaya kalau nanti format penyimpanan berubah, cukup diubah di satu tempat.
+
+  STEP 1 (multi-language + multi-unit): progress tidak lagi flat
+  (completedLessons/currentLessonId di top level, seolah cuma ada satu
+  unit di seluruh aplikasi) -- sekarang bersarang per languageId + unitId:
+
+    state.progress = {
+      jawa: {
+        unit1: { completedLessons: ['l1', 'l2'], currentLessonId: 'l3' }
+      }
+      // sunda: { unit1: {...} } -- akan terisi sendiri begitu ada yang
+      // memainkan lesson Sunda pertama kali, lewat ensureUnitProgress().
+    }
+
+  xp, streak, lastActiveDate, dan selectedLanguage TETAP global (bukan
+  per-bahasa/unit) -- itu representasi pengguna secara keseluruhan, bukan
+  progress kurikulum, jadi sengaja tidak ikut dipecah.
 */
 
-import { UNIT1 } from '../data/unit1.js';
-import { BADGES } from '../data/badges.js';
 import { DEFAULT_LANGUAGE_ID, getLanguageById } from '../data/languages.js';
+import { getUnit, getUnitsForLanguage, getDefaultUnit, getFirstPlayableLesson, getNextPlayableLesson } from '../data/curriculum.js';
+import { BADGES } from '../data/badges.js';
 
 const STORAGE_KEY = 'bahasakoe_state_v1';
+
+// Dipakai HANYA untuk dua hal yang memang sengaja tetap terikat ke Bahasa
+// Jawa Unit 1 secara eksplisit, bukan mengikuti selectedLanguage/current unit:
+// (1) migrateLegacyProgress -- data lama secara struktural memang cuma
+//     pernah berisi progress Jawa Unit 1 (satu-satunya unit yang pernah ada
+//     saat format lama dipakai), jadi migrasinya harus ke unit itu juga;
+// (2) getBadgesWithStatus -- badge ("Langkah Pertama", "Unit 1 MVP Tuntas",
+//     dst.) memang didefinisikan seputar perjalanan Jawa Unit 1 spesifik,
+//     bukan progress lintas-bahasa/unit (lihat komentar di fungsi itu).
+// STEP 1.5: Home & Profile TIDAK LAGI pakai konstanta ini -- keduanya
+// sekarang mengikuti selectedLanguage + getCurrentUnit() di bawah.
+const PINNED_UNIT = getDefaultUnit(DEFAULT_LANGUAGE_ID);
+const PINNED_UNIT_ID = PINNED_UNIT ? PINNED_UNIT.id : null;
 
 function getTodayKey() {
   // Format YYYY-MM-DD, dipakai untuk hitung streak sederhana
@@ -21,9 +50,8 @@ function defaultState() {
     xp: 0,
     streak: 1,
     lastActiveDate: getTodayKey(),
-    completedLessons: [],       // array of lesson id, mis. ['l1']
-    currentLessonId: 'l1',      // lesson berikutnya yang harus dimainkan
-    selectedLanguage: DEFAULT_LANGUAGE_ID, // bahasa yang sedang dipilih user, mis. 'jawa'
+    selectedLanguage: DEFAULT_LANGUAGE_ID,
+    progress: {}, // diisi lazy per languageId/unitId lewat ensureUnitProgress()
   };
 }
 
@@ -46,6 +74,53 @@ function writeState(state) {
   }
 }
 
+/**
+ * Migrasi bentuk state lama (sebelum STEP 1): dulu progress disimpan flat
+ * di top-level (completedLessons, currentLessonId), karena aplikasi cuma
+ * pernah punya satu unit. TIDAK ADA DATA YANG DIHILANGKAN -- progress lama
+ * itu memang progress Bahasa Jawa Unit 1 (satu-satunya unit yang pernah
+ * ada), jadi cukup dipindah bentuknya ke progress.jawa.unit1, lalu field
+ * lama dihapus supaya tidak ada dua sumber kebenaran yang tumpang tindih.
+ */
+function migrateLegacyProgress(state) {
+  const hasLegacyShape = Array.isArray(state.completedLessons) || typeof state.currentLessonId === 'string';
+  if (!hasLegacyShape) return state;
+
+  if (!state.progress) state.progress = {};
+  if (!state.progress[DEFAULT_LANGUAGE_ID]) state.progress[DEFAULT_LANGUAGE_ID] = {};
+
+  if (PINNED_UNIT_ID && !state.progress[DEFAULT_LANGUAGE_ID][PINNED_UNIT_ID]) {
+    state.progress[DEFAULT_LANGUAGE_ID][PINNED_UNIT_ID] = {
+      completedLessons: state.completedLessons || [],
+      currentLessonId: state.currentLessonId || null,
+    };
+  }
+
+  delete state.completedLessons;
+  delete state.currentLessonId;
+  return state;
+}
+
+/**
+ * Memastikan state.progress[languageId][unitId] ada, membuat default kalau
+ * belum (lesson playable pertama di unit itu jadi currentLessonId-nya).
+ * Mutasi terjadi di object `state` yang di-pass -- pemanggil yang menentukan
+ * apakah hasilnya perlu di-writeState() atau cukup dipakai untuk baca saja.
+ */
+function ensureUnitProgress(state, languageId, unitId) {
+  if (!state.progress) state.progress = {};
+  if (!state.progress[languageId]) state.progress[languageId] = {};
+  if (!state.progress[languageId][unitId]) {
+    const unit = getUnit(languageId, unitId);
+    const firstPlayable = unit ? getFirstPlayableLesson(unit) : null;
+    state.progress[languageId][unitId] = {
+      completedLessons: [],
+      currentLessonId: firstPlayable ? firstPlayable.id : null,
+    };
+  }
+  return state.progress[languageId][unitId];
+}
+
 function updateStreak(state) {
   const today = getTodayKey();
   if (state.lastActiveDate === today) {
@@ -66,18 +141,19 @@ function updateStreak(state) {
 
 /**
  * Panggil sekali saat aplikasi dibuka.
- * Membuat state default jika belum ada, dan meng-update streak harian.
+ * Membuat state default jika belum ada, migrasi bentuk lama jika perlu,
+ * dan meng-update streak harian.
  */
 export function initState() {
   let state = readState();
   if (!state) {
     state = defaultState();
   }
-  // Backfill minimal untuk state lama (tersimpan sebelum fitur language
-  // selection ada) — bukan migration besar, cuma pastikan field ini ada.
   if (!state.selectedLanguage) {
     state.selectedLanguage = DEFAULT_LANGUAGE_ID;
   }
+  state = migrateLegacyProgress(state);
+  if (!state.progress) state.progress = {};
   state = updateStreak(state);
   writeState(state);
   return state;
@@ -87,12 +163,15 @@ export function getState() {
   return readState() || initState();
 }
 
-export function isLessonCompleted(lessonId) {
-  return getState().completedLessons.includes(lessonId);
+export function isLessonCompleted(languageId, unitId, lessonId) {
+  const state = getState();
+  const unitProgress = ensureUnitProgress(state, languageId, unitId);
+  return unitProgress.completedLessons.includes(lessonId);
 }
 
-export function getCurrentLessonId() {
-  return getState().currentLessonId;
+export function getCurrentLessonId(languageId, unitId) {
+  const state = getState();
+  return ensureUnitProgress(state, languageId, unitId).currentLessonId;
 }
 
 /**
@@ -106,8 +185,8 @@ export function getSelectedLanguage() {
 
 /**
  * Mengganti bahasa yang dipilih user. TIDAK menyentuh progress
- * (xp/streak/completedLessons) sama sekali — bahasa lain (mis. Sunda)
- * belum punya konten, jadi progress yang ada selalu tetap progress Jawa.
+ * (xp/streak/progress per unit) sama sekali — setiap bahasa punya
+ * progress-nya sendiri di bawah state.progress[languageId].
  */
 export function setSelectedLanguage(languageId) {
   const state = getState();
@@ -116,26 +195,71 @@ export function setSelectedLanguage(languageId) {
   return getLanguageById(state.selectedLanguage);
 }
 
-export function getUnitProgress() {
+export function getUnitProgress(languageId, unitId) {
   const state = getState();
-  const totalLessons = UNIT1.lessons.length;
+  const unitProgress = ensureUnitProgress(state, languageId, unitId);
+  const unit = getUnit(languageId, unitId);
+  const total = unit ? unit.lessons.length : 0;
   return {
-    completed: state.completedLessons.length,
-    total: totalLessons,
+    completed: unitProgress.completedLessons.length,
+    total,
   };
+}
+
+/**
+ * STEP 1.5: Unit "sekarang" untuk sebuah bahasa -- dipakai Home & Profile
+ * (dan Learning Path) supaya tidak lagi dipin ke Unit 1.
+ *
+ * Logika:
+ * 1. Ambil semua unit bahasa itu, terurut berdasarkan "order".
+ * 2. Cari unit PERTAMA yang lesson playable-nya BELUM seluruhnya selesai
+ *    ("selesai" dihitung dari completedLessons vs lesson yang playable
+ *    SAJA -- lesson locked/preview tidak pernah ikut dihitung, sesuai
+ *    getFirstPlayableLesson/getNextPlayableLesson yang juga selalu
+ *    memfilter `.playable`).
+ * 3. Kalau tidak ada progress sama sekali, unit itu otomatis "belum
+ *    selesai" (completedLessons kosong), jadi hasilnya jatuh ke unit
+ *    pertama -- sama seperti perilaku getDefaultUnit() sebelumnya.
+ * 4. Kalau SEMUA unit yang ada sudah selesai, kembalikan unit terakhir
+ *    (dipakai untuk mode review, bukan error).
+ * 5. Unit tanpa lesson playable sama sekali (secara teori bisa terjadi,
+ *    mis. unit isinya cuma preview) dilewati -- tidak ada yang bisa
+ *    "dilanjutkan" di situ, jadi bukan kandidat current unit.
+ * 6. Bahasa tanpa unit sama sekali (mis. Sunda untuk sekarang) -> null.
+ */
+export function getCurrentUnit(languageId) {
+  const units = getUnitsForLanguage(languageId);
+  if (units.length === 0) return null;
+
+  const state = getState();
+  const firstUnfinished = units.find((unit) => {
+    const playableLessons = unit.lessons.filter((l) => l.playable);
+    if (playableLessons.length === 0) return false;
+    const unitProgress = ensureUnitProgress(state, languageId, unit.id);
+    return !playableLessons.every((l) => unitProgress.completedLessons.includes(l.id));
+  });
+
+  return firstUnfinished || units[units.length - 1];
 }
 
 /**
  * Mengembalikan semua badge beserta status earned/belum, dihitung dari
  * state saat ini. Definisi badge murni ada di data/badges.js — di sini
- * cuma logic pengecekannya.
+ * cuma logic pengecekannya. Badge SENGAJA tetap dipin ke Bahasa Jawa
+ * Unit 1 (sama seperti stats-row Home/Profile) -- badge-badge ini
+ * ("Langkah Pertama", "Unit 1 MVP Tuntas", dst.) memang didefinisikan
+ * seputar perjalanan Unit 1, bukan progress lintas-bahasa/unit.
  */
 export function getBadgesWithStatus() {
   const state = getState();
+  const pinnedProgress = PINNED_UNIT_ID
+    ? ensureUnitProgress(state, DEFAULT_LANGUAGE_ID, PINNED_UNIT_ID)
+    : { completedLessons: [] };
+
   return BADGES.map((badge) => {
     let earned = false;
     if (badge.requirement.type === 'lessonsCompleted') {
-      earned = state.completedLessons.length >= badge.requirement.value;
+      earned = pinnedProgress.completedLessons.length >= badge.requirement.value;
     } else if (badge.requirement.type === 'streak') {
       earned = state.streak >= badge.requirement.value;
     }
@@ -144,35 +268,39 @@ export function getBadgesWithStatus() {
 }
 
 /**
- * Dipanggil saat Lesson Complete: menandai lesson selesai,
- * menambah XP, dan membuka lesson berikutnya.
+ * Dipanggil saat Lesson Complete: menandai lesson selesai (dalam konteks
+ * languageId+unitId tertentu), menambah XP (tetap global), dan membuka
+ * lesson berikutnya DI DALAM UNIT YANG SAMA.
  */
-export function completeLesson(lessonId, correctCount, totalQuestions) {
+export function completeLesson(languageId, unitId, lessonId, correctCount, totalQuestions) {
   const state = getState();
+  const unitProgress = ensureUnitProgress(state, languageId, unitId);
+  const unit = getUnit(languageId, unitId);
 
-  if (!state.completedLessons.includes(lessonId)) {
-    state.completedLessons.push(lessonId);
+  if (!unitProgress.completedLessons.includes(lessonId)) {
+    unitProgress.completedLessons.push(lessonId);
   }
 
   const earnedXP = correctCount * 10;
   state.xp += earnedXP;
 
-  const lessonOrder = UNIT1.lessons.find((l) => l.id === lessonId)?.order;
-  const nextPlayableLesson = UNIT1.lessons.find((l) => l.order > lessonOrder && l.playable);
+  const lesson = unit ? unit.lessons.find((l) => l.id === lessonId) : null;
+  const nextPlayableLesson = unit && lesson ? getNextPlayableLesson(unit, lesson.order) : null;
   if (nextPlayableLesson) {
-    state.currentLessonId = nextPlayableLesson.id;
+    unitProgress.currentLessonId = nextPlayableLesson.id;
   }
-  // Kalau tidak ada lesson playable berikutnya (mis. baru selesai Lesson 3),
-  // currentLessonId sengaja TIDAK diubah — biarkan tetap menunjuk ke lesson
-  // playable terakhir yang sudah completed, supaya Learning Path tidak salah
-  // menandai lesson locked (mis. Lesson 4) sebagai "current".
+  // Kalau tidak ada lesson playable berikutnya (mis. baru selesai lesson
+  // playable terakhir di unit ini), currentLessonId sengaja TIDAK diubah —
+  // biarkan tetap menunjuk ke lesson playable terakhir yang sudah completed,
+  // supaya Learning Path tidak salah menandai lesson locked berikutnya
+  // sebagai "current".
 
   writeState(state);
 
   return {
     earnedXP,
     totalXP: state.xp,
-    unitProgress: getUnitProgress(),
-    nextLessonId: state.currentLessonId,
+    unitProgress: getUnitProgress(languageId, unitId),
+    nextLessonId: unitProgress.currentLessonId,
   };
 }

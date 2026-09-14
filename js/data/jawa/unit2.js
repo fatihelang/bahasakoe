@@ -29,6 +29,15 @@
   belum ada objective/learningContent/questions, karena kontennya memang
   belum dikembangkan (bukan lupa/bug). Pola ini identik dengan Lesson 4-10
   di unit1.js.
+
+  cultureMoment (UX overhaul, Phase G): field opsional per-lesson --
+  { title, body, type }. Kalau ada, lesson.js menampilkan satu layar
+  "Culture Moment" singkat SEKALI, tepat setelah Learning Content selesai
+  dan sebelum Question dimulai (Language -> Context -> Culture). Lesson
+  player membaca field ini generik lewat lesson.cultureMoment -- tidak ada
+  daftar hardcode di lesson.js. Cuma dipasang di lesson yang memang relevan
+  (di sini: semua lesson Unit 2, karena topik unit ini memang tentang
+  unggah-ungguh) -- Unit 1 sengaja tidak punya field ini sama sekali.
 */
 
 export const LESSONS = [
@@ -43,6 +52,11 @@ export const LESSONS = [
       { native: 'Piye kabare?', arti: 'Bagaimana kabarnya? (ngoko, santai)' },
       { native: 'Arep menyang endi?', arti: 'Mau ke mana? (ngoko, santai)' },
     ],
+    cultureMoment: {
+      title: 'Tahukah kamu?',
+      body: 'Di Bahasa Jawa, cara bicara bisa berubah tergantung siapa lawan bicaramu. Ngoko itu bentuk yang santai, biasanya dipakai ke teman sebaya.',
+      type: 'context',
+    },
     questions: [
       {
         id: 'u2l1-q1',
@@ -51,8 +65,8 @@ export const LESSONS = [
         options: ['Piye kabare?', 'Sugeng enjing', 'Matur nuwun', 'Sopo jenengmu?'],
         correctIndex: 0,
         explanation: '"Piye kabare?" dipakai untuk menanyakan kabar secara santai (ngoko) ke teman sebaya.',
-        context: 'Bentuk ini wajar dipakai ke teman sebaya atau orang yang sudah akrab; ke orang yang lebih tua, pilihan ungkapan bisa berbeda — akan dibahas di lesson berikutnya.',
-        cultureInsight: 'Secara umum, bentuk ngoko sering dipakai dalam percakapan santai sehari-hari, terutama dengan teman sebaya atau orang yang sudah akrab — meski ini dapat bervariasi tergantung individu dan situasi, bukan aturan yang berlaku sama untuk semua orang.',
+        context: 'Bentuk ini wajar dipakai ke teman sebaya atau orang yang sudah akrab. Ke orang yang lebih tua, pilihan ungkapan bisa berbeda, akan dibahas di lesson berikutnya.',
+        cultureInsight: 'Secara umum, bentuk ngoko sering dipakai dalam percakapan santai sehari-hari, terutama dengan teman sebaya atau orang yang sudah akrab. Ini bisa bervariasi tergantung individu dan situasi, bukan aturan yang berlaku sama untuk semua orang.',
         needsValidation: true,
       },
       {
@@ -61,7 +75,7 @@ export const LESSONS = [
         prompt: "Teman kamu bertanya 'Arep menyang endi?' Pertanyaan itu artinya kira-kira...?",
         options: ['Mau ke mana?', 'Siapa namamu?', 'Terima kasih', 'Selamat pagi'],
         correctIndex: 0,
-        explanation: '"Arep menyang endi?" artinya "mau ke mana?" — pertanyaan santai yang umum dipakai antar teman.',
+        explanation: '"Arep menyang endi?" artinya "mau ke mana?", pertanyaan santai yang umum dipakai antar teman.',
         context: 'Dipakai dalam percakapan santai sehari-hari, misalnya saat berpapasan di jalan.',
         needsValidation: true,
       },
@@ -71,7 +85,7 @@ export const LESSONS = [
         prompt: 'Kamu bertemu teman sebaya dan ingin menanyakan namanya. Ucapan yang tepat adalah?',
         options: ['Sopo jenengmu?', 'Piye kabare?', 'Arep menyang endi?', 'Matur nuwun'],
         correctIndex: 0,
-        explanation: '"Sopo jenengmu?" dipakai untuk menanyakan nama teman sebaya secara santai (ngoko) — bentuk yang sama seperti yang dipelajari di Unit 1.',
+        explanation: '"Sopo jenengmu?" dipakai untuk menanyakan nama teman sebaya secara santai (ngoko), bentuk yang sama seperti yang dipelajari di Unit 1.',
         context: 'Ini bentuk yang wajar dipakai ke teman sebaya; bukan berarti ini satu-satunya cara menanyakan nama dalam Bahasa Jawa.',
       },
     ],
@@ -81,11 +95,16 @@ export const LESSONS = [
     order: 2,
     title: 'Berbicara dengan Orang Lebih Tua',
     playable: true,
-    objective: 'Memahami bahwa pilihan ungkapan dapat berbeda ketika berbicara dengan orang yang lebih tua, dibandingkan dengan teman sebaya — berdasarkan situasi, bukan aturan mutlak.',
+    objective: 'Memahami bahwa pilihan ungkapan dapat berbeda ketika berbicara dengan orang yang lebih tua, dibandingkan dengan teman sebaya. Ini soal situasi, bukan aturan mutlak.',
     learningContent: [
       { native: 'Sugeng enjing', arti: 'Selamat pagi (netral, sesuai konteks siapa pun)' },
       { native: 'Nami panjenengan sinten?', arti: 'Siapa nama Anda? (bentuk yang lebih halus)' },
     ],
+    cultureMoment: {
+      title: 'Tahukah kamu?',
+      body: 'Semakin dihormati lawan bicaramu, kata-kata yang dipakai biasanya juga semakin halus. Krama adalah bentuk yang lebih sopan dari ngoko, dan sering dipakai ke orang yang lebih tua.',
+      type: 'context',
+    },
     questions: [
       {
         id: 'u2l2-q1',
@@ -93,9 +112,9 @@ export const LESSONS = [
         prompt: 'Kamu bertemu Pak RT (tetangga yang lebih tua) di pagi hari dan ingin menyapa. Sapaan yang lebih sesuai untuk situasi ini adalah?',
         options: ['Sugeng enjing', 'Piye kabare?', 'Arep menyang endi?', 'Sopo jenengmu?'],
         correctIndex: 0,
-        explanation: '"Sugeng enjing" adalah sapaan yang netral dan umum dipakai ke siapa saja, termasuk orang yang lebih tua — berbeda dengan "Piye kabare?" yang terasa lebih santai/ngoko.',
-        context: 'Dalam situasi dengan orang yang lebih tua, sapaan yang netral biasanya terasa lebih sesuai dibanding sapaan yang sangat santai — meski ini bukan aturan mutlak dan bisa berbeda tergantung keakraban.',
-        cultureInsight: 'Dalam banyak konteks, masyarakat Jawa mempertimbangkan usia dan hubungan sosial saat memilih cara berbicara — ini bagian dari konsep unggah-ungguh yang akan terus dipelajari di unit ini.',
+        explanation: '"Sugeng enjing" adalah sapaan yang netral dan umum dipakai ke siapa saja, termasuk orang yang lebih tua. Ini beda dengan "Piye kabare?" yang terasa lebih santai/ngoko.',
+        context: 'Dalam situasi dengan orang yang lebih tua, sapaan yang netral biasanya terasa lebih sesuai dibanding sapaan yang sangat santai. Ini bukan aturan mutlak dan bisa berbeda tergantung keakraban.',
+        cultureInsight: 'Dalam banyak konteks, masyarakat Jawa mempertimbangkan usia dan hubungan sosial saat memilih cara berbicara. Ini bagian dari konsep unggah-ungguh yang akan terus dipelajari di unit ini.',
       },
       {
         id: 'u2l2-q2',
@@ -112,7 +131,7 @@ export const LESSONS = [
         type: 'true-false',
         prompt: "Pernyataan: Bentuk ngoko seperti 'Sopo jenengmu?' tidak boleh dipakai sama sekali kepada siapa pun yang lebih tua, dalam situasi apa pun.",
         correctAnswer: false,
-        explanation: 'Pemilihan bentuk bahasa dipengaruhi banyak hal seperti keakraban dan situasi — bukan aturan yang berlaku sama mutlak untuk semua orang yang lebih tua di semua situasi, jadi pernyataan ini terlalu mutlak.',
+        explanation: 'Pemilihan bentuk bahasa dipengaruhi banyak hal seperti keakraban dan situasi, bukan aturan yang berlaku sama mutlak untuk semua orang yang lebih tua di semua situasi. Jadi pernyataan ini terlalu mutlak.',
       },
     ],
   },
@@ -126,6 +145,11 @@ export const LESSONS = [
       { native: 'Tulung', arti: 'Tolong (ngoko, santai)' },
       { native: 'Nyuwun tulung', arti: 'Minta tolong (bentuk lebih halus)' },
     ],
+    cultureMoment: {
+      title: 'Tahukah kamu?',
+      body: 'Cara meminta tolong juga ikut menyesuaikan lawan bicara. "Tulung" cukup buat teman dekat, tapi "Nyuwun tulung" terasa lebih pas kalau kamu minta bantuan orang yang lebih dihormati.',
+      type: 'context',
+    },
     questions: [
       {
         id: 'u2l3-q1',
@@ -133,7 +157,7 @@ export const LESSONS = [
         prompt: 'Kamu ingin meminta tolong kepada teman sebaya dengan santai. Ucapan yang tepat adalah?',
         options: ['Tulung, ya.', 'Nyuwun pangapunten.', 'Matur nuwun.', 'Sugeng dalu.'],
         correctIndex: 0,
-        explanation: '"Tulung" berarti "tolong" — dipakai santai (ngoko) ke teman sebaya untuk meminta bantuan.',
+        explanation: '"Tulung" berarti "tolong", dipakai santai (ngoko) ke teman sebaya untuk meminta bantuan.',
         context: 'Bentuk sederhana seperti ini wajar dipakai dalam percakapan santai sehari-hari dengan teman.',
         needsValidation: true,
       },
@@ -152,7 +176,7 @@ export const LESSONS = [
         type: 'true-false',
         prompt: 'Pernyataan: Cara meminta sesuatu dalam Bahasa Jawa selalu sama, tidak peduli kepada siapa kita berbicara.',
         correctAnswer: false,
-        explanation: 'Cara meminta sesuatu dapat menyesuaikan dengan lawan bicara dan situasi — bukan sesuatu yang selalu sama dalam semua kondisi.',
+        explanation: 'Cara meminta sesuatu dapat menyesuaikan dengan lawan bicara dan situasi, bukan sesuatu yang selalu sama dalam semua kondisi.',
       },
     ],
   },

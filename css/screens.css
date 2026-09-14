@@ -4,6 +4,29 @@
   (bukan komponen yang dipakai berulang di banyak tempat).
 */
 
+/* ---- Desktop: whitespace & type scale lebih lega untuk layar umum
+   (Home/Belajar/Budaya/Profil) -- section 5 & 17 brief: "desktop =
+   spacious learning", bukan mobile yang di-scale. Cuma menyentuh
+   font-size/margin, TIDAK ada struktur/grid baru di sini supaya risiko
+   tetap kecil. ---- */
+@media (min-width: 768px) {
+  .home-greeting,
+  .path-header__title,
+  .culture-header__title,
+  .unit-detail__title {
+    font-size: var(--fs-2xl);
+  }
+
+  .section-title {
+    margin-top: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .home-continue-card {
+    padding: var(--space-6);
+  }
+}
+
 /* ---- Home ---- */
 .home-greeting {
   font-size: var(--fs-xl);
@@ -113,15 +136,6 @@
   justify-content: space-between;
   gap: var(--space-2);
   margin-bottom: var(--space-2);
-}
-
-.home-progress__label {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--color-ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .home-progress__count {
@@ -399,6 +413,83 @@
   margin-top: var(--space-1);
 }
 
+/* Featured topic -- pintu masuk utama tab Budaya, lebih besar & menonjol
+   dari topic card biasa (section 13 brief UX overhaul). Mobile: full
+   width, stacked di atas grid. Desktop: tetap satu kartu lebar (bukan ikut
+   masuk grid), supaya masih terasa sebagai "hero", bukan card ke-4. */
+.culture-featured {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  text-align: left;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-accent-soft);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-md);
+  transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.culture-featured:hover {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+}
+
+.culture-featured:active {
+  transform: scale(0.99);
+}
+
+.culture-featured__icon {
+  flex-shrink: 0;
+}
+
+.culture-featured__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.culture-featured__eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--color-accent-hover);
+  margin-bottom: var(--space-1);
+}
+
+.culture-featured__title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--color-ink);
+}
+
+.culture-featured__description {
+  font-size: var(--fs-sm);
+  color: var(--color-ink-soft);
+  margin-top: var(--space-1);
+}
+
+.culture-featured__cta {
+  flex-shrink: 0;
+  display: none; /* muncul lewat media query desktop -- di mobile CTA implisit lewat seluruh kartu yang bisa ditap */
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--color-accent-hover);
+}
+
+.culture-featured__cta svg {
+  width: 16px;
+  height: 16px;
+}
+
+.culture-list__title {
+  margin-top: var(--space-2);
+}
+
 .culture-list {
   display: flex;
   flex-direction: column;
@@ -463,6 +554,32 @@
   margin-top: var(--space-1);
 }
 
+/* ---- Budaya: responsive (section 16 brief) ----
+   Mobile (default di atas): featured full width, card stacked satu kolom.
+   Desktop: featured dapat CTA eksplisit + topic cards jadi grid 2-3 kolom
+   supaya tidak jadi satu list panjang di layar yang lebar. */
+@media (min-width: 768px) {
+  .culture-featured__cta {
+    display: inline-flex;
+  }
+
+  .culture-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  .culture-card {
+    align-items: flex-start;
+  }
+}
+
+@media (min-width: 1024px) {
+  .culture-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 .culture-detail {
   display: flex;
   flex-direction: column;
@@ -497,7 +614,21 @@
 .culture-detail__title {
   font-size: var(--fs-xl);
   font-weight: var(--fw-bold);
+  margin-bottom: var(--space-3);
+}
+
+/* Lead: kalimat description topik, ditampilkan lebih besar & beraksen di
+   atas paragraf penuh -- bikin detail scannable (section 14 brief),
+   langsung kasih inti sebelum orang baca paragraf lengkap. Bukan data
+   baru, cuma topic.description yang sudah ada dipakai dua kali. */
+.culture-detail__lead {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--color-accent-hover);
+  line-height: 1.5;
   margin-bottom: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .culture-detail__content {
@@ -506,11 +637,79 @@
   line-height: 1.7;
 }
 
-/* ---- Lesson Session (Learning Content / Question / Feedback / Complete) ---- */
+/* PHASE 2: Culture Detail scannable sections (brief bagian 8) -- kartu
+   kecil berdampingan untuk topik yang punya perbandingan alami (mis.
+   Ngoko vs Krama, Loma vs Lemes). Opsional lewat topic.highlights (lihat
+   js/data/culture/index.js); kalau tidak ada, bagian ini tidak dirender
+   sama sekali (lihat culture.js) dan layout tetap seperti sebelumnya. */
+.culture-detail__highlights {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.culture-highlight {
+  background: var(--color-surface-alt);
+  border-left: 3px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  animation: staggerFadeUp 280ms var(--ease-pop) backwards;
+}
+
+.culture-detail__highlights .culture-highlight:nth-child(1) { animation-delay: 0ms; }
+.culture-detail__highlights .culture-highlight:nth-child(2) { animation-delay: 60ms; }
+.culture-detail__highlights .culture-highlight:nth-child(n+3) { animation-delay: 120ms; }
+
+.culture-highlight__label {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-accent-hover);
+  margin-bottom: var(--space-1);
+}
+
+.culture-highlight__text {
+  font-size: var(--fs-sm);
+  color: var(--color-ink);
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .culture-detail__highlights {
+    flex-direction: row;
+  }
+
+  .culture-highlight {
+    flex: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .culture-detail {
+    max-width: var(--lesson-max-width);
+  }
+}
+
+/* ---- Lesson Session (Learning Content / Question / Feedback / Complete) ----
+   PHASE B fix: sebelumnya .lesson-session pakai min-height persis viewport
+   + .lesson-session__cta { margin-top:auto } supaya CTA "menempel" di
+   bawah. Itu oke kalau konten pas satu layar, tapi begitu opsi jawaban +
+   context + culture insight bikin konten lebih tinggi dari viewport, CTA
+   ikut terdorong turun -- masih bisa dicapai lewat scroll natural (tidak
+   ada overflow:hidden di mana pun), TAPI viewport mobile (100vh) sering
+   ketutup UI browser (address bar/gesture bar). Makanya height dasarnya
+   sekarang dvh dengan fallback vh, dan CTA tidak lagi dipaksa nempel di
+   bawah kalau konten memang lebih panjang dari satu layar -- ia cukup
+   mengikuti alur normal + margin atas yang cukup. */
 .lesson-session {
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - var(--space-5) - var(--space-4));
+  min-height: calc(100dvh - var(--space-5) - var(--space-4));
+  padding-bottom: var(--space-4);
 }
 
 .lesson-session__header {
@@ -544,20 +743,129 @@
   flex: 1;
 }
 
-.lesson-session__title {
+/* ---- Back/Forward antar-soal (Phase 1: navigasi dalam lesson) ----
+   HANYA muncul di step 'question' (lihat sessionHeader `nav` param).
+   min-width/height 44px supaya touch target-nya sesuai standar mobile,
+   walau secara visual ikonnya kecil. */
+.lesson-session__nav-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: var(--color-ink-soft);
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
+}
+
+.lesson-session__nav-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.lesson-session__nav-btn:not(:disabled):hover {
+  background: var(--color-surface-alt);
+  color: var(--color-primary);
+}
+
+.lesson-session__nav-btn:not(:disabled):active {
+  transform: scale(0.92);
+}
+
+.lesson-session__nav-btn:disabled {
+  color: var(--color-ink-faint);
+  opacity: 0.35;
+}
+
+.lesson-session__question-counter {
+  text-align: center;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--color-ink-faint);
+  margin-bottom: var(--space-4);
+  margin-top: calc(var(--space-2) * -1);
+}
+
+/* CTA tetap "menempel" ke bawah LEWAT flex margin-top:auto -- ini aman
+   karena .lesson-session sudah min-height (bukan height tetap), jadi kalau
+   konten di atasnya lebih tinggi dari viewport, margin-top:auto otomatis
+   tidak memaksa apa pun (elemen cukup mengikuti alur setelah konten), dan
+   CTA tetap bisa dicapai dengan scroll natural -- bukan fixed/absolute
+   yang bisa menutupi opsi jawaban. */
+.lesson-session__cta {
+  margin-top: auto;
+  /* BUG (ketemu lewat report user): dulu ini "padding-top: var(--space-5)".
+     Karena diterapkan LANGSUNG di elemen <button> yang sama dengan teksnya
+     (bukan wrapper terpisah), padding-top ikut mendorong teks tombol turun
+     ke bawah -- cuma kelihatan di tombol yang pakai class ini, karena cuma
+     rule inilah yang override padding-top bawaan .btn (padding shorthand
+     .btn cuma kalah di properti top-nya saja, kanan/bawah/kiri tetap dari
+     .btn -- makanya hasilnya asimetris). Diganti jadi scroll-margin-top:
+     tidak menambah ruang di DALAM kotak tombol sama sekali (jadi teks tetap
+     center persis seperti .btn lain), tapi tetap kasih jarak aman kalau CTA
+     ini nanti dituju lewat scroll-into-view/anchor. Untuk kasus utama yang
+     dikomentari di atas (konten lebih tinggi dari viewport), jarak visual
+     ke CTA sudah cukup terjaga dari margin/padding elemen-elemen sebelumnya
+     di alur normal -- tidak perlu padding tambahan di tombolnya sendiri. */
+  scroll-margin-top: var(--space-5);
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  /* Desktop: kolom baca fokus yang center, bukan lesson mobile yang
+     direntangkan lebar. Lihat --lesson-max-width di variables.css. */
+  .lesson-session {
+    max-width: var(--lesson-max-width);
+    margin: 0 auto;
+    min-height: calc(100dvh - var(--space-7) - var(--space-6));
+  }
+
+  .lesson-intro__title,
+  .question-prompt {
+    font-size: var(--fs-xl);
+  }
+}
+
+/* ---- Lesson Intro (mental preparation sebelum lesson dimulai) ---- */
+.lesson-intro {
+  justify-content: center;
+}
+
+.lesson-intro__title {
   font-size: var(--fs-lg);
   font-weight: var(--fw-bold);
   margin-bottom: var(--space-2);
 }
 
-.lesson-session__objective {
+.lesson-intro__objective {
   font-size: var(--fs-sm);
   color: var(--color-ink-soft);
   margin-bottom: var(--space-5);
 }
 
-.lesson-session__cta {
-  margin-top: auto;
+.lesson-intro__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.lesson-intro__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--color-ink-soft);
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-full);
+  padding: var(--space-2) var(--space-3);
+}
+
+.lesson-intro__meta-item svg {
+  width: 14px;
+  height: 14px;
 }
 
 /* Learning Content: satu kata per layar, tap untuk reveal arti (Kata -> Kalimat) */
@@ -624,10 +932,20 @@
 }
 
 /* Question */
+/* PHASE 2 micro-interaction: soal baru (termasuk pindah dari Feedback ke
+   soal berikutnya) selalu jadi elemen DOM baru tiap renderQuestionStep(),
+   jadi cukup pasang animation di sini -- otomatis "replay" tiap kali soal
+   ganti, tanpa perlu logic transisi tambahan di lesson.js. */
 .question-prompt {
   font-size: var(--fs-lg);
   font-weight: var(--fw-semibold);
   margin-bottom: var(--space-5);
+  animation: questionPromptIn 260ms var(--ease-pop) backwards;
+}
+
+@keyframes questionPromptIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 .question-options {
@@ -663,6 +981,42 @@
 
 .question-option:not(:disabled):active {
   transform: scale(0.97);
+}
+
+/* PHASE A: state "dipilih tapi belum diperiksa" -- beda dari flash
+   benar/salah (.is-correct-flash/.is-wrong-flash) yang cuma muncul SETELAH
+   "Periksa Jawaban" ditekan. Warna primary dipakai (bukan hijau/merah)
+   supaya tidak menyiratkan benar/salah sebelum waktunya. */
+.question-option.is-selected,
+.true-false-option.is-selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  transform: scale(1.01);
+}
+
+/* Tombol "Periksa Jawaban" untuk tipe soal yang butuh state pilih-dulu
+   (multiple-choice, true-false) -- transisi disabled -> active dibuat
+   terlihat jelas (opacity + sedikit translate) supaya user sadar tombolnya
+   baru "hidup" begitu ada pilihan. */
+.question-check-btn {
+  width: 100%;
+  margin-top: var(--space-5);
+  transition: opacity var(--transition-base), transform 180ms var(--ease-pop), background var(--transition-fast);
+}
+
+.question-check-btn:disabled {
+  background: var(--color-locked);
+  opacity: 0.7;
+}
+
+.question-check-btn:not(:disabled) {
+  animation: checkBtnWake 260ms var(--ease-pop);
+}
+
+@keyframes checkBtnWake {
+  0% { transform: translateY(3px); opacity: 0.7; }
+  100% { transform: translateY(0); opacity: 1; }
 }
 
 /* Translate: ketik jawaban */
@@ -837,6 +1191,32 @@
   transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
+/* PHASE D micro-interactions: pop kecil untuk benar, shake HALUS (bukan
+   screen shake besar) untuk salah -- dipasang bareng .is-correct-flash/
+   .is-wrong-flash lewat flashThenSubmit() di lesson.js. Amplitudo kecil
+   & durasi singkat sesuai prinsip "interactive, not distracting". */
+.is-correct-pop {
+  animation: correctPop 360ms var(--ease-bounce);
+}
+
+@keyframes correctPop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.035); }
+  100% { transform: scale(1); }
+}
+
+.is-wrong-shake {
+  animation: wrongShake 360ms ease;
+}
+
+@keyframes wrongShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(3px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+}
+
 .question-option:disabled,
 .true-false-option:disabled,
 .arrange-chip:disabled {
@@ -963,4 +1343,47 @@
   font-size: var(--fs-base);
   color: var(--color-ink-soft);
   margin-bottom: var(--space-6);
+}
+
+/* ---- Culture Moment (di dalam lesson player, PHASE G) ----
+   Satu kartu singkat, TIDAK dibuat jadi halaman panjang (lihat brief
+   bagian 11: "Jangan membuat screen panjang"). Warna accent (oranye/
+   terracotta) dipakai supaya jelas berbeda dari Question/Feedback yang
+   identitas warnanya merah-putih -- ini "mode eksploratif", sama seperti
+   tab Budaya. */
+.culture-moment {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-5);
+}
+
+.culture-moment__icon {
+  margin-bottom: var(--space-4);
+}
+
+.culture-moment__title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--color-ink);
+  margin-bottom: var(--space-3);
+}
+
+.culture-moment__body {
+  font-size: var(--fs-base);
+  color: var(--color-ink);
+  line-height: 1.6;
+  margin-bottom: var(--space-6);
+  max-width: 40ch;
+}
+
+.culture-moment .lesson-session__cta {
+  margin-top: 0;
+  width: 100%;
+  max-width: 280px;
 }

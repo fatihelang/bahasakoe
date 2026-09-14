@@ -27,8 +27,28 @@ export function renderCulture(container) {
     topicId: null,
   };
 
+  // Topik pertama ditampilkan sebagai "featured" (lebih besar, jadi pintu
+  // masuk utama) -- sisanya jadi grid topic cards di bawahnya. Ini murni
+  // presentasi; data topics tetap satu array yang sama dari
+  // js/data/culture/index.js, tidak ada data baru yang dikarang.
   function renderList() {
-    const cardsHtml = topics
+    const [featured, ...rest] = topics;
+
+    const featuredHtml = featured
+      ? `
+        <button class="culture-featured" data-topic-id="${featured.id}">
+          <span class="culture-featured__icon icon-chip icon-chip--accent icon-chip--lg">${icons[featured.icon]}</span>
+          <span class="culture-featured__text">
+            <span class="culture-featured__eyebrow">Topik pilihan</span>
+            <span class="culture-featured__title">${featured.title}</span>
+            <span class="culture-featured__description">${featured.description}</span>
+          </span>
+          <span class="culture-featured__cta">Pelajari ${icons.chevronRight}</span>
+        </button>
+      `
+      : '';
+
+    const cardsHtml = rest
       .map(
         (topic) => `
           <button class="culture-card" data-topic-id="${topic.id}">
@@ -47,10 +67,12 @@ export function renderCulture(container) {
         <div class="culture-header__title">Budaya ${language.name.replace('Bahasa ', '')}</div>
         <p class="culture-header__subtitle">Jelajahi konteks di balik bahasa yang kamu pelajari.</p>
       </div>
+      ${featuredHtml}
+      ${rest.length > 0 ? '<h2 class="section-title culture-list__title">Topik lainnya</h2>' : ''}
       <div class="culture-list">${cardsHtml}</div>
     `;
 
-    container.querySelectorAll('.culture-card').forEach((btn) => {
+    container.querySelectorAll('[data-topic-id]').forEach((btn) => {
       btn.addEventListener('click', () => {
         view.mode = 'detail';
         view.topicId = btn.dataset.topicId;
@@ -69,11 +91,34 @@ export function renderCulture(container) {
       return;
     }
 
+    // "highlights" opsional (lihat js/data/culture/index.js) -- kalau ada,
+    // ditampilkan sebagai kartu kecil berdampingan SEBELUM paragraf penuh,
+    // supaya detail tidak cuma satu blok teks panjang. Kalau tidak ada,
+    // cukup lewati bagian ini; content tetap tampil seperti sebelumnya.
+    const highlightsHtml = topic.highlights && topic.highlights.length
+      ? `
+        <div class="culture-detail__highlights">
+          ${topic.highlights
+            .map(
+              (h) => `
+                <div class="culture-highlight">
+                  <span class="culture-highlight__label">${h.label}</span>
+                  <p class="culture-highlight__text">${h.text}</p>
+                </div>
+              `
+            )
+            .join('')}
+        </div>
+      `
+      : '';
+
     container.innerHTML = `
       <div class="culture-detail">
         <button class="culture-detail__back" data-action="back">${icons.chevronLeft} Budaya</button>
         <div class="culture-detail__icon icon-chip icon-chip--accent icon-chip--lg">${icons[topic.icon]}</div>
         <h2 class="culture-detail__title">${topic.title}</h2>
+        <p class="culture-detail__lead">${topic.description}</p>
+        ${highlightsHtml}
         <p class="culture-detail__content">${topic.content}</p>
       </div>
     `;

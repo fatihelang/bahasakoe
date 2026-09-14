@@ -61,15 +61,39 @@ h1, h2, h3, p {
   max-width: var(--app-max-width);
   margin: 0 auto;
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--color-bg);
   position: relative;
   padding-bottom: calc(var(--nav-height) + var(--space-4));
 }
 
 /* Selama focused lesson session (bottom nav disembunyikan), layar boleh
-   memakai ruang penuh tanpa menyisakan padding untuk nav. */
+   memakai ruang penuh tanpa menyisakan padding untuk nav -- tapi tetap
+   menyisakan sedikit ruang aman di bawah (notch/gesture bar) supaya CTA
+   lesson tidak pernah menempel mentah ke tepi layar. */
 body.is-focused-session .app-shell {
-  padding-bottom: var(--space-4);
+  padding-bottom: max(var(--space-4), env(safe-area-inset-bottom));
+}
+
+/* ---- Responsive: desktop & tablet ----
+   Prinsip (lihat brief UX overhaul, bagian 5): mobile = focused learning,
+   desktop = spacious learning -- BUKAN mobile yang cuma discale-up.
+   Shell melebar, whitespace horizontal nambah, tapi tetap satu kolom
+   ter-center (bukan dashboard multi-panel) supaya identitas aplikasi tetap
+   satu, bukan jadi dua produk berbeda. */
+@media (min-width: 768px) {
+  .app-shell {
+    max-width: var(--app-max-width-desktop);
+    padding-bottom: calc(var(--nav-height) + var(--space-6));
+  }
+
+  body.is-focused-session .app-shell {
+    padding-bottom: var(--space-6);
+  }
+
+  #app {
+    padding: var(--space-7) var(--space-6) var(--space-6);
+  }
 }
 
 #app {

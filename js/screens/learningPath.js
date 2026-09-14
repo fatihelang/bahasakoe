@@ -67,7 +67,7 @@ export function renderLearningPath(container, { navigateTo }) {
       const status = getUnitStatus(unit, contentLanguageId, currentUnit);
       const subtitle =
         status === 'completed'
-          ? 'Selesai — ketuk untuk review'
+          ? 'Selesai, ketuk untuk review'
           : status === 'current'
           ? 'Lanjutkan unit ini'
           : 'Selesaikan unit sebelumnya';
@@ -82,7 +82,7 @@ export function renderLearningPath(container, { navigateTo }) {
               <span class="lesson-step__line lesson-step__line--bottom"></span>
             </span>
             <span class="lesson-step__body">
-              <div class="lesson-step__title ${status === 'locked' ? 'is-locked' : ''}">Unit ${unit.order} — ${unit.title}</div>
+              <div class="lesson-step__title ${status === 'locked' ? 'is-locked' : ''}">Unit ${unit.order}: ${unit.title}</div>
               <div class="lesson-step__subtitle">${subtitle}</div>
             </span>
           </button>

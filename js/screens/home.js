@@ -44,7 +44,7 @@ export function renderHome(container, { navigateTo }) {
   // menyentuh/menghilangkan progress bahasa lain sama sekali.
   const continueCardHtml = language.available && activeUnit
     ? `
-      <div class="home-continue-card__eyebrow">Unit ${activeUnit.order} — ${activeUnit.title}</div>
+      <div class="home-continue-card__eyebrow">Unit ${activeUnit.order}: ${activeUnit.title}</div>
       <div class="home-continue-card__title">
         ${
           isFirstTime
@@ -64,7 +64,6 @@ export function renderHome(container, { navigateTo }) {
       <button class="btn btn-primary" data-action="go-jawa">Belajar Bahasa Jawa</button>
     `;
 
-  const progressLabel = activeUnit ? `Unit ${activeUnit.order} — ${activeUnit.title}` : `${language.name} — segera hadir`;
   const progressPercent = activeUnitProgress.total > 0 ? (activeUnitProgress.completed / activeUnitProgress.total) * 100 : 0;
 
   // Teaser "Jelajahi" mengikuti bahasa aktif -- pakai getter budaya yang sama
@@ -83,8 +82,7 @@ export function renderHome(container, { navigateTo }) {
     <h2 class="section-title">Progress</h2>
     <div class="home-progress">
       <div class="home-progress__row">
-        <span class="home-progress__label">${progressLabel}</span>
-        <span class="home-progress__count">${activeUnitProgress.completed}/${activeUnitProgress.total} lesson</span>
+        <span class="home-progress__count">${activeUnit ? `${activeUnitProgress.completed}/${activeUnitProgress.total} lesson` : `${language.name} (segera hadir)`}</span>
       </div>
       <div class="progress-track">
         <div class="progress-fill" style="width:${progressPercent}%"></div>
@@ -97,7 +95,7 @@ export function renderHome(container, { navigateTo }) {
       <span class="home-language-card__icon icon-chip icon-chip--red icon-chip--md">${icons.graduate}</span>
       <span class="home-language-card__text">
         <span class="home-language-card__name">${language.name}</span>
-        <span class="home-language-card__unit">${language.available && activeUnit ? `Unit ${activeUnit.order} — ${activeUnit.title}` : language.description}</span>
+        <span class="home-language-card__unit">${language.nativeName}</span>
       </span>
       <button class="home-language-card__switch" data-action="switch-language">Ganti bahasa</button>
     </div>

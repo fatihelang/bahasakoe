@@ -39,6 +39,14 @@ export const icons = {
 
   mask: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8c0-2.8 3.6-5 8-5s8 2.2 8 5c0 4-2 7-4 8.5-1 .8-1.7 1.5-1.7 2.5h-4.6c0-1-.7-1.7-1.7-2.5-2-1.5-4-4.5-4-8.5Z"/><path d="M9 10.5c.5-1 2.5-1 3 0"/><path d="M12 10.5c.5-1 2.5-1 3 0"/><path d="M10.5 15c1 .7 2 .7 3 0"/></svg>`,
 
+  /* ---- Ditambahkan untuk UX overhaul: sound toggle + culture moment ---- */
+
+  soundOn: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L13 19V5L7.5 9.5Z"/><path d="M17 9c1 1 1 5 0 6"/><path d="M19.5 6.8c2.3 2.7 2.3 7.7 0 10.4"/></svg>`,
+
+  soundOff: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L13 19V5L7.5 9.5Z"/><path d="M17 10l4 4"/><path d="M21 10l-4 4"/></svg>`,
+
+  bulb: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.9v.7h5v-.7c0-.8.4-1.5 1-1.9A6 6 0 0 0 12 3Z"/></svg>`,
+
   graduate: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 9-3.5L21 8l-9 3.5Z"/><path d="M7 10v4.5c0 1.5 2.2 2.7 5 2.7s5-1.2 5-2.7V10"/><path d="M21 8v5.5"/></svg>`,
 
   chevronLeft: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5 8 12l7 7"/></svg>`,

@@ -38,7 +38,7 @@ export const LESSONS = [
           correctIndex: 0,
           explanation: '"Enjing" berarti pagi, jadi "Sugeng enjing" dipakai untuk menyapa di pagi hari.',
           context: 'Salam ini bisa dipakai untuk siapa saja dalam percakapan sehari-hari; perbedaan tingkat kesopanan akan dibahas lebih lanjut di Unit 2.',
-          cultureInsight: 'Orang Jawa terbiasa menyapa sesuai waktu hari — kebiasaan ini mencerminkan cara masyarakat Jawa memperhatikan konteks situasi dalam berkomunikasi sehari-hari.',
+          cultureInsight: 'Orang Jawa terbiasa menyapa sesuai waktu hari. Kebiasaan ini mencerminkan cara masyarakat Jawa memperhatikan konteks situasi dalam berkomunikasi sehari-hari.',
           needsValidation: true,
         },
         {
@@ -142,7 +142,7 @@ export const LESSONS = [
           type: 'arrange',
           prompt: "Susun kata berikut menjadi kalimat yang benar (artinya: Namaku Dimas.)",
           words: ['Jenengku', 'Dimas'],
-          explanation: '"Jenengku" = "namaku", diikuti nama diri — jadi susunannya "Jenengku Dimas."',
+          explanation: '"Jenengku" = "namaku", diikuti nama diri, jadi susunannya "Jenengku Dimas."',
         },
         {
           id: 'l2-q3',
@@ -150,9 +150,9 @@ export const LESSONS = [
           prompt: 'Kamu sedang berbicara santai dengan teman baru bernama Dimas. Bagaimana kamu menanyakan namanya?',
           options: ['Jenengku Dimas.', 'Sopo jenengmu?', 'Matur nuwun.', 'Sugeng dalu.'],
           correctIndex: 1,
-          explanation: 'Dalam situasi berkenalan, kalimat ini berfungsi untuk membuka perkenalan dengan menanyakan nama lawan bicara — bukan sekadar terjemahan kata per kata.',
+          explanation: 'Dalam situasi berkenalan, kalimat ini berfungsi untuk membuka perkenalan dengan menanyakan nama lawan bicara, bukan sekadar terjemahan kata per kata.',
           context: 'Dipakai ke teman sebaya atau orang yang sudah akrab; bentuk yang lebih sopan/halus akan dipelajari di Unit 2 (Unggah-Ungguh).',
-          cultureInsight: 'Bahasa ngoko terasa akrab dan santai, sehingga lebih umum dipakai ke teman sebaya — bukan ke orang yang lebih tua atau baru dikenal dalam situasi formal.',
+          cultureInsight: 'Bahasa ngoko terasa akrab dan santai, sehingga lebih umum dipakai ke teman sebaya, bukan ke orang yang lebih tua atau baru dikenal dalam situasi formal.',
           needsValidation: true,
         },
         {
@@ -189,7 +189,7 @@ export const LESSONS = [
           type: 'true-false',
           prompt: "Pernyataan: 'Kowe' dipakai untuk menyebut diri sendiri.",
           correctAnswer: false,
-          explanation: '"Kowe" artinya "kamu" — untuk menyebut diri sendiri dipakai "Aku".',
+          explanation: '"Kowe" artinya "kamu". Untuk menyebut diri sendiri dipakai "Aku".',
         },
         {
           id: 'l2-q9',

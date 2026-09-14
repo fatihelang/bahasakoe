@@ -11,6 +11,7 @@
 
 import { getState, getUnitProgress, getBadgesWithStatus, getSelectedLanguage, getCurrentUnit } from '../state/appState.js';
 import { icons } from '../ui/icons.js';
+import { isSoundEnabled, setSoundEnabled, playSelect } from '../ui/soundManager.js';
 
 // Setiap badge.icon (key dari data/badges.js) dipetakan ke warna chip yang
 // sesuai personanya — dipisah dari data murni supaya badges.js tetap fokus
@@ -33,7 +34,7 @@ export function renderProfile(container) {
   // seputar perjalanan Jawa Unit 1 secara spesifik.
   const activeUnit = language.available ? getCurrentUnit(language.id) : null;
   const progress = activeUnit ? getUnitProgress(language.id, activeUnit.id) : { completed: 0, total: 0 };
-  const progressLabel = activeUnit ? `Unit ${activeUnit.order} — ${activeUnit.title}` : `${language.name} — segera hadir`;
+  const progressLabel = activeUnit ? `Unit ${activeUnit.order}: ${activeUnit.title}` : `${language.name} (segera hadir)`;
   const progressPercent = progress.total > 0 ? (progress.completed / progress.total) * 100 : 0;
   const badges = getBadgesWithStatus();
   // Progress yang benar-benar ada cuma untuk Jawa, jadi kalau bahasa yang
@@ -94,5 +95,22 @@ export function renderProfile(container) {
 
     <h2 class="section-title">Badge</h2>
     <div class="badge-grid">${badgesHtml}</div>
+
+    <h2 class="section-title">Pengaturan</h2>
+    <button class="sound-toggle-row" data-action="toggle-sound" aria-pressed="${isSoundEnabled()}">
+      <span class="sound-toggle-row__icon icon-chip icon-chip--neutral icon-chip--md">${isSoundEnabled() ? icons.soundOn : icons.soundOff}</span>
+      <span class="sound-toggle-row__text">
+        <span class="sound-toggle-row__title">Suara</span>
+        <span class="sound-toggle-row__subtitle">Efek suara saat menjawab lesson</span>
+      </span>
+      <span class="sound-toggle-row__state">${isSoundEnabled() ? 'ON' : 'OFF'}</span>
+    </button>
   `;
+
+  container.querySelector('[data-action="toggle-sound"]').addEventListener('click', (e) => {
+    const nextEnabled = !isSoundEnabled();
+    setSoundEnabled(nextEnabled);
+    if (nextEnabled) playSelect(); // konfirmasi kecil begitu dinyalakan kembali
+    renderProfile(container);
+  });
 }

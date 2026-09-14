@@ -6,7 +6,15 @@
   semuanya lewat getCultureTopics()/getCultureTopicById() di sini.
 
   Struktur data (tidak berubah dari js/data/culture.js lama):
-  topic = { id, title, icon, description, content, needsValidation? }
+  topic = { id, title, icon, description, content, needsValidation?, highlights? }
+
+  PHASE 2: "highlights" bersifat OPSIONAL -- array kecil { label, text }
+  (2-3 item) dipakai culture.js untuk menampilkan Culture Detail sebagai
+  bagian yang scannable (mis. NGOKO vs KRAMA), bukan cuma satu paragraf
+  panjang. Kalau sebuah topik tidak punya perbandingan alami semacam ini,
+  cukup jangan diisi -- culture.js otomatis fallback ke paragraf biasa
+  lewat "content". Tidak ada fakta baru di sini, "highlights" cuma
+  memecah istilah yang SUDAH ada di "content" jadi lebih mudah dipindai.
 
   CARA MENAMBAH BUDAYA BAHASA BARU (mis. Batak, setelah kontennya siap):
   1. Buat js/data/culture/<bahasa>.js berisi `export const TOPICS = [...]`,

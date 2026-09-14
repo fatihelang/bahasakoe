@@ -70,7 +70,7 @@ export function renderUnitDetail(container, { navigateTo }, params = {}) {
       // bukan menunggu prasyarat. Sekarang dibedakan lewat lesson.playable.
       const subtitle =
         status === 'completed'
-          ? 'Selesai — ketuk untuk review'
+          ? 'Selesai, ketuk untuk review'
           : status === 'current'
           ? 'Lanjutkan lesson ini'
           : lesson.playable

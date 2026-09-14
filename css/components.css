@@ -95,6 +95,24 @@
   z-index: 10;
 }
 
+@media (min-width: 768px) {
+  .bottom-nav {
+    max-width: var(--app-max-width-desktop);
+  }
+
+  /* Target sentuh jari tidak relevan lagi di desktop (mouse); nav-item
+     boleh sedikit lebih ringkas dan diberi hover state yang jelas,
+     tanpa mengubah struktur/posisi nav sama sekali. */
+  .nav-item {
+    transition: color var(--transition-fast), background var(--transition-fast);
+  }
+
+  .nav-item:hover {
+    color: var(--color-primary);
+    background: var(--color-surface-alt);
+  }
+}
+
 .nav-item {
   flex: 1;
   display: flex;
@@ -428,6 +446,47 @@
   gap: var(--space-2);
 }
 
+/* ---- Confirm Dialog (varian center dari pola Language Sheet di atas) ---- */
+.confirm-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--color-scrim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  z-index: 70;
+}
+
+.confirm-dialog {
+  width: 100%;
+  max-width: 340px;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-md);
+  animation: languageSheetUp var(--transition-base) ease;
+}
+
+.confirm-dialog__title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--color-ink);
+  margin-bottom: var(--space-2);
+}
+
+.confirm-dialog__message {
+  font-size: var(--fs-sm);
+  color: var(--color-ink-soft);
+  margin-bottom: var(--space-5);
+}
+
+.confirm-dialog__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
 .language-sheet__row {
   display: flex;
   align-items: center;
@@ -545,6 +604,12 @@
   margin-bottom: var(--space-6);
 }
 
+@media (min-width: 768px) {
+  .badge-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 .badge-card {
   background: var(--color-surface);
   border-radius: var(--radius-md);
@@ -590,4 +655,67 @@
   height: 16px;
   color: var(--color-locked);
   margin: 0 auto var(--space-2);
+}
+
+/* ---- Sound toggle row (Profil > Pengaturan) ---- */
+.sound-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  text-align: left;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition-fast), transform 120ms var(--ease-pop);
+}
+
+.sound-toggle-row:hover {
+  background: var(--color-surface-alt);
+}
+
+.sound-toggle-row:active {
+  transform: scale(0.99);
+}
+
+.sound-toggle-row__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sound-toggle-row__title {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: var(--color-ink);
+}
+
+.sound-toggle-row__subtitle {
+  font-size: var(--fs-xs);
+  color: var(--color-ink-soft);
+  margin-top: 2px;
+}
+
+.sound-toggle-row__state {
+  flex-shrink: 0;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  color: var(--color-ink-faint);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-alt);
+}
+
+.sound-toggle-row[aria-pressed="true"] .sound-toggle-row__state {
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.sound-toggle-row[aria-pressed="true"] .sound-toggle-row__icon {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
 }

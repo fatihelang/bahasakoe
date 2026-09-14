@@ -693,6 +693,376 @@
   }
 }
 
+/* ============================================================
+   CULTURE EXPERIENCE OVERHAUL -- Interactive Culture Activities
+   (Topic Intro / Activity: scenario, compare, reveal, quiz / Takeaway)
+
+   Identitas visual SENGAJA pakai warna accent (terracotta/oranye --
+   sama seperti Culture Moment di dalam lesson player), BUKAN merah-putih
+   .lesson-session, supaya Budaya tetap terasa sebagai "mode eksploratif"
+   yang jelas berbeda dari lesson/quiz utama walau strukturnya (header +
+   progress + CTA nempel bawah) meniru pola yang sama. Beberapa class
+   dipakai ULANG persis dari lesson session (.question-option,
+   .question-options, .question-check-btn, .feedback-panel, dan semua
+   state is-selected/is-correct-flash/is-wrong-flash/is-correct-pop/
+   is-wrong-shake) -- lihat komentar di js/screens/culture.js kenapa ini
+   sengaja dipertahankan sama, bukan dibuat versi barunya.
+   ============================================================ */
+
+.culture-session {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--space-5) - var(--space-4));
+  min-height: calc(100dvh - var(--space-5) - var(--space-4));
+  padding-bottom: var(--space-4);
+}
+
+.culture-session__header {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.culture-session__exit {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--color-accent-hover);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  transition: transform var(--transition-fast);
+}
+
+.culture-session__exit svg {
+  width: 18px;
+  height: 18px;
+}
+
+.culture-session__exit:hover {
+  transform: translateX(-3px);
+}
+
+.culture-session__progress {
+  margin-bottom: var(--space-5);
+}
+
+.culture-session__dots {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.culture-session__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.culture-session__dot.is-current {
+  background: var(--color-accent);
+  transform: scale(1.35);
+}
+
+.culture-session__dot.is-done {
+  background: var(--color-accent);
+  opacity: 0.55;
+}
+
+.culture-session__counter {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--color-ink-faint);
+}
+
+@media (min-width: 768px) {
+  .culture-session {
+    max-width: var(--lesson-max-width);
+    margin: 0 auto;
+    min-height: calc(100dvh - var(--space-7) - var(--space-6));
+  }
+}
+
+/* ---- Topic Intro ---- */
+/* justify-content:center DIHAPUS (lihat catatan lengkap di
+   .culture-activity__cta) supaya konten nempel ke atas dan tombol "Mulai"
+   langsung kelihatan tanpa scroll, bukan ketarik ke dasar layar. */
+.culture-intro {
+  align-items: center;
+  text-align: center;
+}
+
+.culture-intro__icon {
+  margin-bottom: var(--space-4);
+}
+
+.culture-intro__title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  margin-bottom: var(--space-2);
+}
+
+.culture-intro__lead {
+  font-size: var(--fs-sm);
+  color: var(--color-ink-soft);
+  margin-bottom: var(--space-5);
+  max-width: 42ch;
+}
+
+.culture-intro__meta {
+  justify-content: center;
+  margin-bottom: var(--space-6);
+}
+
+.culture-intro__fallback-content {
+  font-size: var(--fs-base);
+  color: var(--color-ink);
+  line-height: 1.7;
+  text-align: left;
+  margin-bottom: var(--space-6);
+}
+
+/* CTA generik dipakai di semua step Culture (Mulai/Lanjut/Selesai) --
+   sama persis pola .lesson-session__cta setelah CTA FIX (lihat komentar
+   lengkap di rule .lesson-session__cta): margin-top TETAP di semua step,
+   TANPA pengecualian untuk Topic Intro & Takeaway. Sebelumnya dua step
+   itu di-center (justify-content:center) dengan CTA-nya di-override balik
+   ke margin-top:auto -- efeknya CTA "Mulai"/"Selesai" ketarik jauh ke
+   dasar .culture-session yang min-height-nya hampir setinggi viewport,
+   sampai ketutup/lewat bottom nav dan user harus scroll buat mencapainya
+   (report user: "tombol tidak perlu scroll down"). justify-content:center
+   sudah dihapus dari .culture-intro/.culture-takeaway (lihat rule
+   masing-masing) supaya kontennya nempel ke atas dan CTA ikut aturan
+   default di sini -- nempel tepat di bawah konten, langsung kelihatan
+   tanpa scroll. */
+.culture-activity__cta {
+  margin-top: var(--space-6);
+  scroll-margin-top: var(--space-5);
+  flex-shrink: 0;
+}
+
+/* ---- Activity body wrapper ---- */
+.culture-activity {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.culture-activity__prompt {
+  animation: questionPromptIn 260ms var(--ease-pop) backwards;
+}
+
+/* Scenario: kartu situasi singkat sebelum pertanyaan -- beda dari
+   question-prompt (bukan yang dinilai), makanya dikasih background
+   accent-soft supaya jelas ini "konteks", bukan soalnya sendiri. */
+.culture-scenario__situation {
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  font-size: var(--fs-sm);
+  color: var(--color-ink);
+  line-height: 1.6;
+  margin-bottom: var(--space-4);
+}
+
+/* ---- Compare ---- */
+.culture-compare {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.culture-compare__col {
+  flex: 1;
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.culture-compare__label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-accent-hover);
+  margin-bottom: var(--space-1);
+}
+
+.culture-compare__desc {
+  font-size: var(--fs-sm);
+  color: var(--color-ink-soft);
+  margin-bottom: var(--space-3);
+}
+
+.culture-compare__items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.culture-compare__item {
+  width: 100%;
+  text-align: left;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  min-height: 44px;
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform 120ms var(--ease-pop);
+}
+
+.culture-compare__item:not(:disabled):hover {
+  border-color: var(--color-accent);
+}
+
+.culture-compare__item:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+.culture-compare__item-native {
+  display: block;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+  color: var(--color-ink);
+}
+
+.culture-compare__item-hint {
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--color-ink-faint);
+  margin-top: var(--space-1);
+}
+
+.culture-compare__item-arti {
+  display: block;
+  font-size: var(--fs-sm);
+  color: var(--color-ink-soft);
+  margin-top: var(--space-1);
+  animation: content-arti-reveal var(--transition-base);
+}
+
+.culture-compare__item.is-revealed {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+@media (min-width: 768px) {
+  .culture-compare {
+    flex-direction: row;
+  }
+}
+
+/* ---- Reveal (tap to reveal) ---- */
+.culture-reveal-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.culture-reveal-card {
+  width: 100%;
+  min-height: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-1);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+}
+
+.culture-reveal-card:not(:disabled):hover {
+  border-color: var(--color-accent);
+}
+
+.culture-reveal-card:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+.culture-reveal-card__front {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--color-accent-hover);
+}
+
+.culture-reveal-card__hint {
+  font-size: var(--fs-xs);
+  color: var(--color-ink-faint);
+}
+
+.culture-reveal-card__back {
+  font-size: var(--fs-sm);
+  color: var(--color-ink);
+  line-height: 1.5;
+  animation: content-arti-reveal var(--transition-base);
+}
+
+.culture-reveal-card.is-revealed {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  cursor: default;
+}
+
+@media (min-width: 768px) {
+  .culture-reveal-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---- Quiz (ringan, tanpa XP) ---- */
+.culture-quiz__subcounter {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--color-ink-faint);
+  margin-bottom: var(--space-2);
+}
+
+.culture-quiz__feedback {
+  font-size: var(--fs-sm);
+  color: var(--color-ink);
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-5);
+  line-height: 1.5;
+}
+
+/* ---- Takeaway ---- */
+/* justify-content:center DIHAPUS -- alasan sama persis seperti
+   .culture-intro di atas (tombol "Selesai" harus langsung kelihatan
+   tanpa scroll). */
+.culture-takeaway {
+  align-items: center;
+  text-align: center;
+}
+
+.culture-takeaway__icon {
+  margin-bottom: var(--space-4);
+}
+
+.culture-takeaway__title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  margin-bottom: var(--space-3);
+}
+
+.culture-takeaway__body {
+  font-size: var(--fs-base);
+  color: var(--color-ink);
+  line-height: 1.6;
+  max-width: 40ch;
+  margin-bottom: var(--space-6);
+}
+
 /* ---- Lesson Session (Learning Content / Question / Feedback / Complete) ----
    PHASE B fix: sebelumnya .lesson-session pakai min-height persis viewport
    + .lesson-session__cta { margin-top:auto } supaya CTA "menempel" di
@@ -787,14 +1157,32 @@
   margin-top: calc(var(--space-2) * -1);
 }
 
-/* CTA tetap "menempel" ke bawah LEWAT flex margin-top:auto -- ini aman
-   karena .lesson-session sudah min-height (bukan height tetap), jadi kalau
-   konten di atasnya lebih tinggi dari viewport, margin-top:auto otomatis
-   tidak memaksa apa pun (elemen cukup mengikuti alur setelah konten), dan
-   CTA tetap bisa dicapai dengan scroll natural -- bukan fixed/absolute
-   yang bisa menutupi opsi jawaban. */
+/* CTA FIX -- riwayat 2 report user yang saling berlawanan, sekarang
+   diselesaikan dengan SATU aturan yang sama di semua step (bukan lagi
+   default + pengecualian):
+
+   1) Awalnya CTA "menempel" ke dasar layar lewat margin-top:auto di semua
+      step. .lesson-session sengaja diberi min-height hampir setinggi
+      viewport (lihat PHASE B fix di atas) -- kalau kontennya pendek
+      (mis. Feedback yang cuma satu kalimat penjelasan), hasilnya CTA
+      "mengambang" jauh di bawah konten dengan jarak kosong yang janggal.
+   2) Itu "diperbaiki" jadi margin-top TETAP sebagai default (CTA nempel
+      tepat di bawah konten) -- TAPI Lesson Intro & Lesson Complete
+      dikecualikan (tetap margin-top:auto) karena dua step itu didesain
+      "center" (justify-content:center). Hasilnya: CTA "Mulai Lesson"/
+      "Lanjutkan" nangkring di dasar layar, sementara CTA Content/Question/
+      Feedback nempel tepat di bawah konten -- posisi beda-beda tiap step
+      (report user ketiga, lihat screenshot).
+
+   FIX SEKARANG: satu-satunya aturan yang tersisa di sini adalah margin-top
+   TETAP (bukan auto sama sekali, tidak ada pengecualian per-step lagi).
+   justify-content:center di .lesson-intro/.lesson-complete DIHAPUS (lihat
+   rule masing-masing) supaya kontennya juga nempel ke atas seperti step
+   lain -- jadi CTA di SEMUA step (Intro/Content/Question/Feedback/
+   Complete) sekarang selalu ada di posisi yang sama: tepat di bawah
+   konten, bukan di dasar layar. */
 .lesson-session__cta {
-  margin-top: auto;
+  margin-top: var(--space-6);
   /* BUG (ketemu lewat report user): dulu ini "padding-top: var(--space-5)".
      Karena diterapkan LANGSUNG di elemen <button> yang sama dengan teksnya
      (bukan wrapper terpisah), padding-top ikut mendorong teks tombol turun
@@ -828,9 +1216,19 @@
 }
 
 /* ---- Lesson Intro (mental preparation sebelum lesson dimulai) ---- */
-.lesson-intro {
-  justify-content: center;
-}
+/* CTA POSITION FIX (report user: "posisi tombol beda-beda tempat,
+   samakan"): Lesson Intro dulu sengaja "center" (justify-content:center)
+   dengan CTA di-override balik ke margin-top:auto supaya tombolnya tetap
+   nempel ke dasar layar. Efeknya: tombol "Mulai Lesson" muncul jauh di
+   bawah dengan jarak kosong besar, BEDA POSISI dari step lain (Content/
+   Question/Feedback) yang tombolnya nempel tepat di bawah konten. Sengaja
+   TIDAK center lagi -- konten (judul, objective, meta chip) sekarang
+   nempel ke atas seperti step lain, dan CTA-nya ikut aturan default
+   .lesson-session__cta (nempel tepat di bawah konten, lihat rule itu) --
+   supaya tombol lesson SELALU ada di posisi yang sama relatif terhadap
+   kontennya, di step manapun. (.lesson-intro sengaja tidak punya rule CSS
+   lagi di sini -- dipertahankan cuma sebagai selector marker, dipakai
+   .lesson-intro__title dkk di bawah.) */
 
 .lesson-intro__title {
   font-size: var(--fs-lg);
@@ -1001,7 +1399,10 @@
    baru "hidup" begitu ada pilihan. */
 .question-check-btn {
   width: 100%;
-  margin-top: var(--space-5);
+  /* Disamakan dengan .lesson-session__cta (var(--space-6)) -- sebelumnya
+     var(--space-5), beda tipis dari jarak CTA step lain. Bagian dari CTA
+     POSITION FIX, lihat catatan lengkap di .lesson-session__cta. */
+  margin-top: var(--space-6);
   transition: opacity var(--transition-base), transform 180ms var(--ease-pop), background var(--transition-fast);
 }
 
@@ -1023,7 +1424,10 @@
 .translate-body {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  /* Disamakan dengan jarak sebelum CTA step lain (var(--space-6)) --
+     sebelumnya var(--space-4), gap ini yang jadi jarak input ke tombol
+     "Periksa Jawaban" karena keduanya cuma 2 anak langsung di sini. */
+  gap: var(--space-6);
 }
 
 .question-text-input {
@@ -1074,7 +1478,11 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  margin-bottom: var(--space-5);
+  /* Disamakan dengan .lesson-session__cta/.question-check-btn
+     (var(--space-6)) -- ini yang jadi jarak sebelum tombol "Periksa
+     Jawaban" arrange, karena tombolnya sibling langsung setelah elemen
+     ini (lihat renderArrangeBody di lesson.js). */
+  margin-bottom: var(--space-6);
 }
 
 .arrange-chip {
@@ -1316,9 +1724,14 @@
 }
 
 /* Lesson Complete */
+/* CTA POSITION FIX: justify-content:center dihapus (lihat catatan lengkap
+   di .lesson-intro) supaya konten (icon+title+stats) nempel ke atas dan
+   CTA "Lanjutkan" ikut aturan default .lesson-session__cta -- posisi yang
+   sama dengan tombol lesson lainnya. align-items+text-align TETAP center
+   (itu cuma horizontal alignment icon/teks, bukan penyebab tombol
+   "berpindah tempat"). */
 .lesson-complete {
   align-items: center;
-  justify-content: center;
   text-align: center;
 }
 

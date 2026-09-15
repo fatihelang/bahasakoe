@@ -95,24 +95,6 @@
   z-index: 10;
 }
 
-@media (min-width: 768px) {
-  .bottom-nav {
-    max-width: var(--app-max-width-desktop);
-  }
-
-  /* Target sentuh jari tidak relevan lagi di desktop (mouse); nav-item
-     boleh sedikit lebih ringkas dan diberi hover state yang jelas,
-     tanpa mengubah struktur/posisi nav sama sekali. */
-  .nav-item {
-    transition: color var(--transition-fast), background var(--transition-fast);
-  }
-
-  .nav-item:hover {
-    color: var(--color-primary);
-    background: var(--color-surface-alt);
-  }
-}
-
 .nav-item {
   flex: 1;
   display: flex;
@@ -147,6 +129,76 @@
 
 .bottom-nav.is-hidden {
   display: none;
+}
+
+/* PENTING: media query ini SENGAJA diletakkan setelah semua aturan dasar
+   .bottom-nav/.nav-item di atas (bukan sebelum) -- kalau ditaruh sebelum,
+   aturan dasar yang datang belakangan di file akan menang balik di cascade
+   (spesifisitas sama, urutan menentukan), jadi override desktop di sini
+   tidak akan pernah berlaku. Ini yang sempat bikin bug: nav-item di
+   sidebar ikut ke-flex:1 + flex-direction:column dari aturan dasar,
+   sehingga tiap item meregang mengisi 1/4 tinggi sidebar (100vh) -- itu
+   sebabnya sidebar sebelumnya terlihat raksasa. */
+@media (min-width: 768px) {
+  /* Nav berubah dari bottom bar horizontal jadi sidebar vertikal ala
+     Duolingo -- bukan cuma di-resize, strukturnya diputar 90 derajat:
+     item ditumpuk ke bawah (bukan disamping), ikon+label sejajar
+     horizontal per item (bukan ikon di atas label). position:fixed ke
+     tepi kiri VIEWPORT (bukan sticky relatif ke .app-shell) supaya nav
+     selalu mepet ke tepi kiri layar tanpa celah, terlepas dari .app-shell
+     yang ter-center dan tidak selebar viewport -- body diberi
+     padding-left seukuran sidebar (lihat base.css) supaya konten tidak
+     ketiban sidebar ini. */
+  .bottom-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: auto;
+    bottom: auto;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: var(--space-1);
+    width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    padding: var(--space-4) var(--space-2);
+    border-top: none;
+    border-right: 1px solid var(--color-border);
+  }
+
+  /* Target sentuh jari tidak relevan lagi di desktop (mouse); nav-item
+     jadi baris ikon+label rata kiri dengan pill highlight, mirip item
+     sidebar Duolingo, bukan lagi kolom mini ala tab bar mobile. Ukuran
+     dibuat ringkas (bukan sepenuh target sentuh mobile) supaya sidebar
+     tidak terasa membengkak dibanding konten di sebelahnya. */
+  .nav-item {
+    flex: none;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-xs);
+    transition: color var(--transition-fast), background var(--transition-fast);
+  }
+
+  .nav-item svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .nav-item:hover {
+    color: var(--color-primary);
+    background: var(--color-surface-alt);
+  }
+
+  .nav-item.is-active {
+    background: var(--color-primary-soft);
+  }
 }
 
 /* ---- Lesson step (Learning Path) ----

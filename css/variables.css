@@ -139,6 +139,7 @@
   --app-max-width-desktop: 880px; /* shell yang lebih lega di layar >=768px -- lihat base.css */
   --lesson-max-width: 560px; /* kolom baca fokus untuk lesson player di desktop -- lihat screens.css */
   --nav-height: 68px;
+  --sidebar-width: 184px; /* lebar nav saat jadi sidebar di layar >=768px, lihat components.css */
   --transition-fast: 150ms ease;
   --transition-base: 220ms ease;
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1); /* easing "memantul" untuk animasi perayaan/pop */

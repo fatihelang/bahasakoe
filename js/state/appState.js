@@ -16,6 +16,11 @@
       // memainkan lesson Sunda pertama kali, lewat ensureUnitProgress().
     }
 
+  state.missed = [ { languageId, unitId, lessonId, questionId, ts } ]
+  menyimpan soal yang terakhir dijawab SALAH (bahan untuk "Ulas kata yang
+  salah"). Soal yang kemudian dijawab benar otomatis dihapus dari daftar.
+  State lama tanpa field ini tetap aman (dianggap daftar kosong).
+
   xp, streak, lastActiveDate, dan selectedLanguage TETAP global (bukan
   per-bahasa/unit) -- itu representasi pengguna secara keseluruhan, bukan
   progress kurikulum, jadi sengaja tidak ikut dipecah.
@@ -52,6 +57,8 @@ function defaultState() {
     lastActiveDate: getTodayKey(),
     selectedLanguage: DEFAULT_LANGUAGE_ID,
     progress: {}, // diisi lazy per languageId/unitId lewat ensureUnitProgress()
+    missed: [], // soal yang salah, untuk "Ulas kata yang salah" (lihat saveQuestionResults)
+    onboardingSeen: false, // lihat isFirstLaunch() / markOnboardingSeen()
   };
 }
 
@@ -144,19 +151,45 @@ function updateStreak(state) {
  * Membuat state default jika belum ada, migrasi bentuk lama jika perlu,
  * dan meng-update streak harian.
  */
+// XP per jawaban benar. Diekspor supaya UI (feedback "+10 XP" di lesson.js)
+// selalu memakai angka yang sama dengan yang benar-benar ditambahkan
+// completeLesson(), bukan angka kedua yang bisa selisih.
+export const XP_PER_CORRECT_ANSWER = 10;
+
 export function initState() {
-  let state = readState();
+  const existingState = readState();
+  let state = existingState;
   if (!state) {
     state = defaultState();
   }
   if (!state.selectedLanguage) {
     state.selectedLanguage = DEFAULT_LANGUAGE_ID;
   }
+  // State lama (sebelum onboarding ada) tidak punya field ini sama sekali --
+  // itu berarti orangnya SUDAH pernah pakai app (ada state tersimpan), jadi
+  // tidak perlu dipaksa lihat tutorial. Hanya state yang benar-benar baru
+  // (belum pernah ada apa pun di LocalStorage) yang mulai dari false.
+  if (typeof state.onboardingSeen !== 'boolean') {
+    state.onboardingSeen = Boolean(existingState);
+  }
   state = migrateLegacyProgress(state);
   if (!state.progress) state.progress = {};
   state = updateStreak(state);
   writeState(state);
   return state;
+}
+
+/** Apakah user sudah pernah menyelesaikan/melewati layar onboarding. */
+export function hasSeenOnboarding() {
+  return Boolean(getState().onboardingSeen);
+}
+
+/** Dipanggil saat onboarding selesai (tombol terakhir) atau di-skip ("Lewati"). */
+export function markOnboardingSeen() {
+  const state = getState();
+  if (state.onboardingSeen) return;
+  state.onboardingSeen = true;
+  writeState(state);
 }
 
 export function getState() {
@@ -281,7 +314,7 @@ export function completeLesson(languageId, unitId, lessonId, correctCount, total
     unitProgress.completedLessons.push(lessonId);
   }
 
-  const earnedXP = correctCount * 10;
+  const earnedXP = correctCount * XP_PER_CORRECT_ANSWER;
   state.xp += earnedXP;
 
   const lesson = unit ? unit.lessons.find((l) => l.id === lessonId) : null;
@@ -303,4 +336,46 @@ export function completeLesson(languageId, unitId, lessonId, correctCount, total
     unitProgress: getUnitProgress(languageId, unitId),
     nextLessonId: unitProgress.currentLessonId,
   };
+}
+
+/* ---------------- Ulas kata yang salah ---------------- */
+
+// Batas daftar ulas agar LocalStorage tidak membengkak; yang paling lama dibuang.
+const MAX_MISSED_ITEMS = 40;
+
+/**
+ * Dipanggil saat sesi selesai (Lesson Complete, termasuk mode review & sesi
+ * Ulas): mencatat soal yang salah ke daftar ulas dan MENGHAPUS soal yang
+ * kali ini dijawab benar. Tidak menyentuh XP/progress lesson.
+ *
+ * @param {Array<{languageId:string, unitId:string, lessonId:string, questionId:string, correct:boolean}>} results
+ */
+export function saveQuestionResults(results) {
+  const state = getState();
+  const keyOf = (r) => `${r.languageId}|${r.unitId}|${r.lessonId}|${r.questionId}`;
+  let missed = Array.isArray(state.missed) ? [...state.missed] : [];
+
+  results.forEach((result) => {
+    const key = keyOf(result);
+    missed = missed.filter((item) => keyOf(item) !== key);
+    if (!result.correct) {
+      missed.push({
+        languageId: result.languageId,
+        unitId: result.unitId,
+        lessonId: result.lessonId,
+        questionId: result.questionId,
+        ts: Date.now(),
+      });
+    }
+  });
+
+  state.missed = missed.slice(-MAX_MISSED_ITEMS);
+  writeState(state);
+  return state.missed;
+}
+
+/** Soal yang perlu diulas untuk satu bahasa, urutan dari yang paling lama. */
+export function getMissedItems(languageId) {
+  const state = getState();
+  return (Array.isArray(state.missed) ? state.missed : []).filter((item) => item.languageId === languageId);
 }

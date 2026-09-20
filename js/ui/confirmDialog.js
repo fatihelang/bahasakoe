@@ -1,42 +1,29 @@
 /*
   confirmDialog.js
-  Dialog konfirmasi kecil generik -- dipakai saat sebuah aksi bisa
-  menghilangkan progress yang belum tersimpan (mis. keluar dari lesson
-  yang belum selesai). Pola sama seperti languageSheet.js (backdrop dibuat
-  & dilepas dari DOM setiap kali dipakai), tapi kartunya di TENGAH layar
-  (bukan bottom sheet) karena ini konfirmasi singkat, bukan daftar pilihan
-  -- reuse --color-scrim yang sama, cuma alignment-nya beda.
+  Confirm Dialog (brand guide): dipakai saat sebuah aksi bisa menghilangkan
+  progress yang belum tersimpan, mis. keluar dari lesson yang belum selesai.
 
-  Konvensi: aksi yang AMAN/non-destruktif selalu jadi tombol primary
-  (paling menonjol), aksi yang berisiko (mis. "Keluar") jadi secondary --
-  supaya tombol paling mencolok bukan yang bikin user kehilangan progress.
+  Konvensi: aksi AMAN selalu jadi tombol primary, aksi berisiko ("Keluar")
+  jadi secondary, supaya tombol paling menonjol bukan yang membuat user
+  kehilangan progress. Danger (merah destruktif) sengaja tidak dipakai:
+  keluar dari lesson bukan aksi destruktif permanen.
 */
 
-export function showConfirmDialog({ title, message, safeLabel, riskyLabel, onRisky }) {
-  const backdrop = document.createElement('div');
-  backdrop.className = 'confirm-dialog-backdrop';
+import { openOverlay } from './overlay.js';
 
+export function showConfirmDialog({ title, message, safeLabel, riskyLabel, onRisky }) {
   const card = document.createElement('div');
   card.className = 'confirm-dialog';
-  backdrop.appendChild(card);
-  document.body.appendChild(backdrop);
-
-  function close() {
-    backdrop.remove();
-  }
-
-  backdrop.addEventListener('click', (e) => {
-    if (e.target === backdrop) close();
-  });
-
   card.innerHTML = `
-    <div class="confirm-dialog__title">${title}</div>
+    <h2 class="confirm-dialog__title">${title}</h2>
     <p class="confirm-dialog__message">${message}</p>
     <div class="confirm-dialog__actions">
-      <button class="btn btn-primary confirm-dialog__safe" data-action="safe">${safeLabel}</button>
-      <button class="btn btn-secondary confirm-dialog__risky" data-action="risky">${riskyLabel}</button>
+      <button class="btn btn-primary" data-action="safe" data-autofocus>${safeLabel}</button>
+      <button class="btn btn-secondary" data-action="risky">${riskyLabel}</button>
     </div>
   `;
+
+  const { close } = openOverlay(card, { center: true, label: title });
 
   card.querySelector('[data-action="safe"]').addEventListener('click', close);
   card.querySelector('[data-action="risky"]').addEventListener('click', () => {

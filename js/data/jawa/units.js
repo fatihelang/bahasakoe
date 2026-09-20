@@ -1,7 +1,9 @@
 /*
   units.js (js/data/jawa/)
-  Daftar Unit untuk Bahasa Jawa. STEP 2 menambahkan Unit 2 (Unggah-Ungguh)
-  di sini -- cukup "tambah satu object + satu file lesson baru", tanpa
+  Daftar Unit untuk Bahasa Jawa. STEP 2 menambahkan Unit 2 (sekarang
+  bernama "Berbicara dengan Hormat", lihat UX REVISION 0 di bawah -- nama
+  awalnya "Unggah-Ungguh") di sini -- cukup "tambah satu object + satu
+  file lesson baru", tanpa
   menyentuh curriculum.js, appState.js, atau screen manapun (persis seperti
   yang dijelaskan di komentar bawah ini, ditulis sejak STEP 1).
 
@@ -31,8 +33,13 @@ export const UNITS = [
   {
     id: 'unit2',
     order: 2,
-    title: 'Unggah-Ungguh',
-    description: 'Belajar menyesuaikan penggunaan Bahasa Jawa dengan lawan bicara dan situasi.',
+    // UX REVISION 0: nama unit diubah dari "Unggah-Ungguh" -> "Berbicara
+    // dengan Hormat" -- nama lama terlalu mudah tertukar dengan topik
+    // budaya yang sebelumnya jadi tab Budaya terpisah. "Unggah-ungguh"
+    // tetap boleh muncul SEBAGAI ISTILAH di dalam lesson (Culture Moment/
+    // cultureInsight), bukan lagi sebagai nama destination/unit.
+    title: 'Berbicara dengan Hormat',
+    description: 'Pelajari cara menyesuaikan bahasa Jawa berdasarkan lawan bicara dan situasi.',
     lessons: LESSONS_UNIT2,
   },
 ];

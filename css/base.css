@@ -1,150 +1,191 @@
 /*
   base.css
-  Reset dasar + aturan tipografi global.
+  Font, reset, tipografi dasar, focus state, dan app shell (mobile -> desktop).
+  Hanya memakai token dari variables.css.
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* Plus Jakarta Sans di-host lokal (fonts/, lisensi OFL-1.1) supaya tampilan
+   tetap sama saat offline, mis. demo tanpa Wi-Fi. Hanya subset latin
+   (cukup untuk Bahasa Indonesia/Jawa/Sunda) dan bobot 500-800 yang dipakai. */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/plus-jakarta-sans-latin-500-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/plus-jakarta-sans-latin-600-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/plus-jakarta-sans-latin-700-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('../fonts/plus-jakarta-sans-latin-800-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-html, body {
-  height: 100%;
+*, *::before, *::after { box-sizing: border-box; }
+
+* { margin: 0; padding: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html, body { min-height: 100%; }
+
+body {
+  font-family: var(--font-base);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-normal);
+  color: var(--color-ink);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-body {
-  font-family: var(--font-main);
-  font-size: var(--fs-base);
-  color: var(--color-ink);
-  background: var(--color-bg);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-
-button {
+button, input {
   font-family: inherit;
-  cursor: pointer;
-  border: none;
-  background: none;
+  font-size: inherit;
   color: inherit;
 }
 
-button:disabled {
-  cursor: not-allowed;
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
-ul, ol {
-  list-style: none;
-}
+button:disabled { cursor: not-allowed; }
 
-img, svg {
-  display: block;
-  max-width: 100%;
-}
+ul, ol { list-style: none; }
 
-h1, h2, h3, p {
-  font-weight: var(--fw-regular);
-}
+img, svg { display: block; max-width: 100%; }
 
-/* Fokus keyboard tetap terlihat jelas untuk aksesibilitas */
+h1, h2, h3, h4, p { font-weight: inherit; }
+
+/* Focus keyboard: selalu terlihat jelas. Brand guide memakai primary-tint,
+   tetapi tint di atas putih/krem kontrasnya terlalu rendah untuk indikator
+   fokus, jadi dipakai --color-primary (token yang sama, lebih tegas). */
 :focus-visible {
   outline: 3px solid var(--color-primary);
   outline-offset: 2px;
 }
 
-/* Layout dasar aplikasi: dibatasi lebar ala mobile, di-tengah di layar besar */
+/* Target fokus terprogram (judul langkah lesson): tidak perlu ring, bukan kontrol */
+[tabindex="-1"]:focus { outline: none; }
+
+/* ---- Tipografi: kelas utilitas yang dipakai lintas screen ---- */
+.t-display {
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+  font-variant-numeric: tabular-nums;
+}
+.t-h1 {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-snug);
+  line-height: var(--lh-tight);
+}
+.t-h2 {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-snug);
+  line-height: var(--lh-tight);
+}
+.t-body-lg { font-size: var(--fs-md); font-weight: var(--fw-medium); line-height: var(--lh-normal); }
+.t-support { font-size: var(--fs-sm); font-weight: var(--fw-medium); line-height: var(--lh-snug); color: var(--color-ink-soft); }
+.t-eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+}
+
+/* Teks hanya untuk screen reader */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   APP SHELL
+   Mobile: satu kolom penuh + bottom navigation.
+   >= 768px: sidebar tetap di kiri + kolom belajar ter-center
+   dengan lebar maksimum (tidak di-stretch mengikuti layar).
+   ============================================================ */
 .app-shell {
-  max-width: var(--app-max-width);
-  margin: 0 auto;
   min-height: 100vh;
   min-height: 100dvh;
-  background: var(--color-bg);
-  position: relative;
-  padding-bottom: calc(var(--nav-height) + var(--space-4));
+  padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
 }
 
-/* Selama focused lesson session (bottom nav disembunyikan), layar boleh
-   memakai ruang penuh tanpa menyisakan padding untuk nav -- tapi tetap
-   menyisakan sedikit ruang aman di bawah (notch/gesture bar) supaya CTA
-   lesson tidak pernah menempel mentah ke tepi layar. */
-body.is-focused-session .app-shell {
-  padding-bottom: max(var(--space-4), env(safe-area-inset-bottom));
-}
-
-/* ---- Responsive: desktop & tablet ----
-   Prinsip (lihat brief UX overhaul, bagian 5): mobile = focused learning,
-   desktop = spacious learning -- BUKAN mobile yang cuma discale-up.
-   Shell melebar, whitespace horizontal nambah. Konten utama tetap satu
-   kolom ter-center di sisa ruang di samping sidebar nav (bukan dashboard
-   multi-panel) supaya identitas aplikasi tetap satu, bukan jadi dua
-   produk berbeda -- sidebar cuma navigasi, bukan panel konten tambahan. */
-@media (min-width: 768px) {
-  /* Nav pindah dari bottom bar (mobile) jadi sidebar di samping (lihat
-     .bottom-nav di components.css), mepet ke tepi kiri VIEWPORT (position:
-     fixed di components.css) -- bukan cuma di tepi kiri .app-shell, supaya
-     tidak ada celah kosong di kiri layar sekalipun .app-shell sendiri
-     ter-center dan tidak selebar viewport. body diberi padding-left
-     seukuran sidebar supaya area konten (app-shell, yang tetap margin:0
-     auto dari base rule di atas) ter-center di SISA ruang setelah sidebar,
-     bukan di keseluruhan viewport. */
-  body {
-    padding-left: var(--sidebar-width);
-  }
-
-  /* Saat focused lesson session, sidebar disembunyikan (.bottom-nav.is-hidden)
-     -- ruang yang tadinya disisakan untuk sidebar ikut dilepas supaya
-     konten lesson memakai lebar penuh, tidak menyisakan celah kosong di
-     kiri yang sebelumnya ditempati sidebar. */
-  body.is-focused-session {
-    padding-left: 0;
-  }
-
-  .app-shell {
-    max-width: var(--app-max-width-desktop);
-    padding-bottom: 0;
-  }
-
-  body.is-focused-session .app-shell {
-    padding-bottom: 0;
-  }
-
-  #app {
-    padding: var(--space-7) var(--space-6) var(--space-6);
-  }
-}
+body.is-focused-session .app-shell { padding-bottom: 0; }
 
 #app {
-  padding: var(--space-5) var(--space-4) var(--space-4);
+  width: 100%;
+  max-width: var(--content-max);
+  margin: 0 auto;
 }
 
-/* Transisi halus tiap kali layar berganti (dipicu router.js). Membuat
-   navigasi terasa hidup tanpa mengubah cara kerja "router" (masih ganti
-   innerHTML #app, bukan animasi antar-elemen DOM yang rumit). */
-.screen-fade {
-  animation: screenFadeIn 260ms ease;
+@media (min-width: 768px) {
+  body { padding-left: var(--sidebar-width); }
+  body.is-focused-session { padding-left: 0; }
+
+  .app-shell { padding-bottom: 0; }
 }
+
+/* Transisi antar layar: fade + naik sedikit (dipicu router.js) */
+.screen-fade { animation: screenFadeIn var(--duration-base) var(--ease-standard); }
 
 @keyframes screenFadeIn {
   from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Entrance halus untuk item dalam daftar (opsi jawaban, badge, kartu
-   budaya, node learning path) — dipakai bareng nth-child di
-   components.css/screens.css supaya tiap item muncul gantian, bukan
-   serentak. Selalu dipasangkan dengan .stagger-in di elemen induk. */
+/* Item daftar masuk bergantian (dipasang lewat --stagger di inline style) */
+.stagger-in {
+  animation: staggerFadeUp var(--duration-base) var(--ease-out-soft) both;
+  animation-delay: calc(var(--stagger, 0) * 45ms);
+}
+
 @keyframes staggerFadeUp {
   from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
+/* Reduced motion: matikan animasi & transisi, state tetap terbaca lewat warna + ikon */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *, *::before, *::after {
     animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }

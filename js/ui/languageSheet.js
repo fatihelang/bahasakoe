@@ -1,73 +1,63 @@
 /*
   languageSheet.js
-  Bottom sheet kecil untuk memilih bahasa. Dipakai dari Home ("Ganti bahasa")
-  dan Learning Path (compact selector) — satu komponen, dua pemanggil,
-  supaya tidak ada logic language-switching yang terduplikasi/kompleks.
+  Language Selector (brand guide): daftar bahasa dengan pilihan aktif
+  ditandai check + background primary-soft (pola .lang-option). Dipakai
+  dari Belajar dan Profil, satu komponen dengan dua pemanggil.
 
   Tidak menyimpan state sendiri: baca dari data/languages.js, baca/tulis
-  lewat state/appState.js. Dibuat & dilepas dari DOM setiap kali dibuka
-  (bukan disimpan seperti toast) karena kontennya bisa berganti (list -> pesan
-  coming-soon) dan pemakaiannya jarang/tidak berbarengan.
+  lewat state/appState.js. Dibuat & dilepas dari DOM setiap kali dibuka.
 */
 
 import { LANGUAGES } from '../data/languages.js';
 import { getSelectedLanguage, setSelectedLanguage } from '../state/appState.js';
-import { icons } from '../ui/icons.js';
+import { icons } from './icons.js';
+import { openOverlay } from './overlay.js';
 
-export function showLanguageSheet({ navigateTo }) {
+export function languageInitial(language) {
+  return language.name.replace(/^Bahasa\s+/i, '').charAt(0).toUpperCase();
+}
+
+/**
+ * @param {{ navigateTo: Function, destination?: string }} options
+ *   destination: layar tujuan setelah bahasa dipilih. Default 'learn';
+ *   Home mengirim 'home' agar pengguna tetap di Home setelah ganti bahasa.
+ */
+export function showLanguageSheet({ navigateTo, destination = 'learn' }) {
   const current = getSelectedLanguage();
 
-  const backdrop = document.createElement('div');
-  backdrop.className = 'language-sheet-backdrop';
-
   const sheet = document.createElement('div');
-  sheet.className = 'language-sheet';
-  backdrop.appendChild(sheet);
-  document.body.appendChild(backdrop);
-
-  function close() {
-    backdrop.remove();
-  }
-
-  backdrop.addEventListener('click', (e) => {
-    if (e.target === backdrop) close();
-  });
-
-  function goToJawaLearning() {
-    setSelectedLanguage('jawa');
-    close();
-    navigateTo('learn');
-  }
+  sheet.className = 'sheet';
+  const { close } = openOverlay(sheet, { label: 'Pilih bahasa' });
 
   function renderList() {
-    const rowsHtml = LANGUAGES.map((lang) => `
-      <button class="language-sheet__row ${lang.id === current.id ? 'is-active' : ''}" data-lang-id="${lang.id}">
-        <span class="language-sheet__row-icon icon-chip ${lang.available ? 'icon-chip--red' : 'icon-chip--neutral'} icon-chip--sm">${icons.graduate}</span>
-        <span class="language-sheet__row-text">
-          <span class="language-sheet__row-name">${lang.name}</span>
-          <span class="language-sheet__row-status ${lang.available ? 'is-available' : 'is-soon'}">${lang.description}</span>
+    const rowsHtml = LANGUAGES.map(
+      (lang) => `
+      <button class="lang-option ${lang.id === current.id ? 'is-selected' : ''}" data-lang-id="${lang.id}" ${lang.id === current.id ? 'aria-current="true"' : ''}>
+        <span class="lang-flag" aria-hidden="true">${languageInitial(lang)}</span>
+        <span class="lang-option__text">
+          <span>${lang.name}</span>
+          <span class="lang-option__desc">${lang.available ? lang.description : 'Segera hadir'}</span>
         </span>
-      </button>
-    `).join('');
+        <span class="check">${icons.check}</span>
+      </button>`
+    ).join('');
 
     sheet.innerHTML = `
-      <div class="language-sheet__header">
-        <span class="language-sheet__title">Bahasa yang dipelajari</span>
-        <button class="language-sheet__close" data-action="close" aria-label="Tutup">${icons.close}</button>
+      <div class="sheet__header">
+        <h2 class="sheet__title">Bahasa yang dipelajari</h2>
+        <button class="icon-btn" data-action="close" aria-label="Tutup">${icons.close}</button>
       </div>
-      <div class="language-sheet__list">${rowsHtml}</div>
+      <div class="sheet__list">${rowsHtml}</div>
     `;
 
     sheet.querySelector('[data-action="close"]').addEventListener('click', close);
-
-    sheet.querySelectorAll('.language-sheet__row').forEach((row) => {
+    sheet.querySelectorAll('.lang-option').forEach((row) => {
       row.addEventListener('click', () => {
-        const langId = row.dataset.langId;
-        const lang = LANGUAGES.find((l) => l.id === langId);
+        const lang = LANGUAGES.find((l) => l.id === row.dataset.langId);
         if (lang.available) {
           setSelectedLanguage(lang.id);
           close();
-          navigateTo('learn');
+          navigateTo(destination);
         } else {
           renderComingSoon(lang);
         }
@@ -77,19 +67,22 @@ export function showLanguageSheet({ navigateTo }) {
 
   function renderComingSoon(lang) {
     sheet.innerHTML = `
-      <div class="language-sheet__header">
-        <span class="language-sheet__title">${lang.name}</span>
-        <button class="language-sheet__close" data-action="close" aria-label="Tutup">${icons.close}</button>
+      <div class="sheet__header">
+        <h2 class="sheet__title">${lang.name}</h2>
+        <button class="icon-btn" data-action="close" aria-label="Tutup">${icons.close}</button>
       </div>
-      <div class="language-sheet__soon">
-        <p>${lang.name} sedang dipersiapkan.</p>
-        <p>Untuk saat ini, kamu bisa mulai belajar Bahasa Jawa.</p>
-        <button class="btn btn-primary" data-action="go-jawa">Belajar Bahasa Jawa</button>
+      <div class="sheet__body">
+        <p>${lang.name} sedang dipersiapkan. Untuk saat ini, kamu bisa mulai belajar Bahasa Jawa.</p>
+        <button class="btn btn-primary btn-block" data-action="go-jawa" data-autofocus>Belajar Bahasa Jawa</button>
       </div>
     `;
-
     sheet.querySelector('[data-action="close"]').addEventListener('click', close);
-    sheet.querySelector('[data-action="go-jawa"]').addEventListener('click', goToJawaLearning);
+    sheet.querySelector('[data-action="go-jawa"]').addEventListener('click', () => {
+      setSelectedLanguage('jawa');
+      close();
+      navigateTo(destination);
+    });
+    sheet.querySelector('[data-autofocus]').focus();
   }
 
   renderList();

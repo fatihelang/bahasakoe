@@ -1,8 +1,12 @@
 /*
   unit2.js (js/data/jawa/)
-  Data murni untuk Unit 2 -- Unggah-Ungguh: HANYA daftar lesson.
+  Data murni untuk Unit 2 -- "Berbicara dengan Hormat" (UX REVISION 0;
+  nama sebelumnya "Unggah-Ungguh", lihat units.js): HANYA daftar lesson.
   Mengikuti pola persis unit1.js (lihat komentar di sana) -- metadata unit
   (id, title, description, order) ada di units.js, file ini cuma isi lesson.
+  Istilah "unggah-ungguh" sendiri TETAP dipakai di dalam konten lesson
+  (cultureMoment/cultureInsight) sebagai konsep budaya yang dijelaskan,
+  bukan lagi sebagai nama unit/destination.
 
   FOKUS UNIT 2 (beda dengan Unit 1 yang murni kosakata dasar):
   KATA -> KALIMAT -> KONTEKS -> BUDAYA. Pertanyaan di Lesson 1-3 sengaja
@@ -37,7 +41,8 @@
   player membaca field ini generik lewat lesson.cultureMoment -- tidak ada
   daftar hardcode di lesson.js. Cuma dipasang di lesson yang memang relevan
   (di sini: semua lesson Unit 2, karena topik unit ini memang tentang
-  unggah-ungguh) -- Unit 1 sengaja tidak punya field ini sama sekali.
+  unggah-ungguh). Unit 1 awalnya sengaja tanpa field ini; kini Lesson 1-3
+  punya cultureMoment draf (lihat unit1.js).
 */
 
 export const LESSONS = [

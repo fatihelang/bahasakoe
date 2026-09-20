@@ -1,116 +1,108 @@
 /*
   profile.js
-  Menampilkan ringkasan progress pengguna: XP, streak, progress Unit 1,
-  dan badge (earned/locked). Semua data diambil dari appState.js —
-  tidak ada penyimpanan lokal di file ini.
+  Profil: sederhana, bukan dashboard analitik.
+  Prioritas: identitas -> bahasa aktif -> XP & streak -> progress -> achievement,
+  ditambah satu pengaturan (suara). Semua data dari appState.js.
 
-  Avatar & nama masih dummy/generik karena prototype belum punya
-  login/akun sungguhan (sesuai scope: "tidak perlu settings atau fitur
-  akun kompleks").
+  Avatar & nama masih generik karena prototype belum punya akun (sesuai scope).
 */
 
 import { getState, getUnitProgress, getBadgesWithStatus, getSelectedLanguage, getCurrentUnit } from '../state/appState.js';
 import { icons } from '../ui/icons.js';
+import { pageHeader } from '../ui/pageHeader.js';
 import { isSoundEnabled, setSoundEnabled, playSelect } from '../ui/soundManager.js';
+import { showLanguageSheet } from '../ui/languageSheet.js';
+import { animateCount } from '../ui/animateCount.js';
 
-// Setiap badge.icon (key dari data/badges.js) dipetakan ke warna chip yang
-// sesuai personanya — dipisah dari data murni supaya badges.js tetap fokus
-// pada konten, bukan detail visual.
-const BADGE_ICON_COLOR = {
-  seedling: 'green',
-  flame: 'red',
-  trophy: 'red', // sebelumnya 'gold' — trophy adalah reward, bukan konten Budaya,
-                 // jadi ikut identitas merah, bukan aksen kuning kunyit
-  zap: 'red',
-};
-
-export function renderProfile(container) {
+export function renderProfile(container, { navigateTo } = {}) {
   const state = getState();
   const language = getSelectedLanguage();
-  // STEP 1.5: kartu progress di sini sekarang mengikuti selectedLanguage +
-  // unit yang sedang berjalan (getCurrentUnit) -- TIDAK lagi dipin ke Jawa
-  // Unit 1. Badge grid di bawah SENGAJA TIDAK ikut berubah (lihat
-  // getBadgesWithStatus di appState.js) -- badge memang didefinisikan
-  // seputar perjalanan Jawa Unit 1 secara spesifik.
   const activeUnit = language.available ? getCurrentUnit(language.id) : null;
   const progress = activeUnit ? getUnitProgress(language.id, activeUnit.id) : { completed: 0, total: 0 };
-  const progressLabel = activeUnit ? `Unit ${activeUnit.order}: ${activeUnit.title}` : `${language.name} (segera hadir)`;
-  const progressPercent = progress.total > 0 ? (progress.completed / progress.total) * 100 : 0;
-  const badges = getBadgesWithStatus();
-  // Progress yang benar-benar ada cuma untuk Jawa, jadi kalau bahasa yang
-  // dipilih belum tersedia (mis. Sunda), wording TIDAK boleh terkesan
-  // seolah-olah user sudah belajar bahasa itu — fallback aman ke Jawa.
-  const languageSubtitle = language.available
-    ? `Sedang belajar ${language.name}`
-    : 'Bahasa aktif: Bahasa Jawa';
+  const percent = progress.total > 0 ? (progress.completed / progress.total) * 100 : 0;
+  const soundOn = isSoundEnabled();
 
-  const badgesHtml = badges
-    .map((badge) => {
-      const colorModifier = BADGE_ICON_COLOR[badge.icon] || 'neutral';
-      return `
-        <div class="badge-card ${badge.earned ? '' : 'is-locked'}">
-          ${
-            badge.earned
-              ? `<div class="badge-card__icon icon-chip icon-chip--${colorModifier} icon-chip--md icon-chip--pop">${icons[badge.icon]}</div>`
-              : `<div class="badge-card__lock">${icons.lock}</div>`
-          }
-          <div class="badge-card__title">${badge.title}</div>
-          <div class="badge-card__description">${badge.description}</div>
-        </div>
-      `;
-    })
+  const badgesHtml = getBadgesWithStatus()
+    .map(
+      (badge) => `
+      <li class="card card--static badge-card ${badge.earned ? 'is-unlocked' : 'is-locked'}">
+        <span class="badge-icon" aria-hidden="true">${badge.earned ? icons[badge.icon] : icons.lock}</span>
+        <span class="badge-card__name">${badge.title}</span>
+        <span class="badge-card__desc">${badge.description}</span>
+        <span class="sr-only">${badge.earned ? 'Sudah didapat' : 'Belum didapat'}</span>
+      </li>`
+    )
     .join('');
 
   container.innerHTML = `
-    <div class="profile-header">
-      <div class="profile-header__avatar">${icons.graduate}</div>
-      <div class="profile-header__title-row">
-        <span class="flag-mark"></span>
-        <div class="profile-header__name">Sahabat Basa</div>
-      </div>
-      <div class="profile-header__subtitle">${languageSubtitle}</div>
-    </div>
+    <div class="screen profile">
+      ${pageHeader({ title: 'Profil' })}
 
-    <h2 class="section-title">Ringkasan</h2>
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-card__value">${state.xp} XP</div>
-        <div class="stat-card__label">Total XP</div>
+      <div class="card card--static profile-identity">
+        <span class="icon-bubble icon-bubble--md icon-bubble--round" aria-hidden="true">${icons.graduate}</span>
+        <div class="card-body">
+          <p class="profile-identity__name">Sahabat Basa</p>
+          <p class="card-text">${language.available ? `Sedang belajar ${language.name}` : 'Bahasa aktif: Bahasa Jawa'}</p>
+        </div>
+        <button class="btn btn-secondary btn-sm" data-action="switch-language">Ganti</button>
       </div>
-      <div class="stat-card">
-        <div class="stat-card__value"><span class="flame-pulse">${icons.flame}</span> ${state.streak} hari</div>
-        <div class="stat-card__label">Streak belajar</div>
-      </div>
-    </div>
 
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-card__value">${progress.completed}/${progress.total}</div>
-        <div class="stat-card__label">${progressLabel}</div>
-        <div class="progress-track">
-          <div class="progress-fill" style="width:${progressPercent}%"></div>
+      <div class="stat-grid">
+        <div class="card card--static stat-card">
+          <span class="icon-bubble icon-bubble--culture" aria-hidden="true">${icons.zap}</span>
+          <span class="card-body"><span class="stat-card__value" id="stat-xp">${state.xp}</span><span class="stat-card__label">Total XP</span></span>
+        </div>
+        <div class="card card--static stat-card">
+          <span class="icon-bubble icon-bubble--culture" aria-hidden="true">${icons.flame}</span>
+          <span class="card-body"><span class="stat-card__value">${state.streak} hari</span><span class="stat-card__label">Streak belajar</span></span>
         </div>
       </div>
+
+      <div class="card card--static">
+        <span class="card-title">${activeUnit ? `Unit ${activeUnit.order}: ${activeUnit.title}` : `${language.name} (segera hadir)`}</span>
+        <span class="card-progress-track" role="progressbar" aria-label="Progress unit" aria-valuemin="0" aria-valuemax="${progress.total}" aria-valuenow="${progress.completed}">
+          <span class="card-progress-fill" style="display:block;width:${percent}%"></span>
+        </span>
+        <span class="card-progress-label">${progress.completed} dari ${progress.total} lesson selesai</span>
+      </div>
+
+      <div class="stack stack--section">
+        <h2 class="section-title">Achievement</h2>
+        <ul class="badge-grid">${badgesHtml}</ul>
+      </div>
+
+      <div class="stack stack--section">
+        <h2 class="section-title">Pengaturan</h2>
+        <button class="card card-clickable setting-row" data-action="toggle-sound" aria-pressed="${soundOn}">
+          <span class="icon-bubble" aria-hidden="true">${soundOn ? icons.soundOn : icons.soundOff}</span>
+          <span class="card-body"><span class="card-title">Suara</span><span class="card-text">Efek suara saat belajar</span></span>
+          <span class="setting-row__state">${soundOn ? 'Aktif' : 'Mati'}</span>
+        </button>
+        <button class="card card-clickable setting-row" data-action="view-tutorial">
+          <span class="icon-bubble" aria-hidden="true">${icons.bulb}</span>
+          <span class="card-body"><span class="card-title">Lihat tutorial lagi</span><span class="card-text">Ulangi pengenalan singkat cara belajar di BahasaKoe</span></span>
+          <span class="setting-row__chevron" aria-hidden="true">${icons.chevronRight}</span>
+        </button>
+      </div>
     </div>
-
-    <h2 class="section-title">Badge</h2>
-    <div class="badge-grid">${badgesHtml}</div>
-
-    <h2 class="section-title">Pengaturan</h2>
-    <button class="sound-toggle-row" data-action="toggle-sound" aria-pressed="${isSoundEnabled()}">
-      <span class="sound-toggle-row__icon icon-chip icon-chip--neutral icon-chip--md">${isSoundEnabled() ? icons.soundOn : icons.soundOff}</span>
-      <span class="sound-toggle-row__text">
-        <span class="sound-toggle-row__title">Suara</span>
-        <span class="sound-toggle-row__subtitle">Efek suara saat menjawab lesson</span>
-      </span>
-      <span class="sound-toggle-row__state">${isSoundEnabled() ? 'ON' : 'OFF'}</span>
-    </button>
   `;
 
-  container.querySelector('[data-action="toggle-sound"]').addEventListener('click', (e) => {
-    const nextEnabled = !isSoundEnabled();
-    setSoundEnabled(nextEnabled);
-    if (nextEnabled) playSelect(); // konfirmasi kecil begitu dinyalakan kembali
-    renderProfile(container);
+  const xpEl = container.querySelector('#stat-xp');
+  if (xpEl) animateCount(xpEl, state.xp, { duration: 600 });
+
+  container.querySelector('[data-action="switch-language"]').addEventListener('click', () => {
+    showLanguageSheet({ navigateTo });
+  });
+
+  container.querySelector('[data-action="toggle-sound"]').addEventListener('click', () => {
+    const next = !isSoundEnabled();
+    setSoundEnabled(next);
+    if (next) playSelect(); // konfirmasi kecil begitu suara dinyalakan
+    renderProfile(container, { navigateTo });
+    container.querySelector('[data-action="toggle-sound"]').focus();
+  });
+
+  container.querySelector('[data-action="view-tutorial"]').addEventListener('click', () => {
+    navigateTo('onboarding', { replay: true });
   });
 }

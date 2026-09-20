@@ -12,6 +12,15 @@
   pembungkus UNIT1.
 
   Struktur lesson & question: lihat komentar lengkap di js/data/curriculum.js.
+
+  cultureMoment Lesson 1-3 ditambahkan belakangan (redesign UI/UX). Sebelumnya
+  Unit 1 SENGAJA tanpa Culture Moment (murni kosakata); ditambah supaya
+  pemain baru sudah bertemu konsep Language -> Context -> Culture sejak
+  lesson pertama. Ketiganya DRAF hasil model AI, BELUM divalidasi penutur/
+  pakar budaya Jawa -- flag `needsValidation` dibiarkan apa adanya sebagai
+  penanda internal, tidak memengaruhi tampilan (tidak ada lagi badge
+  tervalidasi/draf di UI). Untuk mengembalikan perilaku lama (tanpa Culture
+  Moment di Unit 1), hapus blok cultureMoment di ketiga lesson.
 */
 
 export const LESSONS = [
@@ -29,6 +38,12 @@ export const LESSONS = [
         { native: 'Matur nuwun', arti: 'Terima kasih' },
         { native: 'Sami-sami', arti: 'Sama-sama' },
       ],
+      cultureMoment: {
+        title: 'Tahukah kamu?',
+        body: 'Salam dalam Bahasa Jawa dibedakan menurut waktu, seperti \"Sugeng enjing\" untuk pagi dan \"Sugeng sonten\" untuk sore. \"Matur nuwun\" umumnya terdengar sopan, jadi sering dipakai saat berterima kasih kepada orang yang belum akrab.',
+        type: 'context',
+        needsValidation: true,
+      },
       questions: [
         {
           id: 'l1-q1',
@@ -127,6 +142,12 @@ export const LESSONS = [
         { native: 'Aku', arti: 'Aku / saya (ngoko)' },
         { native: 'Kowe', arti: 'Kamu (ngoko)' },
       ],
+      cultureMoment: {
+        title: 'Tahukah kamu?',
+        body: '\"Aku\" dan \"kowe\" adalah bentuk ngoko yang akrab, umumnya dipakai ke teman sebaya. Ke orang yang lebih tua atau baru dikenal, penutur sering memilih bentuk yang lebih halus, dan itu akan kamu pelajari di Unit 2.',
+        type: 'context',
+        needsValidation: true,
+      },
       questions: [
         {
           id: 'l2-q1',
@@ -229,6 +250,12 @@ export const LESSONS = [
         { native: 'Sanga', arti: '9' },
         { native: 'Sepuluh', arti: '10' },
       ],
+      cultureMoment: {
+        title: 'Tahukah kamu?',
+        body: 'Selain hari dalam seminggu, penanggalan Jawa punya siklus lima hari yang disebut pasaran: Legi, Pahing, Pon, Wage, dan Kliwon. Pasaran umumnya masih dipakai dalam penanggalan tradisional.',
+        type: 'context',
+        needsValidation: true,
+      },
       questions: [
         {
           id: 'l3-q1',

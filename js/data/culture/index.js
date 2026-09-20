@@ -1,4 +1,10 @@
 /*
+  === UX REVISION 0: tab Budaya (screens/culture.js) sudah tidak di-route,
+  jadi getter di file ini sekarang 0 importer juga. Data (jawa.js/sunda.js)
+  SENGAJA DIPERTAHANKAN sebagai potensi sumber konten Culture Moment lesson
+  mendatang -- lihat catatan Stage 11 di router.js. Tidak ada isi yang
+  diubah. ===
+  ------------------------------------------------------------------------
   index.js (js/data/culture/)
   Satu-satunya lapisan yang tahu "budaya apa milik bahasa apa" -- pola
   persis js/data/curriculum.js untuk lesson. Screen (culture.js, home.js)

@@ -8,24 +8,28 @@
 import { renderHome } from './screens/home.js';
 import { renderLearningPath } from './screens/learningPath.js';
 import { renderUnitDetail } from './screens/unitDetail.js';
-import { renderCulture } from './screens/culture.js';
 import { renderProfile } from './screens/profile.js';
 import { renderLesson } from './screens/lesson.js';
+import { renderOnboarding } from './screens/onboarding.js';
 
+// Budaya bukan destination/tab: ia muncul sebagai Culture Moment di dalam
+// lesson (lihat screens/lesson.js), jadi tidak ada layar "culture" di sini.
 const screens = {
   home: renderHome,
   learn: renderLearningPath,
   unitDetail: renderUnitDetail,
-  culture: renderCulture,
   profile: renderProfile,
   lesson: renderLesson,
+  onboarding: renderOnboarding,
 };
 
 // Layar yang tampil di bottom nav. "lesson" adalah focused session,
 // jadi sengaja tidak masuk daftar ini — nav disembunyikan selama sesi berlangsung.
+// "onboarding" juga focused session (tutorial pertama kali / replay dari
+// Profil) -- nav disembunyikan dengan alasan yang sama.
 // "unitDetail" BUKAN focused session (masih boleh pindah tab kapan saja),
 // jadi nav tetap tampil, dan tab "Belajar" tetap ditandai aktif di sana.
-const NAV_SCREENS = ['home', 'learn', 'unitDetail', 'culture', 'profile'];
+const NAV_SCREENS = ['home', 'learn', 'unitDetail', 'profile'];
 const TAB_FOR_SCREEN = { unitDetail: 'learn' };
 
 export function createRouter(appEl, navEl) {
@@ -50,15 +54,18 @@ export function createRouter(appEl, navEl) {
 
     if (isNavScreen) {
       const activeTab = TAB_FOR_SCREEN[screenName] || screenName;
-      navEl.querySelectorAll('.nav-item').forEach((btn) => {
-        btn.classList.toggle('is-active', btn.dataset.screen === activeTab);
+      navEl.querySelectorAll('.bottom-nav__item').forEach((btn) => {
+        const isActive = btn.dataset.screen === activeTab;
+        btn.classList.toggle('is-active', isActive);
+        if (isActive) btn.setAttribute('aria-current', 'page');
+        else btn.removeAttribute('aria-current');
       });
     }
 
-    appEl.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0 });
   }
 
-  navEl.querySelectorAll('.nav-item').forEach((btn) => {
+  navEl.querySelectorAll('.bottom-nav__item').forEach((btn) => {
     btn.addEventListener('click', () => navigateTo(btn.dataset.screen));
   });
 

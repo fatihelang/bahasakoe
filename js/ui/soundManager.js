@@ -80,21 +80,52 @@ export function playSelect() {
 // "memilih jawaban". Dipanggil lewat satu listener global (lihat main.js),
 // BUKAN dipanggil manual di tiap screen, supaya tidak ada kemungkinan lupa
 // pasang di salah satu tombol.
+// REVISI (selaraskan brand guide, bagian "Efek Suara" -> "Tap Tombol"):
+// square wave 880Hz, klik pendek nyaris tak terdengar -- sebelumnya sine
+// 440Hz yang lebih terasa seperti nada, bukan "klik".
 export function playTap() {
-  playTone({ frequency: 440, duration: 0.05, type: 'sine', startGain: 0.035 });
+  playTone({ frequency: 880, duration: 0.05, type: 'square', startGain: 0.06 });
 }
 
+// REVISI (selaraskan brand guide -> "Jawaban Benar"): arpeggio 3 nada
+// mayor naik (C5-E5-G5), gelombang triangle (lebih bulat/ceria drpd sine
+// polos), staggered 70ms -- sebelumnya cuma 2 nada sine.
 export function playCorrect() {
-  playTone({ frequency: 660, duration: 0.11, type: 'sine', startGain: 0.08 });
-  playTone({ frequency: 880, duration: 0.14, type: 'sine', startGain: 0.07, delay: 0.09 });
+  const notes = [523.25, 659.25, 783.99];
+  notes.forEach((frequency, i) => {
+    playTone({ frequency, duration: 0.16, type: 'triangle', startGain: 0.14, delay: i * 0.07 });
+  });
 }
 
+// REVISI (selaraskan brand guide -> "Kurang Tepat"): dua nada TURUN
+// lembut (G4 -> E4), sine, volume rendah -- sengaja tidak menghukum/
+// tidak terdengar seperti alarm, sesuai prinsip non-punitive BahasaKoe.
+// Sebelumnya cuma satu nada rendah tunggal.
 export function playWrong() {
-  playTone({ frequency: 220, duration: 0.16, type: 'sine', startGain: 0.06 });
+  playTone({ frequency: 392.0, duration: 0.16, type: 'sine', startGain: 0.09 });
+  playTone({ frequency: 329.63, duration: 0.18, type: 'sine', startGain: 0.07, delay: 0.09 });
 }
 
+// Kenaikan streak -- 4 nada naik + satu kilau nada tinggi di akhir,
+// persis preset "Naik Streak" di brand guide. Belum ada pemicu otomatis
+// di alur aplikasi saat ini (streak baru dihitung ulang sekali per hari
+// saat app dibuka, bukan di momen lesson selesai), jadi fungsi ini
+// disediakan supaya siap dipanggil begitu ada momen UI yang secara
+// eksplisit merayakan kenaikan streak.
+export function playStreak() {
+  const notes = [523.25, 659.25, 783.99, 1046.5];
+  notes.forEach((frequency, i) => {
+    playTone({ frequency, duration: 0.14, type: 'triangle', startGain: 0.13, delay: i * 0.06 });
+  });
+  playTone({ frequency: 1568, duration: 0.25, type: 'sine', startGain: 0.08, delay: 0.28 });
+}
+
+// REVISI (selaraskan brand guide -> "Lesson Selesai"): fanfare 5 nada
+// (C5-C5-E5-G5-C6), gelombang triangle -- momen paling meriah, dipakai
+// hemat (cuma sekali di akhir lesson). Sebelumnya cuma 3 nada sine.
 export function playComplete() {
-  playTone({ frequency: 523, duration: 0.12, type: 'sine', startGain: 0.08 });
-  playTone({ frequency: 659, duration: 0.12, type: 'sine', startGain: 0.08, delay: 0.1 });
-  playTone({ frequency: 784, duration: 0.22, type: 'sine', startGain: 0.08, delay: 0.2 });
+  const notes = [523.25, 523.25, 659.25, 783.99, 1046.5];
+  notes.forEach((frequency, i) => {
+    playTone({ frequency, duration: 0.22, type: 'triangle', startGain: 0.13, delay: i * 0.11 });
+  });
 }

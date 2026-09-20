@@ -1,4 +1,13 @@
 /*
+  === UX REVISION 0: FILE INI SUDAH TIDAK DI-ROUTE/DIPAKAI ===
+  Tab "Budaya" dihapus dari bottom nav & router.js -- Budaya sekarang jadi
+  bagian dari lesson (Culture Moment), bukan destination terpisah. File ini
+  SENGAJA TIDAK DIHAPUS (0 importer sejak router.js diubah): berpotensi
+  jadi referensi/data source kalau Culture Moment butuh lebih banyak
+  variasi konten di masa depan. Keputusan hapus/reuse/migrasi konten ke
+  lesson data diserahkan ke Stage 11 (lihat UX Decision Log). Konten di
+  bawah TIDAK diubah apa pun.
+  ------------------------------------------------------------------------
   culture.js
   Tab Budaya -- exploratory learning, TIDAK wajib jadi bagian lesson flow.
 
@@ -291,7 +300,7 @@ export function renderCulture(container) {
       <div class="question-options">
         ${activity.options.map((opt, i) => `<button class="question-option" data-index="${i}">${opt}</button>`).join('')}
       </div>
-      <button class="btn btn-primary question-check-btn" data-action="check-answer" disabled>Periksa</button>
+      <button class="btn btn-success question-check-btn" data-action="check-answer" disabled>Periksa</button>
     `;
 
     const optionButtons = bodyEl.querySelectorAll('.question-option');
@@ -540,7 +549,7 @@ export function renderCulture(container) {
       <div class="question-options">
         ${question.options.map((opt, i) => `<button class="question-option" data-index="${i}">${opt}</button>`).join('')}
       </div>
-      <button class="btn btn-primary question-check-btn" data-action="check-answer" disabled>Jawab</button>
+      <button class="btn btn-success question-check-btn" data-action="check-answer" disabled>Jawab</button>
     `;
 
     const optionButtons = bodyEl.querySelectorAll('.question-option');

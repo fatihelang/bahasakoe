@@ -1,7 +1,12 @@
 /*
   icons.js
-  Kumpulan ikon SVG sederhana (garis, tanpa maskot/brand) dipakai di bottom nav.
-  Semua ikon original — bukan dari icon library berlisensi tertentu.
+  Kumpulan ikon SVG garis (stroke 1.8, currentColor) untuk seluruh aplikasi.
+  Semua ikon original, bukan dari icon library berlisensi tertentu.
+  Warna & ukuran diatur lewat CSS (currentColor), bukan di sini.
+
+  Catatan: culture, handsTogether, house, candle, mask tidak dipakai UI
+  saat ini, tetapi dirujuk lewat key oleh js/data/culture/* (konten Budaya
+  yang disimpan sebagai cadangan sumber Culture Moment), jadi dipertahankan.
 */
 
 export const icons = {
@@ -56,4 +61,17 @@ export const icons = {
   chevronDown: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`,
 
   close: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>`,
+
+  // Ulas: dua panah melingkar (kartu "Ulas kata yang salah")
+  repeat: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 0 1 4-4h12"/><path d="M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 0 1-4 4H4"/></svg>`,
+
+  // Silang tebal untuk indikator jawaban "kurang tepat" (dipasangkan dengan check di Answer Choice)
+  cross: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10M17 7 7 17"/></svg>`,
 };
+
+/**
+ * Menambahkan class ke <svg> ikon (dipakai Answer Choice untuk .icon-check / .icon-cross).
+ */
+export function withClass(svg, className) {
+  return svg.replace('<svg ', `<svg class="${className}" aria-hidden="true" `);
+}

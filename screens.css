@@ -1,0 +1,282 @@
+/*
+  screens.css
+  Komposisi layout tiap layar (Home, Belajar, Unit Detail, Lesson, Profil).
+  Tidak ada gaya komponen baru di sini: komponen ada di components.css,
+  file ini hanya menyusun hierarchy, spacing, dan urutan konten.
+
+  Prinsip (Screen Composition, brand guide):
+  one screen = one primary focus = one primary CTA.
+*/
+
+/* ============================================================
+   Layout dasar semua layar utama
+   ============================================================ */
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-5) var(--space-5) var(--space-7);
+}
+
+@media (min-width: 768px) {
+  .screen { gap: var(--space-6); padding: var(--space-9) var(--space-6) var(--space-9); }
+}
+
+.section-title { font-size: var(--fs-lg); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-snug); line-height: var(--lh-tight); }
+.stack { display: flex; flex-direction: column; gap: var(--space-3); }
+.stack--tight { gap: var(--space-2); }
+.stack--section { gap: var(--space-4); }
+
+/* ============================================================
+   HOME: "Apa yang harus saya lakukan sekarang?"
+   Urutan: lesson sekarang -> CTA -> progress kecil -> XP/streak (pendukung)
+   ============================================================ */
+.home-hero { gap: var(--space-4); }
+.home-hero__head { display: flex; flex-direction: column; gap: var(--space-2); }
+.home-hero__progress { display: flex; flex-direction: column; gap: var(--space-2); }
+.home-lang { align-self: flex-start; }
+.home-mascot { display: flex; align-items: center; gap: var(--space-4); }
+.home-review .card-top { align-items: flex-start; }
+
+/* Baris pendukung di Home (kata hari ini, pencapaian berikutnya): ringan, tanpa CTA */
+.home-row { flex-direction: row; align-items: center; gap: var(--space-4); }
+.home-row__native { font-size: var(--fs-2xl); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-tight); line-height: var(--lh-tight); overflow-wrap: anywhere; }
+.home-row__support { font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--color-ink-soft); }
+
+/* ============================================================
+   BELAJAR (Learning Path) & UNIT DETAIL: urutan linear, mudah dipindai
+   ============================================================ */
+.path-list { display: flex; flex-direction: column; gap: var(--space-4); }
+
+.path-item .card-top { align-items: flex-start; }
+.path-item__meta { display: flex; flex-direction: column; gap: var(--space-2); }
+
+.unit-intro { display: flex; flex-direction: column; gap: var(--space-4); }
+.unit-intro__description { font-size: var(--fs-md); font-weight: var(--fw-medium); line-height: var(--lh-normal); color: var(--color-ink-soft); }
+.unit-progress { display: flex; flex-direction: column; gap: var(--space-2); }
+.unit-progress__label { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); font-size: var(--fs-sm); font-weight: var(--fw-bold); }
+.unit-progress__value { font-size: var(--fs-xs); font-weight: var(--fw-bold); color: var(--color-primary-deep); }
+
+/* ============================================================
+   LESSON: alur belajar terfokus (tanpa bottom navigation)
+   Intro -> Learning Content -> Culture Moment -> Question -> Complete
+   ============================================================ */
+.lesson-session {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.lesson-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-2);
+}
+.lesson-header .progress-track { flex: 1 1 auto; }
+
+.lesson-main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-4) var(--space-5) var(--space-6);
+}
+
+/* Dock: area CTA di bawah, selalu terjangkau ibu jari. Isinya HANYA
+   satu primary CTA (atau panel feedback + satu CTA "Lanjutkan"). */
+.lesson-dock {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5) calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+}
+
+@media (min-width: 768px) {
+  .lesson-main { padding: var(--space-8) var(--space-6) var(--space-6); }
+  .lesson-header { padding: var(--space-6) var(--space-6) var(--space-2); }
+  .lesson-dock { padding: var(--space-5) var(--space-6) var(--space-6); }
+}
+
+/* Feedback inline: muncul di bawah jawaban, tidak menutupi pilihan */
+.feedback-slot { display: flex; flex-direction: column; gap: var(--space-3); scroll-margin-bottom: var(--space-12); }
+
+/* Dock kosong (mis. matching sebelum selesai) tidak memakan ruang */
+.lesson-dock:empty { display: none; }
+
+/* ---- Lesson Intro ---- */
+.lesson-intro__mascot { align-self: flex-start; }
+.lesson-intro__main { justify-content: center; gap: var(--space-4); }
+.lesson-intro__title { font-size: var(--fs-3xl); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-tight); line-height: var(--lh-tight); }
+.lesson-intro__objective { font-size: var(--fs-md); font-weight: var(--fw-medium); line-height: var(--lh-normal); color: var(--color-ink-soft); }
+.lesson-intro__meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font-size: var(--fs-sm); font-weight: var(--fw-bold); color: var(--color-ink-soft); }
+.lesson-intro__meta span { display: inline-flex; align-items: center; gap: var(--space-1); }
+.lesson-intro__meta svg { width: var(--size-icon-sm); height: var(--size-icon-sm); color: var(--color-primary); }
+.lesson-intro__words { display: flex; flex-direction: column; gap: var(--space-2); margin-top: var(--space-2); }
+.lesson-intro__chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.lesson-intro__chip { padding: var(--space-1) var(--space-3); font-size: var(--fs-title); font-weight: var(--fw-bold); color: var(--color-primary-deep); background: var(--color-primary-soft); border-radius: var(--radius-full); }
+
+/* ---- Learning Content: kata/frasa Bahasa target = focal point ---- */
+.word-card {
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  min-height: 260px;
+  padding: var(--space-7) var(--space-5);
+  text-align: center;
+}
+.word-card__native { font-size: var(--fs-3xl); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-tight); line-height: var(--lh-tight); text-wrap: balance; overflow-wrap: anywhere; }
+.word-card__reveal { width: 100%; padding-top: var(--space-4); border-top: 1px dashed var(--color-border-deep); }
+.word-card__arti { font-size: var(--fs-xl); font-weight: var(--fw-bold); letter-spacing: var(--tracking-snug); line-height: var(--lh-snug); color: var(--color-primary); animation: staggerFadeUp var(--duration-base) var(--ease-out-soft) both; }
+.word-card__hint { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--color-ink-soft); }
+
+/* ---- Culture Moment: satu momen singkat, bahasa visual gold ---- */
+.culture-moment {
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: var(--color-culture-soft);
+  border-color: var(--color-culture);
+  box-shadow: var(--shadow-elevation-1);
+}
+.culture-moment__title { font-size: var(--fs-xl); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-snug); line-height: var(--lh-tight); }
+.culture-moment__body { font-size: var(--fs-md); font-weight: var(--fw-medium); line-height: var(--lh-normal); }
+.culture-moment .t-eyebrow { color: var(--color-ink); }
+/* Bubble putih agar terbaca di atas latar culture-soft (kalau tidak, menyatu dengan kartu) */
+.culture-moment .icon-bubble { background: var(--color-surface); }
+
+/* ---- Question: pertanyaan -> jawaban -> CTA, tanpa distraksi ---- */
+.question-meta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin: calc(var(--space-2) * -1) calc(var(--space-2) * -1) 0 0; }
+.question-meta__nav { display: flex; align-items: center; }
+.question-prompt { font-size: var(--fs-xl); font-weight: var(--fw-bold); letter-spacing: var(--tracking-snug); line-height: var(--lh-snug); }
+.question-body { display: flex; flex-direction: column; gap: var(--space-4); }
+
+.arrange-answer {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: var(--space-2);
+  min-height: 72px;
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 2px dashed var(--color-border-deep);
+  border-radius: var(--radius-md);
+}
+.arrange-answer__placeholder { align-self: center; font-size: var(--fs-sm); font-weight: var(--fw-medium); color: var(--color-ink-soft); }
+.arrange-bank { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+.matching-columns { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.matching-column { display: flex; flex-direction: column; gap: var(--space-2); }
+.matching-column .tile { width: 100%; }
+
+/* ---- Lesson Complete: momen perayaan terkontrol ---- */
+.lesson-complete__main { justify-content: center; }
+.reward-card { position: relative; overflow: hidden; align-items: center; gap: var(--space-3); text-align: center; }
+.reward-card__icon { width: var(--size-bubble-md); height: var(--size-bubble-md); }
+.reward-card .icon-bubble { background: rgba(255,255,255,.18); color: #fff; animation: gamiPop var(--duration-slow) var(--ease-overshoot); }
+.reward-card__title { font-size: var(--fs-xl); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-snug); }
+.reward-card__xp { display: flex; align-items: center; justify-content: center; gap: var(--space-2); font-size: var(--fs-3xl); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-tight); line-height: var(--lh-tight); font-variant-numeric: tabular-nums; }
+.reward-card__xp svg { width: 28px; height: 28px; }
+.reward-card__note { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: #fff; }
+
+.complete-rows { display: flex; flex-direction: column; gap: var(--space-3); }
+.complete-row { flex-direction: row; align-items: center; gap: var(--space-4); padding: var(--space-4) var(--space-5); }
+.complete-row__label { font-size: var(--fs-xs); font-weight: var(--fw-medium); color: var(--color-ink-soft); }
+.complete-row__value { font-size: var(--fs-base); font-weight: var(--fw-extrabold); }
+.complete-row .card-body { gap: 2px; }
+
+/* ============================================================
+   PROFIL: identitas, XP, streak, bahasa, progres, achievement
+   ============================================================ */
+.profile-identity { flex-direction: row; align-items: center; gap: var(--space-4); }
+.profile-identity__name { font-size: var(--fs-xl); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-snug); line-height: var(--lh-tight); }
+
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.stat-card { flex-direction: row; align-items: center; gap: var(--space-3); padding: var(--space-4); }
+.stat-card__value { font-size: var(--fs-xl); font-weight: var(--fw-extrabold); line-height: var(--lh-tight); font-variant-numeric: tabular-nums; }
+.stat-card__label { font-size: var(--fs-xs); font-weight: var(--fw-medium); color: var(--color-ink-soft); }
+.stat-card .card-body { gap: 2px; }
+
+.setting-row { flex-direction: row; align-items: center; gap: var(--space-4); padding: var(--space-4) var(--space-5); }
+.setting-row__state { font-size: var(--fs-xs); font-weight: var(--fw-extrabold); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); color: var(--color-ink); background: var(--color-locked-soft); }
+.setting-row[aria-pressed="true"] .setting-row__state { color: var(--color-ink); background: var(--color-success-soft); }
+.setting-row__chevron { display: inline-flex; flex: 0 0 auto; color: var(--color-ink-soft); }
+.setting-row__chevron svg { width: var(--size-icon-sm); height: var(--size-icon-sm); }
+
+/* ============================================================
+   ONBOARDING: tutorial 4 slide untuk pemain baru (js/screens/onboarding.js)
+   Pola sama dengan Lesson (header ringan + main tengah + dock CTA),
+   supaya konsisten secara visual, tapi TANPA progress bar lesson.
+   ============================================================ */
+.onboarding-session {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+.onboarding-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4) var(--space-2);
+}
+.onboarding-main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  text-align: center;
+}
+.onboarding-mascot { margin-bottom: var(--space-2); }
+.onboarding-title { font-size: var(--fs-3xl); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-tight); line-height: var(--lh-tight); text-wrap: balance; }
+.onboarding-body { font-size: var(--fs-md); font-weight: var(--fw-medium); line-height: var(--lh-normal); color: var(--color-ink-soft); max-width: 42ch; }
+
+.onboarding-dock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5) calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+}
+.onboarding-dots { display: flex; align-items: center; gap: var(--space-2); }
+.onboarding-dot { width: var(--space-2); height: var(--space-2); border-radius: var(--radius-full); background: var(--color-locked); transition: background var(--duration-base) var(--ease-standard), width var(--duration-base) var(--ease-standard); }
+.onboarding-dot.is-active { width: var(--space-5); background: var(--color-primary); }
+
+@media (min-width: 768px) {
+  .onboarding-main { padding: var(--space-8) var(--space-6) var(--space-6); }
+  .onboarding-header { padding: var(--space-6) var(--space-6) var(--space-2); }
+  .onboarding-dock { padding: var(--space-5) var(--space-6) var(--space-6); }
+}
+
+/* ============================================================
+   Mobile sempit (320px)
+   ============================================================ */
+@media (max-width: 359px) {
+  .home-mascot .mascot--md { width: var(--space-9); height: var(--space-9); }
+  .onboarding-mascot.mascot--xl { width: var(--space-12); height: var(--space-12); }
+  .screen, .lesson-main { padding-left: var(--space-4); padding-right: var(--space-4); }
+  .lesson-dock { padding-left: var(--space-4); padding-right: var(--space-4); }
+  .word-card__native, .lesson-intro__title, .onboarding-title { font-size: var(--fs-2xl); }
+  .stat-grid { grid-template-columns: 1fr; }
+  /* 5 tab di layar 320px: beri ruang lebih untuk label "Lencana" */
+  .bottom-nav { padding-left: 2px; padding-right: 2px; gap: 0; }
+  .bottom-nav__icon-wrap { width: 36px; }
+  .bottom-nav__label { letter-spacing: 0; }
+  .choice-group.two-col { gap: var(--space-2); }
+  .card--featured { padding: var(--space-5); }
+}
+
+/* ============================================================
+   ULAS & LENCANA (tab baru)
+   ============================================================ */
+.chip-list { display: flex; flex-wrap: wrap; gap: var(--space-2); list-style: none; }
+.empty-state { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); padding: var(--space-8) var(--space-4); text-align: center; }
+.empty-state .t-support { max-width: 36ch; }

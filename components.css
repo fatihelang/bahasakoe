@@ -1,0 +1,969 @@
+/*
+  components.css
+  Komponen reusable BahasaKoe. Setiap komponen mengikuti bahasakoe-brand-guide.html
+  (Button, Card, Answer Choice, Progress, Chip, Text Input, Gamification,
+  Feedback, Navigation) dan HANYA memakai token dari variables.css.
+
+  Aturan pakai (dari brand guide):
+  - Chunky shadow (solid, tanpa blur, warna -deep) hanya untuk elemen yang
+    dapat ditekan: Button, Card clickable, Answer Choice, Tile. Elemen
+    informatif (panel feedback, dialog, sheet) memakai elevation lembut.
+  - Merah = identitas brand. Salah = caution (coklat hangat). Danger hanya
+    untuk aksi destruktif. Gold hanya untuk Budaya, XP, dan streak.
+*/
+
+/* ============================================================
+   1. BUTTON
+   ============================================================ */
+.btn {
+  --btn-shadow-size: var(--shadow-chunky-sm);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 52px;
+  padding: var(--space-4) var(--space-6);
+  font-family: var(--font-base);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-extrabold);
+  line-height: var(--lh-none);
+  letter-spacing: var(--tracking-wide);
+  white-space: nowrap;
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border: none;
+  border-radius: var(--radius-sm);
+  user-select: none;
+  transition: transform var(--duration-instant) var(--ease-standard),
+              box-shadow var(--duration-instant) var(--ease-standard),
+              background var(--duration-fast) var(--ease-standard),
+              opacity var(--duration-fast) var(--ease-standard);
+}
+
+.btn svg { width: var(--size-icon-sm); height: var(--size-icon-sm); flex: 0 0 auto; pointer-events: none; }
+
+.btn-sm { --btn-shadow-size: var(--shadow-chunky-xs); min-height: 44px; padding: var(--space-2) var(--space-4); font-size: var(--fs-sm); border-radius: var(--radius-xs); gap: var(--space-1); }
+.btn-lg { --btn-shadow-size: var(--shadow-chunky-md); min-height: 60px; padding: var(--space-4) var(--space-8); font-size: var(--fs-md); }
+.btn-block { display: flex; width: 100%; }
+
+.btn-primary   { background: var(--color-primary); color: #fff; box-shadow: var(--btn-shadow-size) var(--color-primary-deep); }
+.btn-success   { background: var(--color-success); color: #fff; box-shadow: var(--btn-shadow-size) var(--color-success-deep); }
+
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  border: 2px solid var(--color-border-deep);
+  box-shadow: var(--btn-shadow-size) var(--color-border-deep);
+}
+
+.btn-tertiary { background: transparent; color: var(--color-ink-soft); box-shadow: none; }
+
+/* Danger: hanya aksi destruktif; sengaja outline supaya tidak berebut dengan primary */
+.btn-danger {
+  background: var(--color-surface);
+  color: var(--color-danger);
+  border: 2px solid var(--color-danger);
+  box-shadow: var(--shadow-elevation-1);
+}
+
+@media (hover: hover) {
+  .btn:hover:not(:disabled) { transform: translateY(var(--state-hover-lift)); }
+  .btn-tertiary:hover:not(:disabled) { background: var(--color-primary-soft); color: var(--color-primary); transform: none; }
+  .btn-danger:hover:not(:disabled) { background: var(--color-danger-soft); }
+}
+
+.btn:active:not(:disabled) { transform: translateY(var(--state-pressed-offset)); box-shadow: none; }
+.btn-tertiary:active:not(:disabled) { background: var(--color-primary-soft); transform: none; }
+
+/* Disabled: selalu jelas nonaktif, mengalahkan varian apa pun */
+.btn:disabled {
+  background: var(--color-locked);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: none;
+  opacity: var(--state-disabled-opacity);
+  transform: none;
+}
+
+/* ============================================================
+   2. ICON BUBBLE
+   ============================================================ */
+.icon-bubble {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-bubble-sm);
+  height: var(--size-bubble-sm);
+  border-radius: var(--radius-icon);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+.icon-bubble svg { width: var(--size-icon-md); height: var(--size-icon-md); }
+.icon-bubble--md { width: var(--size-bubble-md); height: var(--size-bubble-md); }
+.icon-bubble--success { background: var(--color-success); color: #fff; }
+.icon-bubble--culture { background: var(--color-culture-soft); color: var(--color-culture-deep); }
+.icon-bubble--locked  { background: var(--color-locked); color: #fff; }
+.icon-bubble--round   { border-radius: var(--radius-full); }
+.icon-bubble b { color: var(--color-primary-deep); font-size: var(--fs-lg); font-weight: var(--fw-extrabold); line-height: var(--lh-none); }
+
+/* ============================================================
+   3. CARD
+   ============================================================ */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-5);
+  text-align: left;
+  font-family: var(--font-base);
+  color: var(--color-ink);
+  background: var(--state-default-bg);
+  border: 1.5px solid var(--state-default-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-chunky-sm) var(--state-default-shadow);
+}
+
+.card-title { font-size: var(--fs-base); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-snug); line-height: var(--lh-snug); }
+.card-text  { font-size: var(--fs-sm); font-weight: var(--fw-medium); line-height: var(--lh-snug); color: var(--color-ink-soft); }
+.card-top   { display: flex; align-items: center; gap: var(--space-3); }
+.card-body  { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+
+/* Kartu yang bisa ditekan: seluruh area = satu <button> */
+button.card { appearance: none; -webkit-appearance: none; cursor: pointer; }
+.card-clickable {
+  user-select: none;
+  transition: transform var(--duration-instant) var(--ease-standard),
+              box-shadow var(--duration-instant) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard),
+              background var(--duration-fast) var(--ease-standard);
+}
+@media (hover: hover) {
+  .card-clickable:hover:not(:disabled) {
+    border-color: var(--color-primary-tint);
+    box-shadow: var(--state-hover-shadow);
+    transform: translateY(var(--state-hover-lift));
+  }
+}
+.card-clickable:active:not(:disabled) { transform: translateY(var(--state-pressed-offset)); box-shadow: none; }
+
+/* Baris meta di atas judul kartu: label kecil + badge status */
+.card-meta { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); }
+
+/* Kartu informatif (tidak bisa ditekan): tanpa chunky shadow, hanya depth lembut */
+.card--static { box-shadow: var(--shadow-elevation-1); }
+
+/* Badge status singkat di dalam kartu */
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  white-space: nowrap;
+  border-radius: var(--radius-full);
+}
+.card-badge svg { width: 12px; height: 12px; }
+.card-badge.is-current   { background: var(--color-primary-soft); color: var(--color-primary-deep); }
+.card-badge.is-completed { background: var(--color-success-soft); color: var(--color-ink); }
+.card-badge.is-completed svg { color: var(--color-success-deep); }
+.card-badge.is-locked    { background: var(--color-locked-soft); color: var(--color-ink-soft); }
+.card-badge.is-culture   { background: var(--color-culture-soft); color: var(--color-ink); }
+
+/* Learning card (Unit / Lesson) */
+.card--learning.is-current {
+  border-color: var(--color-primary-tint);
+  box-shadow: var(--shadow-chunky-sm) var(--color-primary-tint);
+}
+.card--learning.is-completed {
+  background: var(--state-completed-bg);
+  border-color: var(--state-completed-border);
+  box-shadow: var(--shadow-chunky-sm) var(--color-success-deep);
+}
+.card--learning.is-completed .icon-bubble { background: var(--color-success); color: #fff; }
+.card--learning.is-completed .card-text,
+.card--learning.is-completed .card-progress-label { color: var(--color-ink); }
+
+/* Locked: tetap terbaca (bukan disamarkan), netral, tidak interaktif */
+.card.is-locked {
+  background: var(--state-locked-bg);
+  border-color: var(--color-border);
+  box-shadow: none;
+}
+.card.is-locked .icon-bubble { background: var(--color-locked); color: #fff; }
+
+/* Featured: konten paling menonjol (dipakai satu kali di Home) */
+.card--featured {
+  padding: var(--space-6);
+  color: #fff;
+  background: var(--color-primary);
+  border-color: transparent;
+  box-shadow: var(--shadow-chunky-md) var(--color-primary-deep);
+}
+.card--featured .card-title { font-size: var(--fs-xl); font-weight: var(--fw-extrabold); }
+.card--featured .card-text { color: #fff; }
+.card--featured .t-eyebrow { color: #fff; }
+@media (hover: hover) {
+  .card--featured.card-clickable:hover:not(:disabled) { border-color: transparent; }
+}
+
+/* CTA dekoratif di dalam kartu clickable (bukan <button> agar tidak nested interactive) */
+.card-cta {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-extrabold);
+  line-height: var(--lh-none);
+  color: var(--color-primary);
+  background: #fff;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-chunky-xs) rgba(0,0,0,.18);
+}
+.card-cta svg { width: 16px; height: 16px; }
+
+/* Mini progress di dalam kartu */
+.card-progress-track {
+  height: 10px;
+  overflow: hidden;
+  background: var(--color-locked-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+.card-progress-fill { height: 100%; background: var(--color-primary); border-radius: var(--radius-full); transition: width var(--duration-slower) var(--ease-out-soft); }
+.card-progress-label { font-size: var(--fs-xs); font-weight: var(--fw-semibold); color: var(--color-ink-soft); }
+.card--featured .card-progress-track { background: rgba(255,255,255,.25); border-color: transparent; }
+.card--featured .card-progress-fill { background: #fff; }
+.card--featured .card-progress-label { color: #fff; }
+.card--learning.is-completed .card-progress-fill { background: var(--color-success); }
+
+/* ============================================================
+   4. PROGRESS
+   ============================================================ */
+.progress-track {
+  --progress-fill-end: #E8595A; /* ujung gradient, diambil dari brand guide (.progress-fill) */
+  position: relative;
+  height: 18px;
+  overflow: hidden;
+  background: var(--color-locked-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+.progress-track--sm { height: 12px; }
+
+.progress-fill {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: linear-gradient(90deg, var(--color-primary), var(--progress-fill-end));
+  border-radius: var(--radius-full);
+  transition: width var(--duration-slower) var(--ease-out-soft);
+}
+
+.progress-track.is-complete .progress-fill { background: var(--color-success); }
+.progress-track.is-complete .progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+  animation: progressShimmerOnce var(--duration-slow) var(--ease-standard) 1;
+}
+@keyframes progressShimmerOnce {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+
+/* Posisi soal: typographic, di atas progress bar */
+.lesson-position {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.lesson-position__count {
+  font-size: var(--fs-title);
+  font-weight: var(--fw-extrabold);
+  font-variant-numeric: tabular-nums;
+}
+.lesson-position__sep { margin: 0 2px; font-weight: var(--fw-semibold); color: var(--color-ink-soft); }
+
+/* ============================================================
+   5. CHIP (XP & streak, informasi pendukung)
+   ============================================================ */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--fs-title);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-none);
+  font-variant-numeric: tabular-nums;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-chunky-xs) var(--color-border-deep);
+}
+.chip svg { width: var(--size-icon-sm); height: var(--size-icon-sm); color: var(--color-culture-deep); }
+.chip.is-inactive svg { color: var(--color-locked-deep); }
+
+/* Chip yang bisa ditekan (mis. pemilih bahasa di Home): target sentuh >= 44px */
+.chip--button {
+  min-height: var(--size-bubble-sm);
+  cursor: pointer;
+  transition: transform var(--duration-instant) var(--ease-standard),
+              box-shadow var(--duration-instant) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard);
+}
+.chip--button svg { color: var(--color-ink-soft); }
+@media (hover: hover) { .chip--button:hover { border-color: var(--color-primary-tint); } }
+.chip--button:active { transform: translateY(2px); box-shadow: none; }
+
+/* XP yang baru didapat: muncul sekali dengan pop kecil */
+.xp-gain-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-extrabold);
+  line-height: var(--lh-tight);
+  color: var(--color-ink);
+  background: var(--color-culture-soft);
+  border-radius: var(--radius-full);
+}
+.xp-gain-chip svg { width: 14px; height: 14px; }
+.xp-gain-chip.play { animation: gamiPop var(--duration-slow) var(--ease-overshoot); }
+
+/* ============================================================
+   6. BADGE (achievement)
+   ============================================================ */
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.badge-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-3);
+  text-align: center;
+}
+.badge-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  color: var(--color-locked-deep);
+  background: var(--color-locked-soft);
+  border: 2px solid var(--color-locked);
+  border-radius: var(--radius-full);
+}
+.badge-icon svg { width: 28px; height: 28px; }
+.badge-card.is-unlocked .badge-icon { color: var(--color-primary); background: var(--color-primary-soft); border-color: var(--color-primary); }
+.badge-card.is-new .badge-icon { color: #fff; background: var(--color-primary); border-color: var(--color-primary); box-shadow: 0 0 0 6px var(--color-primary-soft); animation: gamiPop var(--duration-slow) var(--ease-overshoot); }
+.badge-card__name { font-size: var(--fs-sm); font-weight: var(--fw-bold); line-height: var(--lh-snug); }
+.badge-card__desc { font-size: var(--fs-xs); font-weight: var(--fw-medium); line-height: var(--lh-snug); color: var(--color-ink-soft); }
+.badge-card.is-locked .badge-card__name { color: var(--color-ink-soft); }
+
+@media (min-width: 480px) {
+  .badge-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* ============================================================
+   7. ANSWER CHOICE
+   Seluruh baris = satu <button>. Status tidak bergantung warna saja:
+   indikator berisi ikon centang (benar) atau silang (kurang tepat).
+   ============================================================ */
+.choice-group { display: flex; flex-direction: column; gap: var(--space-3); }
+.choice-group.two-col { display: grid; grid-template-columns: 1fr 1fr; }
+
+.choice {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--space-4) var(--space-5);
+  text-align: left;
+  font-family: var(--font-base);
+  background: var(--state-default-bg);
+  border: 2px solid var(--state-default-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-chunky-sm) var(--state-default-shadow);
+  user-select: none;
+  transition: transform var(--duration-instant) var(--ease-standard),
+              box-shadow var(--duration-instant) var(--ease-standard),
+              background var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard);
+}
+
+.choice-indicator {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--space-6);
+  height: var(--space-6);
+  margin-top: 1px;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border-deep);
+  border-radius: var(--radius-full);
+  pointer-events: none;
+  transition: background var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard);
+}
+.choice-indicator svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+  color: #fff;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.5);
+  transition: opacity var(--duration-fast) var(--ease-standard),
+              transform var(--duration-fast) var(--ease-overshoot);
+}
+
+.choice-label {
+  flex: 1 1 auto;
+  padding-top: 2px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-snug);
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+
+@media (hover: hover) {
+  .choice:hover:not(:disabled):not(.is-selected):not(.is-correct):not(.is-incorrect) {
+    border-color: var(--color-primary-tint);
+    box-shadow: var(--state-hover-shadow);
+    transform: translateY(var(--state-hover-lift));
+  }
+}
+.choice:active:not(:disabled) { transform: translateY(var(--state-pressed-offset)); box-shadow: none; }
+
+.choice.is-selected {
+  background: var(--state-selected-bg);
+  border-color: var(--state-selected-border);
+  box-shadow: var(--shadow-chunky-sm) var(--state-selected-shadow);
+}
+.choice.is-selected .choice-indicator { background: var(--color-primary); border-color: var(--color-primary); }
+.choice.is-selected .icon-check { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+.choice.is-correct {
+  background: var(--state-correct-bg);
+  border-color: var(--state-correct-border);
+  box-shadow: var(--shadow-chunky-sm) var(--state-correct-shadow);
+}
+.choice.is-correct .choice-label { font-weight: var(--fw-bold); }
+.choice.is-correct .choice-indicator { background: var(--color-success); border-color: var(--color-success); }
+.choice.is-correct .icon-check { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+.choice.is-incorrect {
+  background: var(--state-incorrect-bg);
+  border-color: var(--state-incorrect-border);
+  box-shadow: var(--shadow-chunky-sm) var(--state-incorrect-shadow);
+}
+.choice.is-incorrect .choice-label { font-weight: var(--fw-bold); }
+.choice.is-incorrect .choice-indicator { background: var(--color-caution); border-color: var(--color-caution); }
+.choice.is-incorrect .icon-cross { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+/* Setelah diperiksa: pilihan lain nonaktif tanpa diredupkan (teks tetap terbaca) */
+.choice:disabled:not(.is-selected):not(.is-correct):not(.is-incorrect) { cursor: default; }
+
+/* Micro-interaction jawaban: pop kecil (benar) & nudge halus (kurang tepat) */
+.choice.is-pop, .tile.is-pop, .field-input.is-pop { animation: choicePop var(--duration-base) var(--ease-overshoot); }
+.choice.is-nudge, .tile.is-nudge, .field-input.is-nudge { animation: gentleNudge var(--duration-base) var(--ease-standard); }
+
+@keyframes choicePop {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+@keyframes gentleNudge {
+  0%, 100% { transform: translateX(0); }
+  30% { transform: translateX(-3px); }
+  65% { transform: translateX(2px); }
+}
+
+/* ============================================================
+   8. TILE (kata untuk susun-kalimat & pasangan untuk mencocokkan)
+   Turunan Answer Choice: token & state yang sama, bentuk lebih ringkas.
+   ============================================================ */
+.tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-base);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-snug);
+  color: var(--color-ink);
+  background: var(--state-default-bg);
+  border: 2px solid var(--state-default-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-chunky-xs) var(--state-default-shadow);
+  user-select: none;
+  overflow-wrap: anywhere;
+  transition: transform var(--duration-instant) var(--ease-standard),
+              box-shadow var(--duration-instant) var(--ease-standard),
+              background var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard);
+}
+@media (hover: hover) {
+  .tile:hover:not(:disabled):not(.is-selected):not(.is-matched):not(.is-correct):not(.is-incorrect) {
+    border-color: var(--color-primary-tint);
+    transform: translateY(var(--state-hover-lift));
+  }
+}
+.tile:active:not(:disabled) { transform: translateY(2px); box-shadow: none; }
+
+.tile.is-selected  { background: var(--state-selected-bg); border-color: var(--state-selected-border); box-shadow: var(--shadow-chunky-xs) var(--state-selected-shadow); }
+.tile.is-correct,
+.tile.is-matched   { background: var(--state-correct-bg); border-color: var(--state-correct-border); box-shadow: var(--shadow-chunky-xs) var(--state-correct-shadow); }
+.tile.is-incorrect { background: var(--state-incorrect-bg); border-color: var(--state-incorrect-border); box-shadow: var(--shadow-chunky-xs) var(--state-incorrect-shadow); }
+.tile.is-matched   { cursor: default; }
+
+/* ============================================================
+   9. TEXT INPUT
+   ============================================================ */
+.field-input {
+  width: 100%;
+  min-height: 52px;
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-base);
+  font-size: var(--fs-md); /* 16px: mencegah auto-zoom saat fokus di iOS */
+  font-weight: var(--fw-semibold);
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color var(--duration-fast) var(--ease-standard),
+              box-shadow var(--duration-fast) var(--ease-standard),
+              background var(--duration-fast) var(--ease-standard);
+}
+.field-input::placeholder { font-weight: var(--fw-medium); color: var(--color-ink-soft); }
+.field-input:hover:not(:disabled) { border-color: var(--color-border-deep); }
+.field-input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 4px var(--color-primary-soft); }
+.field-input:disabled { color: var(--color-ink); background: var(--state-disabled-bg); border-color: var(--state-disabled-border); }
+.field-input.is-correct   { background: var(--state-correct-bg); border-color: var(--state-correct-border); }
+.field-input.is-incorrect { background: var(--state-incorrect-bg); border-color: var(--state-incorrect-border); }
+
+/* ============================================================
+   10. NAVIGATION (bottom nav di mobile, sidebar di >= 768px)
+   ============================================================ */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  gap: 2px;
+  padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+}
+.bottom-nav.is-hidden { display: none; }
+
+.bottom-nav__brand { display: none; }
+
+.bottom-nav__item {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-family: var(--font-base);
+  color: var(--color-ink-soft);
+  border-radius: var(--radius-sm);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+.bottom-nav__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  transition: background var(--duration-fast) var(--ease-standard),
+              transform var(--duration-instant) var(--ease-standard);
+}
+.bottom-nav__item svg { width: var(--size-icon-md); height: var(--size-icon-md); }
+.bottom-nav__label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-none);
+  letter-spacing: var(--tracking-wide);
+}
+.bottom-nav__item.is-active { color: var(--color-primary); }
+.bottom-nav__item.is-active .bottom-nav__icon-wrap { background: var(--color-primary-soft); }
+.bottom-nav__item.is-active .bottom-nav__label { font-weight: var(--fw-extrabold); }
+@media (hover: hover) {
+  .bottom-nav__item:hover:not(.is-active) { color: var(--color-ink); }
+}
+.bottom-nav__item:active .bottom-nav__icon-wrap { transform: scale(.88); background: var(--color-locked-soft); }
+
+/* Sidebar (tablet & desktop) */
+@media (min-width: 768px) {
+  .bottom-nav {
+    top: 0;
+    right: auto;
+    width: var(--sidebar-width);
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: var(--space-1);
+    padding: var(--space-6) var(--space-4);
+    border-top: none;
+    border-right: 1px solid var(--color-border);
+  }
+  .bottom-nav__brand {
+    display: block;
+    margin: 0 var(--space-3) var(--space-6);
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-extrabold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--lh-tight);
+    color: var(--color-primary);
+  }
+  .bottom-nav__item {
+    flex: 0 0 auto;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--space-3);
+    min-height: 48px;
+    padding: var(--space-2) var(--space-3);
+  }
+  .bottom-nav__icon-wrap { width: auto; height: auto; background: none !important; transform: none !important; }
+  .bottom-nav__label { font-size: var(--fs-base); }
+  .bottom-nav__item.is-active { color: var(--color-primary-deep); background: var(--color-primary-soft); }
+  @media (hover: hover) {
+    .bottom-nav__item:hover:not(.is-active) { background: var(--color-locked-soft); }
+  }
+}
+
+/* Page header: root (tanpa back), nested/detail (dengan back) */
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--size-bubble-sm);
+}
+.app-header__back {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-bubble-sm);
+  height: var(--size-bubble-sm);
+  color: var(--color-ink);
+  background: var(--color-locked-soft);
+  border-radius: var(--radius-full);
+  transition: background var(--duration-fast) var(--ease-standard), transform var(--duration-instant) var(--ease-standard);
+}
+.app-header__back svg { width: var(--size-icon-sm); height: var(--size-icon-sm); }
+@media (hover: hover) { .app-header__back:hover { background: var(--color-border); } }
+.app-header__back:active { transform: translateY(2px); }
+.app-header__titles { flex: 1 1 auto; min-width: 0; }
+.app-header__title { font-size: var(--fs-2xl); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-snug); line-height: var(--lh-tight); }
+.app-header__subtitle { margin-top: var(--space-1); font-size: var(--fs-sm); font-weight: var(--fw-medium); line-height: var(--lh-snug); color: var(--color-ink-soft); }
+.app-header__action { flex: 0 0 auto; display: flex; align-items: center; gap: var(--space-2); }
+
+/* Icon button bulat (tutup lesson, sebelumnya/berikutnya) */
+.icon-btn {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-bubble-sm);
+  height: var(--size-bubble-sm);
+  color: var(--color-ink-soft);
+  background: transparent;
+  border-radius: var(--radius-full);
+  transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), transform var(--duration-instant) var(--ease-standard);
+}
+.icon-btn svg { width: var(--size-icon-md); height: var(--size-icon-md); }
+@media (hover: hover) { .icon-btn:hover:not(:disabled) { color: var(--color-ink); background: var(--color-locked-soft); } }
+.icon-btn:active:not(:disabled) { transform: translateY(2px); }
+.icon-btn:disabled { opacity: var(--state-disabled-opacity); color: var(--color-locked-deep); }
+
+/* ============================================================
+   11. LANGUAGE SELECTOR & SHEET
+   ============================================================ */
+.lang-selector {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-chunky-xs) var(--color-border-deep);
+}
+.lang-selector__label { font-size: var(--fs-xs); font-weight: var(--fw-medium); color: var(--color-ink-soft); }
+.lang-selector__current { display: flex; align-items: center; gap: var(--space-3); margin-top: 2px; font-size: var(--fs-md); font-weight: var(--fw-extrabold); }
+
+.lang-flag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-extrabold);
+  color: var(--color-primary-deep);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-full);
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--space-4) var(--space-5);
+  text-align: left;
+  font-family: var(--font-base);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: var(--color-ink);
+  border-bottom: 1px solid var(--color-border);
+}
+.lang-option:last-child { border-bottom: none; }
+@media (hover: hover) { .lang-option:hover { background: var(--color-bg); } }
+.lang-option__text { display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0; }
+.lang-option__desc { font-size: var(--fs-xs); font-weight: var(--fw-medium); color: var(--color-ink-soft); }
+.lang-option .check { margin-left: auto; width: var(--size-icon-sm); height: var(--size-icon-sm); visibility: hidden; }
+.lang-option.is-selected { font-weight: var(--fw-extrabold); color: var(--color-primary-deep); background: var(--color-primary-soft); }
+.lang-option.is-selected .lang-option__desc { color: var(--color-primary-deep); }
+.lang-option.is-selected .check { visibility: visible; }
+
+/* ============================================================
+   12. OVERLAY, DIALOG, SHEET (elevation lembut, bukan chunky)
+   ============================================================ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(58,46,44,.45);
+  animation: overlayIn var(--duration-fast) var(--ease-standard);
+}
+.overlay--center { align-items: center; padding: var(--space-5); }
+@keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+.confirm-dialog {
+  width: 100%;
+  max-width: 320px;
+  padding: var(--space-6);
+  text-align: center;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-elevation-3);
+  animation: dialogIn var(--duration-base) var(--ease-out-soft);
+}
+.confirm-dialog__title { margin-bottom: var(--space-2); font-size: var(--fs-lg); font-weight: var(--fw-extrabold); }
+.confirm-dialog__message { margin-bottom: var(--space-5); font-size: var(--fs-sm); font-weight: var(--fw-medium); line-height: var(--lh-normal); color: var(--color-ink-soft); }
+.confirm-dialog__actions { display: flex; flex-direction: column; gap: var(--space-2); }
+.confirm-dialog__actions .btn { width: 100%; }
+
+.sheet {
+  width: 100%;
+  max-width: var(--content-max);
+  max-height: 85dvh;
+  overflow-y: auto;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-elevation-3);
+  animation: sheetUp var(--duration-base) var(--ease-out-soft);
+}
+.sheet__header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-4) var(--space-3) var(--space-3) var(--space-5); }
+.sheet__title { font-size: var(--fs-lg); font-weight: var(--fw-extrabold); }
+.sheet__body { padding: 0 var(--space-5) var(--space-6); font-size: var(--fs-sm); font-weight: var(--fw-medium); line-height: var(--lh-normal); color: var(--color-ink-soft); display: flex; flex-direction: column; gap: var(--space-3); }
+.sheet__list { margin: 0 var(--space-4) var(--space-4); overflow: hidden; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+
+@media (min-width: 768px) {
+  .overlay { align-items: center; padding: var(--space-5); }
+  .sheet { max-width: 420px; border-radius: var(--radius-lg); }
+}
+
+@keyframes sheetUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes dialogIn { from { transform: translateY(8px) scale(.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+
+/* ============================================================
+   13. FEEDBACK (inline, di dalam layar soal)
+   ============================================================ */
+.fb-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1.5px solid;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-elevation-1);
+  animation: fbPanelEnter var(--duration-base) var(--ease-out-soft);
+}
+.fb-panel.is-correct   { background: var(--state-correct-bg); border-color: var(--state-correct-border); }
+.fb-panel.is-incorrect { background: var(--state-incorrect-bg); border-color: var(--state-incorrect-border); }
+@keyframes fbPanelEnter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.fb-panel__head { display: flex; align-items: center; gap: var(--space-3); }
+.fb-panel__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  border-radius: var(--radius-full);
+}
+.fb-panel__icon svg { width: var(--size-icon-sm); height: var(--size-icon-sm); }
+.fb-panel.is-correct .fb-panel__icon   { background: var(--color-success); }
+.fb-panel.is-incorrect .fb-panel__icon { background: var(--color-caution); }
+.fb-panel__title { flex: 1 1 auto; font-size: var(--fs-xl); font-weight: var(--fw-extrabold); line-height: var(--lh-tight); }
+.fb-panel.is-correct .fb-panel__title   { color: var(--color-success-deep); }
+.fb-panel.is-incorrect .fb-panel__title { color: var(--state-incorrect-ink); }
+.fb-panel__answer { font-size: var(--fs-sm); font-weight: var(--fw-medium); line-height: var(--lh-normal); }
+.fb-panel__answer strong { font-weight: var(--fw-extrabold); }
+
+.fb-explanation { padding-top: var(--space-3); border-top: 1px dashed var(--color-border-deep); }
+.fb-label { margin-bottom: var(--space-1); font-size: var(--fs-xs); font-weight: var(--fw-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--color-ink-soft); }
+.fb-text { font-size: var(--fs-sm); font-weight: var(--fw-medium); line-height: var(--lh-normal); color: var(--color-ink); }
+.fb-context { margin-top: var(--space-2); font-size: var(--fs-xs); font-weight: var(--fw-medium); line-height: var(--lh-normal); color: var(--color-ink-soft); }
+
+/* Culture insight inline: bahasa visual gold, tetap satu brand */
+.fb-culture {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-culture-soft);
+  border: 1px solid var(--color-culture);
+  border-radius: var(--radius-md);
+}
+.fb-culture__icon { display: flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 32px; height: 32px; color: #fff; background: var(--color-culture); border-radius: var(--radius-full); }
+.fb-culture__icon svg { width: var(--size-icon-sm); height: var(--size-icon-sm); }
+.fb-culture .fb-label { color: var(--color-ink); }
+
+/* ============================================================
+   14. CELEBRATION (confetti ringan, hanya milestone besar)
+   ============================================================ */
+.confetti-stage { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.confetti-piece {
+  position: absolute;
+  top: -10px;
+  width: 7px;
+  height: 12px;
+  opacity: 0;
+  border-radius: var(--radius-xs);
+  animation: confettiFall var(--confetti-duration, 1200ms) ease-in forwards;
+}
+@keyframes confettiFall {
+  0%   { opacity: 1; transform: translateY(0) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(var(--confetti-drop, 220px)) rotate(var(--confetti-spin, 280deg)); }
+}
+
+/* ============================================================
+   15. SHARED KEYFRAMES
+   ============================================================ */
+@keyframes gamiPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.18); }
+  70%  { transform: scale(.96); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confetti-stage { display: none; }
+}
+
+/* ============================================================
+   16. MASKOT (placeholder) & GELEMBUNG UCAPAN
+   Semua posisi maskot lewat js/ui/mascot.js. Ukuran memakai token spacing.
+   ============================================================ */
+.mascot { position: relative; display: inline-flex; flex: 0 0 auto; }
+.mascot--sm { width: var(--space-9);  height: var(--space-9); }
+.mascot--md { width: var(--space-11); height: var(--space-11); }
+.mascot--lg { width: var(--space-12); height: var(--space-12); }
+/* xl: dipakai di Onboarding, mengantisipasi maskot karakter orang (bukan ikon
+   kecil) yang butuh porsi visual besar sebagai hero satu layar penuh. */
+.mascot--xl { width: calc(var(--space-12) + var(--space-8)); height: calc(var(--space-12) + var(--space-8)); }
+
+.mascot__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-ink-soft);
+  background: var(--color-primary-soft);
+  border: 2px dashed var(--color-primary-tint);
+  border-radius: var(--radius-md);
+}
+.mascot__img { width: 100%; height: 100%; object-fit: contain; }
+.mascot__img + .mascot__placeholder { display: none; }
+
+/* Placeholder di atas kartu berwarna: tetap terbaca */
+.card--featured .mascot__placeholder { color: #fff; background: rgba(255,255,255,.18); border-color: rgba(255,255,255,.7); }
+.culture-moment .mascot__placeholder { color: var(--color-ink); background: var(--color-surface); border-color: var(--color-culture); }
+
+.speech-bubble {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-snug);
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-elevation-1);
+}
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  background: var(--color-surface);
+  border-left: 1.5px solid var(--color-border);
+  border-bottom: 1.5px solid var(--color-border);
+  transform: translateY(-50%) rotate(45deg);
+}
+

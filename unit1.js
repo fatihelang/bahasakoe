@@ -1,0 +1,347 @@
+/*
+  unit1.js (js/data/jawa/)
+  Data murni untuk Unit 1 -- Dasar Bahasa Jawa: HANYA daftar lesson.
+  Metadata unit (id, title, description, order) dipindah ke
+  js/data/jawa/units.js, supaya "apa itu Unit 1" dan "apa isi lesson-nya"
+  jadi dua concern terpisah -- unit lain (Unit 2, dst.) akan jadi file
+  sejenis ini di folder yang sama, didaftarkan di units.js.
+
+  Isi lesson (vocabulary, questions, explanations, context, cultureInsight,
+  needsValidation, XP lewat correctCount*10, order) TIDAK diubah sama sekali
+  dari versi sebelumnya -- murni dipindah lokasi & dilepas dari object
+  pembungkus UNIT1.
+
+  Struktur lesson & question: lihat komentar lengkap di js/data/curriculum.js.
+
+  cultureMoment Lesson 1-3 ditambahkan belakangan (redesign UI/UX). Sebelumnya
+  Unit 1 SENGAJA tanpa Culture Moment (murni kosakata); ditambah supaya
+  pemain baru sudah bertemu konsep Language -> Context -> Culture sejak
+  lesson pertama. Ketiganya DRAF hasil model AI, BELUM divalidasi penutur/
+  pakar budaya Jawa -- flag `needsValidation` dibiarkan apa adanya sebagai
+  penanda internal, tidak memengaruhi tampilan (tidak ada lagi badge
+  tervalidasi/draf di UI). Untuk mengembalikan perilaku lama (tanpa Culture
+  Moment di Unit 1), hapus blok cultureMoment di ketiga lesson.
+*/
+
+export const LESSONS = [
+    {
+      id: 'l1',
+      order: 1,
+      title: 'Salam',
+      playable: true,
+      objective: 'Mengucapkan salam sesuai waktu dan merespons ucapan terima kasih secara dasar.',
+      learningContent: [
+        { native: 'Sugeng enjing', arti: 'Selamat pagi' },
+        { native: 'Sugeng siang', arti: 'Selamat siang' },
+        { native: 'Sugeng sonten', arti: 'Selamat sore' },
+        { native: 'Sugeng dalu', arti: 'Selamat malam' },
+        { native: 'Matur nuwun', arti: 'Terima kasih' },
+        { native: 'Sami-sami', arti: 'Sama-sama' },
+      ],
+      cultureMoment: {
+        title: 'Tahukah kamu?',
+        body: 'Salam dalam Bahasa Jawa dibedakan menurut waktu, seperti \"Sugeng enjing\" untuk pagi dan \"Sugeng sonten\" untuk sore. \"Matur nuwun\" umumnya terdengar sopan, jadi sering dipakai saat berterima kasih kepada orang yang belum akrab.',
+        type: 'context',
+        needsValidation: true,
+      },
+      questions: [
+        {
+          id: 'l1-q1',
+          type: 'multiple-choice',
+          prompt: 'Pagi hari kamu bertemu teman di sekolah. Ucapan yang tepat adalah?',
+          options: ['Sugeng enjing', 'Sugeng dalu', 'Matur nuwun', 'Sami-sami'],
+          correctIndex: 0,
+          explanation: '"Enjing" berarti pagi, jadi "Sugeng enjing" dipakai untuk menyapa di pagi hari.',
+          context: 'Salam ini bisa dipakai untuk siapa saja dalam percakapan sehari-hari; perbedaan tingkat kesopanan akan dibahas lebih lanjut di Unit 2.',
+          cultureInsight: 'Orang Jawa terbiasa menyapa sesuai waktu hari. Kebiasaan ini mencerminkan cara masyarakat Jawa memperhatikan konteks situasi dalam berkomunikasi sehari-hari.',
+          needsValidation: true,
+        },
+        {
+          id: 'l1-q2',
+          type: 'translate',
+          prompt: "Ketik arti dari 'Sugeng dalu' dalam Bahasa Indonesia.",
+          correctAnswers: ['selamat malam'],
+          explanation: '"Dalu" berarti malam.',
+        },
+        {
+          id: 'l1-q3',
+          type: 'multiple-choice',
+          prompt: "Rina membantu Dimas membawa buku. Dimas berkata, 'Matur nuwun.' Apa respons yang tepat?",
+          options: ['Sami-sami', 'Sugeng enjing', 'Sugeng dalu', 'Sepuluh'],
+          correctIndex: 0,
+          explanation: '"Sami-sami" adalah balasan umum untuk ucapan terima kasih dalam percakapan.',
+          context: 'Dipakai sebagai respons santai dalam percakapan sehari-hari, baik dengan teman maupun orang lain.',
+        },
+        {
+          id: 'l1-q4',
+          type: 'multiple-choice',
+          prompt: 'Kamu bertemu tetangga waktu tengah hari. Ucapan yang tepat adalah?',
+          options: ['Sugeng siang', 'Sugeng enjing', 'Sugeng dalu', 'Matur nuwun'],
+          correctIndex: 0,
+          explanation: '"Siang" dalam Bahasa Jawa juga "siang", jadi "Sugeng siang" dipakai untuk menyapa di waktu itu.',
+        },
+        {
+          id: 'l1-q5',
+          type: 'translate',
+          prompt: "Ketik arti dari 'Sugeng sonten' dalam Bahasa Indonesia.",
+          correctAnswers: ['selamat sore'],
+          explanation: '"Sonten" berarti sore.',
+        },
+        {
+          id: 'l1-q6',
+          type: 'arrange',
+          prompt: 'Susun kata untuk menyapa seseorang di pagi hari.',
+          words: ['Sugeng', 'enjing'],
+          explanation: '"Sugeng" + "enjing" (pagi) = "Sugeng enjing", salam untuk pagi hari.',
+        },
+        {
+          id: 'l1-q7',
+          type: 'true-false',
+          prompt: "Pernyataan: 'Matur nuwun' berarti 'Sama-sama'.",
+          correctAnswer: false,
+          explanation: '"Matur nuwun" berarti "terima kasih". Balasannya baru "Sami-sami" (sama-sama).',
+        },
+        {
+          id: 'l1-q8',
+          type: 'true-false',
+          prompt: "Pernyataan: 'Sugeng dalu' dipakai untuk menyapa di malam hari.",
+          correctAnswer: true,
+          explanation: '"Dalu" berarti malam, jadi "Sugeng dalu" memang dipakai malam hari.',
+        },
+        {
+          id: 'l1-q9',
+          type: 'matching',
+          prompt: 'Cocokkan ucapan dengan artinya.',
+          pairs: [
+            { native: 'Sugeng enjing', arti: 'Selamat pagi' },
+            { native: 'Sugeng sonten', arti: 'Selamat sore' },
+            { native: 'Matur nuwun', arti: 'Terima kasih' },
+          ],
+          explanation: 'Tiap salam punya waktu pemakaiannya sendiri, dan "Matur nuwun" khusus untuk berterima kasih.',
+        },
+        {
+          id: 'l1-q10',
+          type: 'multiple-choice',
+          prompt: "Bu Guru berkata 'Matur nuwun' setelah kamu membantu beres-beres kelas. Balasan yang tepat?",
+          options: ['Sami-sami', 'Sugeng enjing', 'Sugeng sonten', 'Sugeng dalu'],
+          correctIndex: 0,
+          explanation: '"Sami-sami" tetap jadi balasan yang tepat untuk ucapan terima kasih, ke siapa pun.',
+        },
+      ],
+    },
+    {
+      id: 'l2',
+      order: 2,
+      title: 'Perkenalan',
+      playable: true,
+      objective: 'Memperkenalkan diri dan menanyakan nama orang lain dalam level ngoko.',
+      learningContent: [
+        { native: 'Jenengku', arti: 'Namaku' },
+        { native: 'Jenengmu', arti: 'Namamu' },
+        { native: 'Sopo', arti: 'Siapa' },
+        { native: 'Aku', arti: 'Aku / saya (ngoko)' },
+        { native: 'Kowe', arti: 'Kamu (ngoko)' },
+      ],
+      cultureMoment: {
+        title: 'Tahukah kamu?',
+        body: '\"Aku\" dan \"kowe\" adalah bentuk ngoko yang akrab, umumnya dipakai ke teman sebaya. Ke orang yang lebih tua atau baru dikenal, penutur sering memilih bentuk yang lebih halus, dan itu akan kamu pelajari di Unit 2.',
+        type: 'context',
+        needsValidation: true,
+      },
+      questions: [
+        {
+          id: 'l2-q1',
+          type: 'multiple-choice',
+          prompt: 'Bagaimana menanyakan nama orang lain dalam Bahasa Jawa (ngoko)?',
+          options: ['Sopo jenengmu?', 'Jenengku sopo?', 'Matur nuwun', 'Sugeng enjing'],
+          correctIndex: 0,
+          explanation: '"Sopo" berarti siapa, jadi susunan ini dipakai untuk menanyakan nama lawan bicara.',
+          context: 'Pertanyaan ini wajar dipakai antar teman sebaya (level ngoko).',
+        },
+        {
+          id: 'l2-q2',
+          type: 'arrange',
+          prompt: "Susun kata berikut menjadi kalimat yang benar (artinya: Namaku Dimas.)",
+          words: ['Jenengku', 'Dimas'],
+          explanation: '"Jenengku" = "namaku", diikuti nama diri, jadi susunannya "Jenengku Dimas."',
+        },
+        {
+          id: 'l2-q3',
+          type: 'multiple-choice',
+          prompt: 'Kamu sedang berbicara santai dengan teman baru bernama Dimas. Bagaimana kamu menanyakan namanya?',
+          options: ['Jenengku Dimas.', 'Sopo jenengmu?', 'Matur nuwun.', 'Sugeng dalu.'],
+          correctIndex: 1,
+          explanation: 'Dalam situasi berkenalan, kalimat ini berfungsi untuk membuka perkenalan dengan menanyakan nama lawan bicara, bukan sekadar terjemahan kata per kata.',
+          context: 'Dipakai ke teman sebaya atau orang yang sudah akrab; bentuk yang lebih sopan/halus akan dipelajari di Unit 2 (Unggah-Ungguh).',
+          cultureInsight: 'Bahasa ngoko terasa akrab dan santai, sehingga lebih umum dipakai ke teman sebaya, bukan ke orang yang lebih tua atau baru dikenal dalam situasi formal.',
+          needsValidation: true,
+        },
+        {
+          id: 'l2-q4',
+          type: 'translate',
+          prompt: "Ketik arti dari 'Jenengmu' dalam Bahasa Indonesia.",
+          correctAnswers: ['namamu'],
+          explanation: '"Jenengmu" = "namamu".',
+        },
+        {
+          id: 'l2-q5',
+          type: 'multiple-choice',
+          prompt: "Bagaimana bilang 'Aku' dalam Bahasa Jawa ngoko?",
+          options: ['Aku', 'Kowe', 'Sopo', 'Jenengku'],
+          correctIndex: 0,
+          explanation: '"Aku" dipakai sama seperti Bahasa Indonesia, untuk menyebut diri sendiri dalam level ngoko.',
+        },
+        {
+          id: 'l2-q6',
+          type: 'translate',
+          prompt: "Ketik arti dari 'Kowe' dalam Bahasa Indonesia (level ngoko).",
+          correctAnswers: ['kamu'],
+          explanation: '"Kowe" berarti "kamu" dalam level ngoko.',
+        },
+        {
+          id: 'l2-q7',
+          type: 'arrange',
+          prompt: "Susun kata untuk menanyakan 'Siapa namamu?' secara santai (ngoko).",
+          words: ['Sopo', 'jenengmu'],
+          explanation: '"Sopo jenengmu?" tersusun dari "Sopo" (siapa) + "jenengmu" (namamu).',
+        },
+        {
+          id: 'l2-q8',
+          type: 'true-false',
+          prompt: "Pernyataan: 'Kowe' dipakai untuk menyebut diri sendiri.",
+          correctAnswer: false,
+          explanation: '"Kowe" artinya "kamu". Untuk menyebut diri sendiri dipakai "Aku".',
+        },
+        {
+          id: 'l2-q9',
+          type: 'true-false',
+          prompt: "Pernyataan: 'Jenengku' dipakai untuk memperkenalkan nama sendiri.",
+          correctAnswer: true,
+          explanation: '"Jenengku" = "namaku", dipakai untuk memperkenalkan nama sendiri.',
+        },
+        {
+          id: 'l2-q10',
+          type: 'matching',
+          prompt: 'Cocokkan kata dengan artinya.',
+          pairs: [
+            { native: 'Jenengku', arti: 'Namaku' },
+            { native: 'Sopo', arti: 'Siapa' },
+            { native: 'Kowe', arti: 'Kamu (ngoko)' },
+          ],
+          explanation: 'Kata-kata dasar perkenalan ini jadi bekal utama membuka percakapan santai.',
+        },
+      ],
+    },
+    {
+      id: 'l3',
+      order: 3,
+      title: 'Angka',
+      playable: true,
+      objective: 'Menyebutkan dan mengenali angka 1–10 dalam Bahasa Jawa.',
+      learningContent: [
+        { native: 'Siji', arti: '1' },
+        { native: 'Loro', arti: '2' },
+        { native: 'Telu', arti: '3' },
+        { native: 'Papat', arti: '4' },
+        { native: 'Lima', arti: '5' },
+        { native: 'Enem', arti: '6' },
+        { native: 'Pitu', arti: '7' },
+        { native: 'Wolu', arti: '8' },
+        { native: 'Sanga', arti: '9' },
+        { native: 'Sepuluh', arti: '10' },
+      ],
+      cultureMoment: {
+        title: 'Tahukah kamu?',
+        body: 'Selain hari dalam seminggu, penanggalan Jawa punya siklus lima hari yang disebut pasaran: Legi, Pahing, Pon, Wage, dan Kliwon. Pasaran umumnya masih dipakai dalam penanggalan tradisional.',
+        type: 'context',
+        needsValidation: true,
+      },
+      questions: [
+        {
+          id: 'l3-q1',
+          type: 'multiple-choice',
+          prompt: 'Kamu melihat tiga apel di meja. Angka tiga dalam Bahasa Jawa adalah...?',
+          options: ['Telu', 'Loro', 'Papat', 'Lima'],
+          correctIndex: 0,
+          explanation: '"Telu" adalah sebutan untuk angka 3, dipakai saat menyebut jumlah benda.',
+        },
+        {
+          id: 'l3-q2',
+          type: 'translate',
+          prompt: 'Ketik angka 5 dalam Bahasa Jawa.',
+          correctAnswers: ['lima'],
+          explanation: '"Lima" adalah sebutan untuk angka 5.',
+        },
+        {
+          id: 'l3-q3',
+          type: 'multiple-choice',
+          prompt: "'Sanga' adalah sebutan untuk angka berapa?",
+          options: ['7', '8', '9', '10'],
+          correctIndex: 2,
+          explanation: '"Sanga" = 9.',
+        },
+        {
+          id: 'l3-q4',
+          type: 'multiple-choice',
+          prompt: "'Wolu' adalah sebutan untuk angka berapa?",
+          options: ['6', '7', '8', '9'],
+          correctIndex: 2,
+          explanation: '"Wolu" = 8.',
+        },
+        {
+          id: 'l3-q5',
+          type: 'translate',
+          prompt: 'Ketik angka 10 dalam Bahasa Jawa.',
+          correctAnswers: ['sepuluh'],
+          explanation: '"Sepuluh" adalah sebutan untuk angka 10 (sama seperti Bahasa Indonesia).',
+        },
+        {
+          id: 'l3-q6',
+          type: 'translate',
+          prompt: 'Ketik angka 1 dalam Bahasa Jawa.',
+          correctAnswers: ['siji'],
+          explanation: '"Siji" adalah sebutan untuk angka 1.',
+        },
+        {
+          id: 'l3-q7',
+          type: 'true-false',
+          prompt: "Pernyataan: 'Enem' berarti angka 7.",
+          correctAnswer: false,
+          explanation: '"Enem" = 6. Angka 7 adalah "Pitu".',
+        },
+        {
+          id: 'l3-q8',
+          type: 'true-false',
+          prompt: "Pernyataan: 'Pitu' adalah sebutan untuk angka 7.",
+          correctAnswer: true,
+          explanation: '"Pitu" memang berarti 7.',
+        },
+        {
+          id: 'l3-q9',
+          type: 'matching',
+          prompt: 'Cocokkan angka Jawa dengan angkanya.',
+          pairs: [
+            { native: 'Loro', arti: '2' },
+            { native: 'Papat', arti: '4' },
+            { native: 'Enem', arti: '6' },
+          ],
+          explanation: 'Angka genap 2, 4, 6 dalam Bahasa Jawa: Loro, Papat, Enem.',
+        },
+        {
+          id: 'l3-q10',
+          type: 'multiple-choice',
+          prompt: 'Kamu mau beli 2 apel di warung. Sebutkan angka 2 dalam Bahasa Jawa.',
+          options: ['Loro', 'Telu', 'Papat', 'Lima'],
+          correctIndex: 0,
+          explanation: '"Loro" adalah sebutan untuk angka 2.',
+        },
+      ],
+    },
+    { id: 'l4', order: 4, title: 'Keluarga', playable: false },
+    { id: 'l5', order: 5, title: 'Kata Kerja Dasar', playable: false },
+    { id: 'l6', order: 6, title: 'Benda Sehari-hari', playable: false },
+    { id: 'l7', order: 7, title: 'Tempat', playable: false },
+    { id: 'l8', order: 8, title: 'Waktu', playable: false },
+    { id: 'l9', order: 9, title: 'Kalimat Sederhana', playable: false },
+    { id: 'l10', order: 10, title: 'Review Dasar', playable: false },
+  ];

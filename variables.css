@@ -1,0 +1,219 @@
+/*
+  variables.css
+  SATU-SATUNYA sumber design token BahasaKoe. Nilai-nilai di sini disalin
+  PERSIS dari bahasakoe-brand-guide.html (bagian :root) -- jangan mengubah
+  nilai di sini tanpa mengubah brand guide terlebih dulu.
+
+  Cara pakai: file CSS lain (base/components/screens) hanya boleh memakai
+  var(--token) dari file ini, tidak ada hex/px "ajaib" di luar sini.
+  Satu-satunya token tambahan di bagian LAYOUT (paling bawah) adalah token
+  app shell (lebar kolom, sidebar) yang memang tidak ada di brand guide
+  karena brand guide adalah design system, bukan layout aplikasi.
+*/
+
+:root {
+  /* ============================================================
+     1. COLOR — Brand (merah, identitas utama)
+     ============================================================ */
+  --color-primary:        #D93636;  /* brand, tombol primer, elemen aktif */
+  --color-primary-deep:   #A62727;  /* down-shadow & pressed state primary */
+  --color-primary-soft:   #FDE9E7;  /* tint lembut: highlight, background selected */
+  --color-primary-tint:   #F6C6C2;  /* tint sedang: border/shadow kartu bertema primary */
+
+  /* ============================================================
+     2. COLOR — Semantic (hasil interaksi, status belajar)
+     Dipakai HANYA ketika benar-benar bermakna, bukan dekorasi.
+     ============================================================ */
+  --color-success:        #4CAF6D;  /* jawaban benar, progres positif */
+  --color-success-deep:   #2F8A4E;
+  --color-success-soft:   #E1F4E7;
+
+  --color-caution:        #C7935B;  /* jawaban kurang tepat: coklat hangat, BUKAN merah (non-punitif) */
+  --color-caution-deep:   #A5713E;
+  --color-caution-soft:   #F3E3D3;
+  --color-caution-ink:    #9C6B2E;
+
+  --color-culture:        #E8A93A;  /* gold, dibatasi untuk konten Budaya & streak/XP */
+  --color-culture-deep:   #C4841E;
+  --color-culture-soft:   #FBEACB;
+
+  --color-locked:         #C9C4C0;
+  --color-locked-deep:    #A8A29C;
+  --color-locked-soft:    #F1EFED;
+
+  --color-danger:         #B23B3B;  /* HANYA aksi destruktif, sengaja bukan --color-primary */
+  --color-danger-deep:    #8A2C2C;
+  --color-danger-soft:    #F5E2E0;
+
+  /* ============================================================
+     2b. COLOR — Accent (warna-warni, dekoratif)
+     Untuk membuat app terasa ceria bagi anak sampai dewasa. Dipakai
+     sebagai variasi ikon, lencana, navigasi, dan latar. Warna
+     semantik (benar/kurang tepat/terkunci) TIDAK memakai accent.
+     ============================================================ */
+  --color-sky:          #3FA7E8;
+  --color-sky-deep:     #2371A6;
+  --color-sky-soft:     #DFF0FC;
+
+  --color-violet:       #8A63D2;
+  --color-violet-deep:  #5F3FA3;
+  --color-violet-soft:  #ECE4FA;
+
+  --color-teal:         #2EB5A6;
+  --color-teal-deep:    #16796E;
+  --color-teal-soft:    #D9F4F0;
+
+  --color-pink:         #EC6FA5;
+  --color-pink-deep:    #B93A73;
+  --color-pink-soft:    #FDE3EF;
+
+  --color-orange:       #F28C3A;
+  --color-orange-deep:  #B85A0F;
+  --color-orange-soft:  #FDE8D4;
+
+  /* ============================================================
+     3. COLOR — Neutral & Surface
+     ============================================================ */
+  --color-bg:              #FFF9F7;
+  --color-surface:         #FFFFFF;
+  --color-ink:             #3A2E2C;
+  --color-ink-soft:        #7A6C68;
+  --color-border:          #EFE2DE;
+  --color-border-deep:     #DCC9C3;
+
+  /* ============================================================
+     4. TYPE
+     ============================================================ */
+  --font-base: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --fs-xs:   12px;
+  --fs-sm:   13px;
+  --fs-title: 14px;
+  --fs-base: 15px;
+  --fs-md:   16px;
+  --fs-lg:   17px;
+  --fs-xl:   20px;
+  --fs-2xl:  24px;
+  --fs-3xl:  30px;
+  --fs-4xl:  34px;
+
+  --fw-medium:     500;
+  --fw-semibold:   600;
+  --fw-bold:       700;
+  --fw-extrabold:  800;
+
+  --lh-tight:  1.2;
+  --lh-snug:   1.35;
+  --lh-normal: 1.5;
+  --lh-none:   1;
+
+  --tracking-tight: -0.02em;
+  --tracking-snug:  -0.01em;
+  --tracking-wide:   0.01em;
+
+  /* ============================================================
+     5. SPACING — skala 4px
+     ============================================================ */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-7:  32px;
+  --space-8:  40px;
+  --space-9:  56px;
+  --space-10: 64px;
+  --space-11: 88px;
+  --space-12: 120px;
+
+  /* ============================================================
+     6. RADIUS
+     ============================================================ */
+  --radius-xs:   8px;
+  --radius-sm:   10px;
+  --radius-md:   16px;
+  --radius-lg:   22px;
+  --radius-icon: 14px;
+  --radius-full: 999px;
+
+  /* ============================================================
+     7. SHADOW
+     ============================================================ */
+  --shadow-chunky-xs: 0 2px 0 0;
+  --shadow-chunky-sm: 0 3px 0 0;
+  --shadow-chunky-md: 0 4px 0 0;
+
+  --shadow-elevation-1: 0 1px 2px rgba(58,46,44,.06);
+  --shadow-elevation-2: 0 4px 12px rgba(58,46,44,.10);
+  --shadow-elevation-3: 0 8px 24px rgba(58,46,44,.16);
+
+  /* ============================================================
+     8. SIZING
+     ============================================================ */
+  --size-icon-sm:   18px;
+  --size-icon-md:   22px;
+  --size-bubble-sm: 44px;
+  --size-bubble-md: 52px;
+
+  /* ============================================================
+     9. MOTION
+     ============================================================ */
+  --duration-instant: 50ms;
+  --duration-fast:    160ms;
+  --duration-base:    300ms;
+  --duration-slow:    500ms;
+  --duration-slower:  700ms;
+
+  --ease-standard:  cubic-bezier(.4,0,.2,1);
+  --ease-overshoot: cubic-bezier(.34,1.56,.64,1);
+  --ease-out-soft:  cubic-bezier(.22,.9,.32,1.15);
+
+  /* ============================================================
+     10. OPACITY
+     ============================================================ */
+  --opacity-muted: .7;
+
+  /* ============================================================
+     11. COMPONENT STATE TOKENS (dipetakan dari layer di atas)
+     ============================================================ */
+  --state-default-bg:      var(--color-surface);
+  --state-default-border:  var(--color-border);
+  --state-default-shadow:  var(--color-border-deep);
+
+  --state-hover-shadow:    var(--shadow-elevation-2);
+  --state-hover-lift:      -2px;
+
+  --state-pressed-offset:  4px;
+
+  --state-selected-bg:      var(--color-primary-soft);
+  --state-selected-border:  var(--color-primary);
+  --state-selected-shadow:  var(--color-primary-tint);
+
+  --state-correct-bg:       var(--color-success-soft);
+  --state-correct-border:   var(--color-success);
+  --state-correct-shadow:   var(--color-success-deep);
+
+  --state-incorrect-bg:      var(--color-caution-soft);
+  --state-incorrect-border:  var(--color-caution);
+  --state-incorrect-shadow:  var(--color-caution-deep);
+  --state-incorrect-ink:     var(--color-caution-ink);
+
+  --state-disabled-bg:      var(--color-locked-soft);
+  --state-disabled-border:  var(--color-locked);
+  --state-disabled-opacity: var(--opacity-muted);
+
+  --state-locked-bg:       var(--color-locked-soft);
+  --state-locked-ink:      var(--color-locked-deep);
+  --state-locked-opacity:  var(--opacity-muted);
+
+  --state-completed-bg:      var(--color-success-soft);
+  --state-completed-border:  var(--color-success);
+
+  /* ============================================================
+     12. LAYOUT (khusus app shell, tidak ada di brand guide)
+     ============================================================ */
+  --content-max:   640px;  /* kolom belajar terfokus di tablet/desktop */
+  --nav-height:    64px;   /* bottom navigation (mobile) */
+  --sidebar-width: 224px;  /* navigasi samping (>= 768px) */
+}

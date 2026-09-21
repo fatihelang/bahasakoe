@@ -30,7 +30,23 @@ import { DEFAULT_LANGUAGE_ID, getLanguageById } from '../data/languages.js';
 import { getUnit, getUnitsForLanguage, getDefaultUnit, getFirstPlayableLesson, getNextPlayableLesson } from '../data/curriculum.js';
 import { BADGES } from '../data/badges.js';
 
-const STORAGE_KEY = 'bahasakoe_state_v1';
+// Kunci penyimpanan dinaikkan ke v2 = SEMUA data pemain lama diabaikan dan
+// dihapus (initState menghapus kunci lama di bawah), jadi setiap pemain --
+// termasuk yang sudah pernah berkunjung -- mulai dari 0 (XP 0, streak 1,
+// tanpa progress) dan otomatis melihat onboarding. Naikkan lagi angkanya
+// (v3, v4, ...) bila suatu saat perlu mengosongkan data semua pemain lagi.
+// Pengaturan suara (soundManager.js) sengaja TIDAK ikut dihapus: itu
+// preferensi perangkat, bukan data pemain.
+const STORAGE_KEY = 'bahasakoe_state_v2';
+const LEGACY_STORAGE_KEYS = ['bahasakoe_state_v1'];
+
+function clearLegacyState() {
+  try {
+    LEGACY_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
+  } catch (err) {
+    console.error('Gagal menghapus data lama dari LocalStorage:', err);
+  }
+}
 
 // Dipakai HANYA untuk dua hal yang memang sengaja tetap terikat ke Bahasa
 // Jawa Unit 1 secara eksplisit, bukan mengikuti selectedLanguage/current unit:
@@ -157,6 +173,7 @@ function updateStreak(state) {
 export const XP_PER_CORRECT_ANSWER = 10;
 
 export function initState() {
+  clearLegacyState();
   const existingState = readState();
   let state = existingState;
   if (!state) {
@@ -165,12 +182,10 @@ export function initState() {
   if (!state.selectedLanguage) {
     state.selectedLanguage = DEFAULT_LANGUAGE_ID;
   }
-  // State lama (sebelum onboarding ada) tidak punya field ini sama sekali --
-  // itu berarti orangnya SUDAH pernah pakai app (ada state tersimpan), jadi
-  // tidak perlu dipaksa lihat tutorial. Hanya state yang benar-benar baru
-  // (belum pernah ada apa pun di LocalStorage) yang mulai dari false.
+  // State tanpa field ini dianggap BELUM pernah melihat onboarding (termasuk
+  // pemain lama), supaya semua orang diperkenalkan dengan fitur tutorial.
   if (typeof state.onboardingSeen !== 'boolean') {
-    state.onboardingSeen = Boolean(existingState);
+    state.onboardingSeen = false;
   }
   state = migrateLegacyProgress(state);
   if (!state.progress) state.progress = {};

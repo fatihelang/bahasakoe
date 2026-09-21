@@ -5,6 +5,7 @@
 
 import { initState, hasSeenOnboarding } from './state/appState.js';
 import { createRouter } from './router.js';
+import { ONBOARDING_MODE } from './screens/onboarding.js';
 import { icons } from './ui/icons.js';
 import { playTap } from './ui/soundManager.js';
 
@@ -64,9 +65,12 @@ function main() {
   renderBottomNav(navEl);
   bindGlobalTapSfx();
   const router = createRouter(appEl, navEl);
-  // Pemain BENAR-BENAR baru (belum pernah lihat onboarding) disambut dulu
-  // dengan tutorial singkat, sebelum masuk Home. Lihat js/screens/onboarding.js.
-  router.navigateTo(hasSeenOnboarding() ? 'home' : 'onboarding');
+  // Onboarding dibuka dulu sebelum Home. Mode 'always' (bawaan) menampilkannya
+  // di setiap pembukaan aplikasi, juga untuk pemain yang sudah pernah
+  // berkunjung; mode 'once' hanya untuk yang belum pernah melihatnya.
+  // Lihat ONBOARDING_MODE di js/screens/onboarding.js.
+  const showOnboarding = ONBOARDING_MODE === 'always' || !hasSeenOnboarding();
+  router.navigateTo(showOnboarding ? 'onboarding' : 'home');
 }
 
 document.addEventListener('DOMContentLoaded', main);

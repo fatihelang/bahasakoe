@@ -5,10 +5,14 @@
   lesson, filosofi "Mistakes Are Learning" (tanpa hearts/lives), dan
   XP/streak/achievement, sebelum masuk ke Home.
 
-  Kapan tampil:
-  - Otomatis SEKALI di awal, hanya jika appState.hasSeenOnboarding() masih
-    false (lihat main.js). Setelah slide terakhir atau "Lewati" ditekan,
-    markOnboardingSeen() dipanggil sehingga tidak muncul otomatis lagi.
+  Kapan tampil (diatur ONBOARDING_MODE di bawah, dibaca main.js):
+  - 'always' (BAWAAN SEKARANG): muncul SETIAP kali aplikasi dibuka, juga
+    untuk pemain yang sudah pernah berkunjung, supaya fitur onboarding
+    selalu diperkenalkan. Bisa dilewati dengan "Lewati". Konsekuensinya,
+    memuat ulang halaman (refresh) juga memunculkannya lagi.
+  - 'once': hanya jika appState.hasSeenOnboarding() masih false. Setelah
+    slide terakhir atau "Lewati" ditekan, markOnboardingSeen() dipanggil
+    sehingga tidak muncul otomatis lagi.
   - Bisa dibuka ULANG kapan saja lewat Profil > Pengaturan > "Lihat
     tutorial lagi" (lihat profile.js), dengan params.replay = true. Dalam
     mode replay: tombol "Lewati"/selesai kembali ke Profil, BUKAN ke Home,
@@ -25,6 +29,13 @@
 */
 
 import { markOnboardingSeen } from '../state/appState.js';
+
+/**
+ * 'always' = onboarding tampil di setiap pembukaan aplikasi (bawaan).
+ * 'once'   = hanya untuk pemain yang belum pernah melihatnya.
+ * Ganti satu nilai ini untuk mengubah perilaku seluruh aplikasi.
+ */
+export const ONBOARDING_MODE = 'always';
 import { mascotHtml } from '../ui/mascot.js';
 import { icons } from '../ui/icons.js';
 

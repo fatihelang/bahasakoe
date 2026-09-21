@@ -833,7 +833,7 @@ export function renderLesson(container, { navigateTo }, params = {}) {
         <div class="complete-rows">
           ${completeRow(icons.book, '', 'Progress unit', `${progress.completed} dari ${progress.total} lesson selesai`)}
           ${completeRow(icons.flame, 'icon-bubble--culture', 'Streak', `${streak} hari`)}
-          ${newBadges.map((b) => completeRow(icons[b.icon], '', 'Achievement baru', b.title)).join('')}
+          ${newBadges.map((b) => completeRow(icons[b.icon], '', 'Lencana baru', b.title)).join('')}
           ${wrongCount > 0 ? completeRow(icons.repeat, '', 'Untuk diulas', `${wrongCount} soal masuk "Ulas kata yang salah" di Home`) : ''}
         </div>`,
       dock: ctaHtml('Lanjutkan', 'finish'),

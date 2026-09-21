@@ -1,0 +1,168 @@
+/*
+  accents.css
+  Lapisan warna-warni (dekoratif) di atas komponen yang sudah ada, supaya
+  app terasa ceria untuk anak sampai dewasa. Dimuat TERAKHIR, hanya memakai
+  token accent di variables.css.
+
+  Cara kerja: elemen/kartu diberi "tone" lewat custom property
+  --tone / --tone-soft / --tone-deep (atribut data-tone, atau urutan anak
+  lewat nth-child). Komponen membaca tone itu; kalau tidak ada tone, tampilan
+  tetap merah brand seperti sebelumnya.
+
+  Aturan: warna semantik (benar = hijau, kurang tepat = coklat, terkunci =
+  abu, selesai = hijau) TIDAK diubah oleh accent.
+*/
+
+/* ---------- 1. Definisi tone ---------- */
+[data-tone="sky"]    { --tone: var(--color-sky);    --tone-soft: var(--color-sky-soft);    --tone-deep: var(--color-sky-deep); }
+[data-tone="violet"] { --tone: var(--color-violet); --tone-soft: var(--color-violet-soft); --tone-deep: var(--color-violet-deep); }
+[data-tone="teal"]   { --tone: var(--color-teal);   --tone-soft: var(--color-teal-soft);   --tone-deep: var(--color-teal-deep); }
+[data-tone="pink"]   { --tone: var(--color-pink);   --tone-soft: var(--color-pink-soft);   --tone-deep: var(--color-pink-deep); }
+[data-tone="orange"] { --tone: var(--color-orange); --tone-soft: var(--color-orange-soft); --tone-deep: var(--color-orange-deep); }
+[data-tone="gold"]   { --tone: var(--color-culture); --tone-soft: var(--color-culture-soft); --tone-deep: var(--color-culture-deep); }
+[data-tone="red"]    { --tone: var(--color-primary); --tone-soft: var(--color-primary-soft); --tone-deep: var(--color-primary-deep); }
+
+/* Tone bergilir otomatis untuk daftar (unit/lesson, lencana, chip kata) */
+.path-list > :nth-child(6n+1), .badge-grid > :nth-child(6n+1), .chip-list > :nth-child(6n+1) { --tone: var(--color-sky);    --tone-soft: var(--color-sky-soft);    --tone-deep: var(--color-sky-deep); }
+.path-list > :nth-child(6n+2), .badge-grid > :nth-child(6n+2), .chip-list > :nth-child(6n+2) { --tone: var(--color-pink);   --tone-soft: var(--color-pink-soft);   --tone-deep: var(--color-pink-deep); }
+.path-list > :nth-child(6n+3), .badge-grid > :nth-child(6n+3), .chip-list > :nth-child(6n+3) { --tone: var(--color-teal);   --tone-soft: var(--color-teal-soft);   --tone-deep: var(--color-teal-deep); }
+.path-list > :nth-child(6n+4), .badge-grid > :nth-child(6n+4), .chip-list > :nth-child(6n+4) { --tone: var(--color-violet); --tone-soft: var(--color-violet-soft); --tone-deep: var(--color-violet-deep); }
+.path-list > :nth-child(6n+5), .badge-grid > :nth-child(6n+5), .chip-list > :nth-child(6n+5) { --tone: var(--color-orange); --tone-soft: var(--color-orange-soft); --tone-deep: var(--color-orange-deep); }
+.path-list > :nth-child(6n),   .badge-grid > :nth-child(6n),   .chip-list > :nth-child(6n)   { --tone: var(--color-culture); --tone-soft: var(--color-culture-soft); --tone-deep: var(--color-culture-deep); }
+
+/* ---------- 2. Latar halaman: rona lembut di sudut ---------- */
+body {
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(circle at 0% 0%,   var(--color-sky-soft) 0, transparent 34%),
+    radial-gradient(circle at 100% 6%, var(--color-pink-soft) 0, transparent 30%),
+    radial-gradient(circle at 100% 100%, var(--color-culture-soft) 0, transparent 32%);
+  background-attachment: fixed;
+}
+body.is-focused-session { background-image: none; }
+
+/* ---------- 3. Icon bubble ---------- */
+[data-tone].icon-bubble,
+[data-tone]:not(.is-completed):not(.is-locked) .icon-bubble:not(.icon-bubble--success):not(.icon-bubble--locked):not(.icon-bubble--culture) {
+  background: var(--tone-soft);
+  color: var(--tone-deep);
+}
+.path-item:not(.is-completed):not(.is-locked) .icon-bubble:not(.icon-bubble--success):not(.icon-bubble--locked):not(.icon-bubble--culture) {
+  background: var(--tone-soft, var(--color-primary-soft));
+  color: var(--tone-deep, var(--color-primary));
+}
+.icon-bubble b { color: inherit; }
+
+/* Kartu learning yang sedang aktif: bingkai mengikuti tone */
+.card--learning.is-current {
+  border-color: var(--tone, var(--color-primary-tint));
+  box-shadow: var(--shadow-chunky-sm) var(--tone, var(--color-primary-tint));
+}
+.card-badge.is-current { background: var(--tone-soft, var(--color-primary-soft)); color: var(--tone-deep, var(--color-primary-deep)); }
+
+/* ---------- 4. Kartu utama Home: gradient hangat ---------- */
+.card--featured {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #EC5F5A 55%, var(--color-orange) 100%);
+}
+
+/* ---------- 5. Progress bar: gradient ceria ---------- */
+.card-progress-fill {
+  background: linear-gradient(90deg, var(--color-primary), var(--color-orange), var(--color-culture));
+}
+.card--featured .card-progress-fill { background: #fff; }
+.card--learning.is-completed .card-progress-fill { background: var(--color-success); }
+
+/* ---------- 6. Lencana: tiap lencana punya warna sendiri ---------- */
+.badge-card.is-unlocked {
+  border-color: var(--tone-soft, var(--color-border));
+  box-shadow: var(--shadow-chunky-sm) var(--tone, var(--color-border-deep));
+}
+.badge-card.is-unlocked .badge-icon {
+  color: var(--tone-deep, var(--color-primary));
+  background: var(--tone-soft, var(--color-primary-soft));
+  border-color: var(--tone, var(--color-primary));
+}
+.badge-card.is-new .badge-icon {
+  color: #fff;
+  background: var(--tone, var(--color-primary));
+  border-color: var(--tone, var(--color-primary));
+  box-shadow: 0 0 0 6px var(--tone-soft, var(--color-primary-soft));
+}
+
+/* ---------- 7. Chip kata terkait (tab Ulas) ---------- */
+.chip-list .chip {
+  color: var(--tone-deep);
+  background: var(--tone-soft);
+  border-color: var(--tone-soft);
+}
+
+/* ---------- 8. Navigasi: tiap tab punya warna ---------- */
+.bottom-nav__item[data-screen="home"]    { --tone: var(--color-primary); --tone-soft: var(--color-primary-soft); --tone-deep: var(--color-primary-deep); }
+.bottom-nav__item[data-screen="learn"]   { --tone: var(--color-sky);    --tone-soft: var(--color-sky-soft);    --tone-deep: var(--color-sky-deep); }
+.bottom-nav__item[data-screen="review"]  { --tone: var(--color-violet); --tone-soft: var(--color-violet-soft); --tone-deep: var(--color-violet-deep); }
+.bottom-nav__item[data-screen="badges"]  { --tone: var(--color-culture); --tone-soft: var(--color-culture-soft); --tone-deep: var(--color-culture-deep); }
+.bottom-nav__item[data-screen="profile"] { --tone: var(--color-teal);   --tone-soft: var(--color-teal-soft);   --tone-deep: var(--color-teal-deep); }
+
+.bottom-nav__item .bottom-nav__icon-wrap svg { color: var(--tone); }
+.bottom-nav__item.is-active { color: var(--tone-deep); }
+.bottom-nav__item.is-active .bottom-nav__icon-wrap { background: var(--tone-soft); }
+@media (min-width: 768px) {
+  .bottom-nav__item.is-active { color: var(--tone-deep); background: var(--tone-soft); }
+}
+
+/* ---------- 9. Unit Detail: header bertema warna unit ---------- */
+.unit-intro[data-tone] {
+  padding: var(--space-5);
+  background: var(--tone-soft);
+  border: 1.5px solid var(--tone);
+  border-radius: var(--radius-md);
+}
+.unit-intro[data-tone] .unit-intro__description { color: var(--color-ink); }
+.unit-intro[data-tone] .unit-progress__value { color: var(--tone-deep); }
+.unit-intro[data-tone] .progress-track { background: var(--color-surface); border-color: var(--tone); }
+.unit-intro[data-tone] .progress-track:not(.is-complete) .progress-fill { background: var(--tone); }
+
+/* ---------- 10. Pilihan jawaban: cincin berwarna per posisi ----------
+   Hanya di state default & terpilih. Benar/kurang tepat tetap hijau/coklat
+   (semantik), dan status selalu punya ikon centang/silang, bukan cuma warna. */
+.choice-group > :nth-child(4n+1) { --tone: var(--color-sky);    --tone-soft: var(--color-sky-soft); }
+.choice-group > :nth-child(4n+2) { --tone: var(--color-violet); --tone-soft: var(--color-violet-soft); }
+.choice-group > :nth-child(4n+3) { --tone: var(--color-pink);   --tone-soft: var(--color-pink-soft); }
+.choice-group > :nth-child(4n)   { --tone: var(--color-teal);   --tone-soft: var(--color-teal-soft); }
+
+.choice:not(.is-selected):not(.is-correct):not(.is-incorrect) .choice-indicator { border-color: var(--tone, var(--color-border-deep)); }
+@media (hover: hover) {
+  .choice:hover:not(:disabled):not(.is-selected):not(.is-correct):not(.is-incorrect) { border-color: var(--tone, var(--color-primary-tint)); }
+}
+.choice.is-selected:not(.is-correct):not(.is-incorrect) {
+  background: var(--tone-soft, var(--state-selected-bg));
+  border-color: var(--tone, var(--state-selected-border));
+  box-shadow: var(--shadow-chunky-sm) var(--tone, var(--state-selected-shadow));
+}
+.choice.is-selected:not(.is-correct):not(.is-incorrect) .choice-indicator {
+  background: var(--tone, var(--color-primary));
+  border-color: var(--tone, var(--color-primary));
+}
+
+/* ---------- 11. Urutan navigasi ----------
+   HP: Home di tengah (urutan DOM di main.js).
+   Sidebar (>= 768px): Home dipindah ke paling atas, di bawah nama brand. */
+@media (min-width: 768px) {
+  .bottom-nav__brand { order: -2; }
+  .bottom-nav__item[data-screen="home"] { order: -1; }
+}
+
+/* ---------- 12. Tab Home lebih menonjol (khusus HP) ----------
+   Ikon lebih besar + alas lembut selalu tampil; saat aktif alasnya merah
+   penuh dengan ikon putih. Sidebar desktop tidak diubah. */
+@media (max-width: 767px) {
+  .bottom-nav__item[data-screen="home"] .bottom-nav__icon-wrap {
+    width: 52px;
+    height: 34px;
+    background: var(--color-primary-soft);
+  }
+  .bottom-nav__item[data-screen="home"] svg { width: 28px; height: 28px; }
+  .bottom-nav__item[data-screen="home"] .bottom-nav__label { font-weight: var(--fw-extrabold); color: var(--color-primary-deep); }
+  .bottom-nav__item[data-screen="home"].is-active .bottom-nav__icon-wrap { background: var(--color-primary); box-shadow: var(--shadow-chunky-xs) var(--color-primary-deep); }
+  .bottom-nav__item[data-screen="home"].is-active .bottom-nav__icon-wrap svg { color: #fff; }
+}

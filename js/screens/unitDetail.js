@@ -69,6 +69,9 @@ function lessonCardHtml(lesson, status, index) {
     : `<li class="stagger-in" ${stagger}><button class="${stateClass} card-clickable" data-lesson-id="${lesson.id}">${inner}</button></li>`;
 }
 
+// Urutan tone sama dengan kartu unit di tab Belajar (accents.css), supaya unit terasa punya warna sendiri.
+const UNIT_TONES = ['sky', 'pink', 'teal', 'violet', 'orange', 'gold'];
+
 export function renderUnitDetail(container, { navigateTo }, params = {}) {
   let languageId = params.languageId;
   let unit = languageId ? getUnit(languageId, params.unitId) : null;
@@ -93,7 +96,7 @@ export function renderUnitDetail(container, { navigateTo }, params = {}) {
     <div class="screen unit-detail">
       ${pageHeader({ title: unit.title, subtitle: `Unit ${unit.order}`, backLabel: 'Kembali ke Belajar' })}
 
-      <div class="unit-intro">
+      <div class="unit-intro" data-tone="${UNIT_TONES[(unit.order - 1) % UNIT_TONES.length]}">
         <p class="unit-intro__description">${unit.description}</p>
         <div class="unit-progress">
           <div class="unit-progress__label">

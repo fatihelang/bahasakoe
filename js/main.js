@@ -5,7 +5,6 @@
 
 import { initState, hasSeenOnboarding } from './state/appState.js';
 import { createRouter } from './router.js';
-import { ONBOARDING_MODE } from './screens/onboarding.js';
 import { icons } from './ui/icons.js';
 import { playTap } from './ui/soundManager.js';
 
@@ -37,9 +36,14 @@ function bindGlobalTapSfx() {
 // Markup mengikuti komponen Bottom Navigation di brand guide. Elemen yang
 // sama tampil sebagai bottom bar di mobile dan sidebar di layar >= 768px
 // (lihat components.css), jadi tidak ada dua struktur nav yang berbeda.
+// Urutan DOM = urutan di HP (bottom bar): Home sengaja di TENGAH.
+// Di layar >= 768px (sidebar), Home dipindah ke paling atas lewat CSS `order`
+// (lihat accents.css), jadi sidebar tetap Home, Belajar, Ulas, Lencana, Profil.
 const NAV_ITEMS = [
-  { screen: 'home', label: 'Home', icon: icons.home },
   { screen: 'learn', label: 'Belajar', icon: icons.book },
+  { screen: 'review', label: 'Ulas', icon: icons.repeat },
+  { screen: 'home', label: 'Home', icon: icons.home },
+  { screen: 'badges', label: 'Lencana', icon: icons.trophy },
   { screen: 'profile', label: 'Profil', icon: icons.profile },
 ];
 
@@ -65,12 +69,9 @@ function main() {
   renderBottomNav(navEl);
   bindGlobalTapSfx();
   const router = createRouter(appEl, navEl);
-  // Onboarding dibuka dulu sebelum Home. Mode 'always' (bawaan) menampilkannya
-  // di setiap pembukaan aplikasi, juga untuk pemain yang sudah pernah
-  // berkunjung; mode 'once' hanya untuk yang belum pernah melihatnya.
-  // Lihat ONBOARDING_MODE di js/screens/onboarding.js.
-  const showOnboarding = ONBOARDING_MODE === 'always' || !hasSeenOnboarding();
-  router.navigateTo(showOnboarding ? 'onboarding' : 'home');
+  // Pemain BENAR-BENAR baru (belum pernah lihat onboarding) disambut dulu
+  // dengan tutorial singkat, sebelum masuk Home. Lihat js/screens/onboarding.js.
+  router.navigateTo(hasSeenOnboarding() ? 'home' : 'onboarding');
 }
 
 document.addEventListener('DOMContentLoaded', main);

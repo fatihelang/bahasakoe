@@ -1,13 +1,13 @@
 /*
   profile.js
   Profil: sederhana, bukan dashboard analitik.
-  Prioritas: identitas -> bahasa aktif -> XP & streak -> progress -> achievement,
+  Prioritas: identitas -> bahasa aktif -> XP & streak -> progress (lencana kini di tab Lencana),
   ditambah satu pengaturan (suara). Semua data dari appState.js.
 
   Avatar & nama masih generik karena prototype belum punya akun (sesuai scope).
 */
 
-import { getState, getUnitProgress, getBadgesWithStatus, getSelectedLanguage, getCurrentUnit } from '../state/appState.js';
+import { getState, getUnitProgress, getSelectedLanguage, getCurrentUnit } from '../state/appState.js';
 import { icons } from '../ui/icons.js';
 import { pageHeader } from '../ui/pageHeader.js';
 import { isSoundEnabled, setSoundEnabled, playSelect } from '../ui/soundManager.js';
@@ -22,24 +22,12 @@ export function renderProfile(container, { navigateTo } = {}) {
   const percent = progress.total > 0 ? (progress.completed / progress.total) * 100 : 0;
   const soundOn = isSoundEnabled();
 
-  const badgesHtml = getBadgesWithStatus()
-    .map(
-      (badge) => `
-      <li class="card card--static badge-card ${badge.earned ? 'is-unlocked' : 'is-locked'}">
-        <span class="badge-icon" aria-hidden="true">${badge.earned ? icons[badge.icon] : icons.lock}</span>
-        <span class="badge-card__name">${badge.title}</span>
-        <span class="badge-card__desc">${badge.description}</span>
-        <span class="sr-only">${badge.earned ? 'Sudah didapat' : 'Belum didapat'}</span>
-      </li>`
-    )
-    .join('');
-
   container.innerHTML = `
     <div class="screen profile">
       ${pageHeader({ title: 'Profil' })}
 
       <div class="card card--static profile-identity">
-        <span class="icon-bubble icon-bubble--md icon-bubble--round" aria-hidden="true">${icons.graduate}</span>
+        <span class="icon-bubble icon-bubble--md icon-bubble--round" data-tone="teal" aria-hidden="true">${icons.graduate}</span>
         <div class="card-body">
           <p class="profile-identity__name">Sahabat Basa</p>
           <p class="card-text">${language.available ? `Sedang belajar ${language.name}` : 'Bahasa aktif: Bahasa Jawa'}</p>
@@ -53,7 +41,7 @@ export function renderProfile(container, { navigateTo } = {}) {
           <span class="card-body"><span class="stat-card__value" id="stat-xp">${state.xp}</span><span class="stat-card__label">Total XP</span></span>
         </div>
         <div class="card card--static stat-card">
-          <span class="icon-bubble icon-bubble--culture" aria-hidden="true">${icons.flame}</span>
+          <span class="icon-bubble" data-tone="orange" aria-hidden="true">${icons.flame}</span>
           <span class="card-body"><span class="stat-card__value">${state.streak} hari</span><span class="stat-card__label">Streak belajar</span></span>
         </div>
       </div>
@@ -64,11 +52,6 @@ export function renderProfile(container, { navigateTo } = {}) {
           <span class="card-progress-fill" style="display:block;width:${percent}%"></span>
         </span>
         <span class="card-progress-label">${progress.completed} dari ${progress.total} lesson selesai</span>
-      </div>
-
-      <div class="stack stack--section">
-        <h2 class="section-title">Achievement</h2>
-        <ul class="badge-grid">${badgesHtml}</ul>
       </div>
 
       <div class="stack stack--section">

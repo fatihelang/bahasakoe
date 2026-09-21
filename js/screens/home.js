@@ -19,10 +19,10 @@
 
 import {
   getState, getUnitProgress, isLessonCompleted, getCurrentLessonId,
-  getSelectedLanguage, setSelectedLanguage, getCurrentUnit, getBadgesWithStatus, getMissedItems,
+  getSelectedLanguage, setSelectedLanguage, getCurrentUnit, getBadgesWithStatus,
 } from '../state/appState.js';
 import { getLesson } from '../data/curriculum.js';
-import { relatedWords } from '../data/questionHelpers.js';
+import { getReviewSummary } from './review.js';
 import { mascotHtml } from '../ui/mascot.js';
 import { icons } from '../ui/icons.js';
 import { pageHeader } from '../ui/pageHeader.js';
@@ -58,23 +58,6 @@ function mascotMessage({ isFirstTime, hasReview, streak }) {
   if (hasReview) return 'Ada soal yang bisa kamu ulas. Yuk!';
   if (streak >= 3) return 'Streak-mu keren! Terus lanjut ya.';
   return 'Lanjut belajar yuk!';
-}
-
-/**
- * Bahan kartu "Ulas kata yang salah": jumlah soal yang masih bisa diulas
- * (soal yang sudah tidak ada di data dilewati) dan kata-kata terkaitnya.
- */
-function getReviewSummary(languageId) {
-  let count = 0;
-  const words = [];
-  for (const item of getMissedItems(languageId)) {
-    const lesson = getLesson(item.languageId, item.unitId, item.lessonId);
-    const question = lesson && lesson.questions ? lesson.questions.find((q) => q.id === item.questionId) : null;
-    if (!question) continue;
-    count += 1;
-    relatedWords(lesson, question).forEach((w) => { if (!words.includes(w)) words.push(w); });
-  }
-  return { count, words: words.slice(0, 4) };
 }
 
 export function renderHome(container, { navigateTo }) {
@@ -134,7 +117,7 @@ export function renderHome(container, { navigateTo }) {
   const reviewHtml =
     review.count > 0
       ? `
-      <button class="card card-clickable home-review stagger-in" style="--stagger:0" data-action="start-review">
+      <button class="card card-clickable home-review stagger-in" data-tone="violet" style="--stagger:0" data-action="start-review">
         <span class="card-top">
           <span class="icon-bubble" aria-hidden="true">${icons.repeat}</span>
           <span class="card-body">
@@ -153,7 +136,7 @@ export function renderHome(container, { navigateTo }) {
   const word = activeUnit ? pickWordOfTheDay(language.id, activeUnit) : null;
   const wordHtml = word
     ? `
-      <div class="card card--static home-row stagger-in" style="--stagger:1">
+      <div class="card card--static home-row stagger-in" data-tone="sky" style="--stagger:1">
         <span class="icon-bubble" aria-hidden="true">${icons.book}</span>
         <span class="card-body">
           <span class="t-eyebrow">Kata hari ini</span>
@@ -166,7 +149,7 @@ export function renderHome(container, { navigateTo }) {
   const nextBadge = getBadgesWithStatus().find((b) => !b.earned);
   const badgeHtml = nextBadge
     ? `
-      <div class="card card--static home-row stagger-in" style="--stagger:2">
+      <div class="card card--static home-row stagger-in" data-tone="pink" style="--stagger:2">
         <span class="icon-bubble" aria-hidden="true">${icons[nextBadge.icon]}</span>
         <span class="card-body">
           <span class="t-eyebrow">Pencapaian berikutnya</span>

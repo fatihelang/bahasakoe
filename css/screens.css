@@ -266,6 +266,17 @@
   .lesson-dock { padding-left: var(--space-4); padding-right: var(--space-4); }
   .word-card__native, .lesson-intro__title, .onboarding-title { font-size: var(--fs-2xl); }
   .stat-grid { grid-template-columns: 1fr; }
+  /* 5 tab di layar 320px: beri ruang lebih untuk label "Lencana" */
+  .bottom-nav { padding-left: 2px; padding-right: 2px; gap: 0; }
+  .bottom-nav__icon-wrap { width: 36px; }
+  .bottom-nav__label { letter-spacing: 0; }
   .choice-group.two-col { gap: var(--space-2); }
   .card--featured { padding: var(--space-5); }
 }
+
+/* ============================================================
+   ULAS & LENCANA (tab baru)
+   ============================================================ */
+.chip-list { display: flex; flex-wrap: wrap; gap: var(--space-2); list-style: none; }
+.empty-state { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); padding: var(--space-8) var(--space-4); text-align: center; }
+.empty-state .t-support { max-width: 36ch; }

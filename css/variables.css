@@ -46,6 +46,32 @@
   --color-danger-soft:    #F5E2E0;
 
   /* ============================================================
+     2b. COLOR — Accent (warna-warni, dekoratif)
+     Untuk membuat app terasa ceria bagi anak sampai dewasa. Dipakai
+     sebagai variasi ikon, lencana, navigasi, dan latar. Warna
+     semantik (benar/kurang tepat/terkunci) TIDAK memakai accent.
+     ============================================================ */
+  --color-sky:          #3FA7E8;
+  --color-sky-deep:     #2371A6;
+  --color-sky-soft:     #DFF0FC;
+
+  --color-violet:       #8A63D2;
+  --color-violet-deep:  #5F3FA3;
+  --color-violet-soft:  #ECE4FA;
+
+  --color-teal:         #2EB5A6;
+  --color-teal-deep:    #16796E;
+  --color-teal-soft:    #D9F4F0;
+
+  --color-pink:         #EC6FA5;
+  --color-pink-deep:    #B93A73;
+  --color-pink-soft:    #FDE3EF;
+
+  --color-orange:       #F28C3A;
+  --color-orange-deep:  #B85A0F;
+  --color-orange-soft:  #FDE8D4;
+
+  /* ============================================================
      3. COLOR — Neutral & Surface
      ============================================================ */
   --color-bg:              #FFF9F7;
@@ -66,10 +92,10 @@
   --fs-base: 15px;
   --fs-md:   16px;
   --fs-lg:   17px;
-  --fs-xl:   22px;
-  --fs-2xl:  28px;
-  --fs-3xl:  40px;
-  --fs-4xl:  44px;
+  --fs-xl:   20px;
+  --fs-2xl:  24px;
+  --fs-3xl:  30px;
+  --fs-4xl:  34px;
 
   --fw-medium:     500;
   --fw-semibold:   600;

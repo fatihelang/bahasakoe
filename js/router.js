@@ -11,6 +11,8 @@ import { renderUnitDetail } from './screens/unitDetail.js';
 import { renderProfile } from './screens/profile.js';
 import { renderLesson } from './screens/lesson.js';
 import { renderOnboarding } from './screens/onboarding.js';
+import { renderReview } from './screens/review.js';
+import { renderBadges } from './screens/badges.js';
 
 // Budaya bukan destination/tab: ia muncul sebagai Culture Moment di dalam
 // lesson (lihat screens/lesson.js), jadi tidak ada layar "culture" di sini.
@@ -18,6 +20,8 @@ const screens = {
   home: renderHome,
   learn: renderLearningPath,
   unitDetail: renderUnitDetail,
+  review: renderReview,
+  badges: renderBadges,
   profile: renderProfile,
   lesson: renderLesson,
   onboarding: renderOnboarding,
@@ -29,7 +33,7 @@ const screens = {
 // Profil) -- nav disembunyikan dengan alasan yang sama.
 // "unitDetail" BUKAN focused session (masih boleh pindah tab kapan saja),
 // jadi nav tetap tampil, dan tab "Belajar" tetap ditandai aktif di sana.
-const NAV_SCREENS = ['home', 'learn', 'unitDetail', 'profile'];
+const NAV_SCREENS = ['home', 'learn', 'unitDetail', 'review', 'badges', 'profile'];
 const TAB_FOR_SCREEN = { unitDetail: 'learn' };
 
 export function createRouter(appEl, navEl) {
